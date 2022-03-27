@@ -16,3 +16,9 @@ export const fetchAllAccount = () => (dispatch) => {
         })
         .catch((err) => console.log(err));
 };
+export const addAdmin = (admin) => {
+    return apiService.account().add_admin(admin)
+};
+export const register = (account) => {
+    return apiService.account().register(account);
+};

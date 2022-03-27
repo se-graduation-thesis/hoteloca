@@ -15,6 +15,9 @@ const UtilsShadow = Loadable(lazy(() => import('views/utilities/Shadow')));
 const UtilsMaterialIcons = Loadable(lazy(() => import('views/utilities/MaterialIcons')));
 const UtilsTablerIcons = Loadable(lazy(() => import('views/utilities/TablerIcons')));
 
+//Manager
+const AdminManager = Loadable(lazy(() => import('views/manager/account-manager/AdminManager')));
+
 // sample page routing
 const SamplePage = Loadable(lazy(() => import('views/sample-page')));
 
@@ -27,6 +30,10 @@ const MainRoutes = {
         {
             path: '/',
             element: <DashboardDefault />
+        },
+        {
+            path: '/admin/admin-manager',
+            element: <AdminManager />
         },
         {
             path: '/default',
