@@ -15,6 +15,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Visibility from '@mui/icons-material/Visibility';
 import { useDispatch, useSelector } from 'react-redux';
 import * as actions from "actions/manager.action"
+import { address } from 'assets/address';
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
     { id: 'hoNguoidung', label: 'Họ người dùng', minWidth: 100 },
@@ -55,6 +56,7 @@ export default function StickyHeadTable() {
             setListAccount(listAccount)
         }
     }, [listAccount])
+    console.log(address)
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }}>
             <Grid container spacing={1} style={{ marginTop: 10, padding: 10 }}>

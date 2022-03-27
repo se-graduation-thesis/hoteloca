@@ -3,13 +3,18 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Formsy from "formsy-react";
+import { address } from 'assets/address';
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
     Button,
     Divider,
+    FormControl,
     Grid,
+    InputLabel,
+    MenuItem,
+    Select,
     TextField,
     Typography,
     useMediaQuery
@@ -42,13 +47,25 @@ const FirebaseRegister = () => {
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
     const customization = useSelector((state) => state.customization);
     const [showPassword, setShowPassword] = useState(false);
-
+    const [age, setAge] = useState('');
+    const [district, setDistrict] = useState([])
+    const [wards, setWards] = useState([])
+    const handleChange = (event) => {
+        setAge(event.target.value);
+        console.log(event.target.value)
+    };
 
     const googleHandler = async () => {
         console.error('Register');
     };
 
-
+    const getDistrict = (a) => {
+        setDistrict(a.districts)
+        setWards([])
+    }
+    const getWards = (a) => {
+        setWards(a.wards)
+    }
     const validate = (fieldValues = values) => {
         let temp = { ...errors };
         if ("username" in fieldValues) {
@@ -152,6 +169,7 @@ const FirebaseRegister = () => {
         // dispatch(actions.fetchAllAccount())
         console.log(values)
     };
+    console.log(address)
     return (
         <>
             <Grid container direction="column" justifyContent="center" spacing={2}>
@@ -276,6 +294,53 @@ const FirebaseRegister = () => {
                     onChange={handleInputChange}
                 // {...(errors.address && { error: true, helperText: errors.address })}
                 />
+                <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">Tỉnh / Thành phố</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        label="Tỉnh / Thành phố"
+                        onChange={handleChange}
+                    >
+                        {
+                            address.map((a) => (
+                                <MenuItem value={a.id} onClick={() => getDistrict(a)}>{a.name}</MenuItem>
+                            ))
+                        }
+                    </Select>
+                </FormControl>
+                <div><br></br></div>
+                <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">Quận / Huyện</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        label="Quận / Huyện"
+                        onChange={handleChange}
+                    >
+                        {
+                            district.map((a) => (
+                                <MenuItem value={a.id} onClick={() => getWards(a)}>{a.name} </MenuItem>
+                            ))
+                        }
+                    </Select>
+                </FormControl>
+                <div><br></br></div>
+                <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">Xã / Phường</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        label="Xã / Phường"
+                        onChange={handleChange}
+                    >
+                        {
+                            wards.map((a) => (
+                                <MenuItem value={a.id} > {a.prefix + " " + a.name} </MenuItem>
+                            ))
+                        }
+                    </Select>
+                </FormControl>
                 <p><b>Thông tin tài khoản</b></p>
                 <TextField
                     id="username"
