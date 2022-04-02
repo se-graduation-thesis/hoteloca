@@ -17,6 +17,7 @@ const UtilsTablerIcons = Loadable(lazy(() => import('views/utilities/TablerIcons
 
 //Manager
 const AdminManager = Loadable(lazy(() => import('views/manager/account-manager/AdminManager')));
+const RoomManagement = Loadable(lazy(() => import('views/manager/hotel-management/room-management/Room')));
 
 // sample page routing
 const SamplePage = Loadable(lazy(() => import('views/sample-page')));
@@ -56,8 +57,8 @@ const MainRoutes = {
             element: <UtilsTablerIcons />
         },
         {
-            path: '/icons/material-icons',
-            element: <UtilsMaterialIcons />
+            path: '/admin/hotel-management/room',
+            element: <RoomManagement />
         },
         {
             path: '/sample-page',
