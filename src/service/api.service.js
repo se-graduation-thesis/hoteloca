@@ -16,4 +16,10 @@ export default {
             fetchAllManager: () => axios.get(url + 'get-all-manager'),
         };
     },
+    room(url = baseApi + 'room/') {
+        return {
+            fetchAllRoom: () => axios.get(url + 'get-all-room'),
+            add_room: (room) => axios.post(url, room),
+        };
+    },
 };

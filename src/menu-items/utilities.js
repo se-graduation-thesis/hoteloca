@@ -48,7 +48,7 @@ const utilities = {
                     id: 'phong',
                     title: 'Quản lý phòng',
                     type: 'item',
-                    url: '/icons/material-icons',
+                    url: '/admin/hotel-management/room',
                     breadcrumbs: false
                 },
                 {

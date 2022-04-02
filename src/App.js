@@ -23,7 +23,7 @@ const App = () => {
         dispatch(actions.fetchAllAccount())
     }, [])
     const account = useSelector((state) => state.account.listAccount)
-    console.log(account)
+    // console.log(account)
     return (
         <StyledEngineProvider injectFirst>
             <ThemeProvider theme={themes(customization)}>
