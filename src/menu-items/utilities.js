@@ -34,14 +34,14 @@ const utilities = {
                     id: 'chinhanh',
                     title: 'Quản lý chi nhánh',
                     type: 'item',
-                    url: '/icons/tabler-icons',
+                    url: '/admin/brand-manager',
                     breadcrumbs: false
                 },
                 {
                     id: 'loaiphong',
                     title: 'Quản lý loại phòng',
                     type: 'item',
-                    url: '/icons/tabler-icons',
+                    url: '/admin/category-manager',
                     breadcrumbs: false
                 },
                 {
