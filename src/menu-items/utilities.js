@@ -52,10 +52,10 @@ const utilities = {
                     breadcrumbs: false
                 },
                 {
-                    id: 'phong',
+                    id: 'dichVu',
                     title: 'Quản lý dịch vụ',
                     type: 'item',
-                    url: '/icons/material-icons',
+                    url: '/admin/hotel-management/service',
                     breadcrumbs: false
                 }
             ]

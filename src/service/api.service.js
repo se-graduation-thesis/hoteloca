@@ -20,13 +20,12 @@ export default {
         return {
             fetchAllRoom: () => axios.get(url + 'get-all-room'),
             add_room: (room) => axios.post(url, room),
-            brand(url = baseApi + 'brand/') {
-                return {
-                    fetchAllBrand: () => axios.get(url + 'get-all-brand'),
-                    insertBrand: (brand) => axios.post(url + 'add-brand', brand),
-                    findById: (id) => axios.get(url + 'find-by-id/' + id),
-                };
-            },
+        }
+    },
+    service(url = baseApi + 'service/') {
+        return {
+            fetchAllService: () => axios.get(url + 'get-all-service'),
+            add_service: (service) => axios.post(url, service),
         }
     },
     brand(url = baseApi + 'brand/') {

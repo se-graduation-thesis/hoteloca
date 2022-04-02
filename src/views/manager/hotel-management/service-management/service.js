@@ -13,34 +13,31 @@ import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import Visibility from '@mui/icons-material/Visibility';
 import { useDispatch, useSelector } from 'react-redux';
-import * as actions from "actions/room.action";
+import * as actions from "actions/service.action";
 import EditIcon from '@mui/icons-material/Edit';
-import AddRoomForm from './room-components/addRoomForm';
+import AddServiceForm from './service-components/addServiceForm';
+// import AddRoomForm from './room-components/addRoomForm';
 
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
-    { id: 'tenPhong', label: 'Tên Phòng', minWidth: 100 },
-    { id: 'loaiPhongid', label: 'Loại Phòng', minWidth: 100 },
+    { id: 'tenDichVu', label: 'Tên Dịch Vụ', minWidth: 100 },
     { id: 'donGia', label: 'Đơn Giá', minWidth: 100 },
     { id: 'trangThai', label: 'Trạng Thái', minWidth: 100 },
-    { id: 'kichThuoc', label: 'KichThuoc', minWidth: 100 },
-    { id: 'anh', label: 'Ảnh', minWidth: 100 },
-    { id: 'moTa', label: 'Mô Tả', minWidth: 100 },
 ];
 
-export default function Room() {
+export default function Service() {
     const dispatch = useDispatch();
     // const listaccinrow = [];
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
-    const rooms = useSelector((state) => state.room.rooms);
+    const services = useSelector((state) => state.service.services);
     const [addForm, setAddForm] = React.useState(false);
-    const [editRoom, setEditRoom] = React.useState(null);
+    const [editService, setEditService] = React.useState(null);
     const [isView, setIsView] = React.useState(false);
 
     const handleIsView = (value) => setIsView(value);
 
-    const handleEditRoom = (item) => setEditRoom(item);
+    const handleEditService = (item) => setEditService(item);
 
     const isShowAddForm = (value) => setAddForm(value);
 
@@ -48,7 +45,7 @@ export default function Room() {
         setPage(newPage);
     };
 
-    const [listRoom, setListRoom] = React.useState([])
+    const [listService, setListService] = React.useState([])
 
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value);
@@ -58,33 +55,33 @@ export default function Room() {
     const rows = []
 
     React.useEffect(() => {
-        dispatch(actions.fetchAllRoom())
+        dispatch(actions.fetchAllService())
     }, [])
 
     React.useEffect(() => {
-        if (rooms) {
-            rooms.forEach((e, i) => {
+        if (services) {
+            services.forEach((e, i) => {
                 e.stt = i + 1
                 // e.loaiPhongid = e.loaiPhongid.tenLoaiPhong
                 e.trangThai === 1 ?
                     e.trangThai = "Hoạt động" :
                     e.trangThai = "Ngừng hoạt động"
             })
-            setListRoom(rooms)
+            setListService(services)
         }
-    }, [rooms])
+    }, [services])
 
     return (
         <div>
             <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%', pl: 5, pr: 5 }}>
                 <Grid container spacing={1} style={{ marginTop: 10, padding: 20 }}>
                     <Grid item xs={12}>
-                        <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN PHÒNG</h3>
+                        <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN DICH VỤ</h3>
                     </Grid>
                     <Grid item xs={6}>
                         <Button variant="contained" color="secondary"
                             onClick={() => isShowAddForm(true)}
-                        >Thêm phòng</Button>
+                        >Thêm dịch vụ</Button>
                     </Grid>
                     <Grid item xs={6} style={{ padding: 10, textAlign: "right" }}>
                         <TextField
@@ -123,7 +120,7 @@ export default function Room() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {listRoom
+                            {listService
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row) => {
                                     return (
@@ -141,10 +138,10 @@ export default function Room() {
                                                 );
                                             })}
                                             <TableCell key={"action"}>
-                                                <IconButton aria-label="show" color="success" onClick={() => { handleEditRoom(row); isShowAddForm(true); handleIsView(true) }}>
+                                                <IconButton aria-label="show" color="success" onClick={() => { handleEditService(row); isShowAddForm(true); handleIsView(true) }}>
                                                     <Visibility />
                                                 </IconButton>
-                                                <IconButton aria-label="edit" color="primary" onClick={() => { handleEditRoom(row); isShowAddForm(true); }}>
+                                                <IconButton aria-label="edit" color="primary" onClick={() => { handleEditService(row); isShowAddForm(true); }}>
                                                     <EditIcon />
                                                 </IconButton>
                                             </TableCell>
@@ -165,10 +162,10 @@ export default function Room() {
                 />
             </Paper>
             <div>
-                <AddRoomForm open={addForm}
+                <AddServiceForm open={addForm}
                     isShowAddForm={isShowAddForm}
-                    item={editRoom}
-                    handleEditRoom={handleEditRoom}
+                    item={editService}
+                    handleEditService={handleEditService}
                     isView={isView}
                     handleIsView={handleIsView}
                 />
