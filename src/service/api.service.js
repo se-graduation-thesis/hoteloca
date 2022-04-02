@@ -28,5 +28,12 @@ export default {
                 };
             },
         }
-    }
+    },
+    brand(url = baseApi + 'brand/') {
+        return {
+            fetchAllBrand: () => axios.get(url + 'get-all-brand'),
+            insertBrand: (brand) => axios.post(url + 'add-brand', brand),
+            findById: (id) => axios.get(url + 'find-by-id/' + id),
+        };
+    },
 }
