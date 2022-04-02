@@ -18,6 +18,7 @@ const UtilsTablerIcons = Loadable(lazy(() => import('views/utilities/TablerIcons
 //Manager
 const AdminManager = Loadable(lazy(() => import('views/manager/account-manager/AdminManager')));
 const RoomManagement = Loadable(lazy(() => import('views/manager/hotel-management/room-management/Room')));
+const ServiceManagement = Loadable(lazy(() => import('views/manager/hotel-management/service-management/service')));
 
 const BrandManager = Loadable(lazy(() => import('views/manager/hotel-manager/brand-manager/BrandManager')));
 const CategoryManager = Loadable(lazy(() => import('views/manager/hotel-manager/category-manager/CategoryManager')));
@@ -69,6 +70,10 @@ const MainRoutes = {
         {
             path: '/admin/hotel-management/room',
             element: <RoomManagement />
+        },
+        {
+            path: '/admin/hotel-management/service',
+            element: <ServiceManagement />
         },
         {
             path: '/sample-page',

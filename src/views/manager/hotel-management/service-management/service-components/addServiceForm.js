@@ -11,44 +11,37 @@ import { useEffect, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import { useDispatch } from 'react-redux';
-import * as actions from 'actions/room.action';
+import * as actions from 'actions/service.action';
 
 const width = 500;
 
 const SignupSchema = yup.object().shape({
-    tenPhong: yup.string().required(),
+    tenDichVu: yup.string().required(),
     donGia: yup.number().required().positive().integer(),
-    kichThuoc: yup.string().required(),
-    moTa: yup.string()
 });
 
-export default function AddRoomForm(props) {
+export default function AddServiceForm(props) {
     const dispatch = useDispatch();
 
     const { register, handleSubmit, watch, formState: { errors }, reset, setValue } = useForm({
         resolver: yupResolver(SignupSchema)
     });
 
-    const [loaiPhong, setLoaiPhong] = useState(1);
     const [trangThai, setTrangThai] = useState(1);
 
     const onSubmit = data => {
-        data.anh = null;
         props.item ?
             data.id = props.item.id :
             data.trangThai = 1;
-        dispatch(actions.addRoom(data));
+        dispatch(actions.addService(data));
         props.isShowAddForm(false);
         reset();
     };
 
     useEffect(() => {
         if (props.item) {
-            setValue("tenPhong", props.item.tenPhong);
+            setValue("tenDichVu", props.item.tenDichVu);
             setValue("donGia", props.item.donGia);
-            setValue("kichThuoc", props.item.kichThuoc);
-            setValue("moTa", props.item.moTa);
-            setLoaiPhong(props.item.loaiPhongid.id);
             props.item.trangThai === "Hoạt động" ?
                 setTrangThai(1) :
                 setTrangThai(0);
@@ -56,9 +49,6 @@ export default function AddRoomForm(props) {
     }, [props.item])
 
 
-    const handleChangeRoomType = (event) => {
-        setLoaiPhong(event.target.value);
-    };
 
     const handleChangeState = (event) => {
         setTrangThai(event.target.value);
@@ -66,7 +56,7 @@ export default function AddRoomForm(props) {
 
     const handleClose = () => {
         props.isShowAddForm(false);
-        props.handleEditRoom(null);
+        props.handleEditService(null);
         props.handleIsView(false);
         reset();
     }
@@ -77,7 +67,7 @@ export default function AddRoomForm(props) {
                 {props.item ?
                     props.isView ?
                         <>
-                            CHI TIẾT PHÒNG
+                            CHI TIẾT DỊCH VỤ
                             <Button style={{ float: 'right' }}
                                 onClick={() => props.handleIsView(false)}
                                 variant="outlined"
@@ -85,8 +75,8 @@ export default function AddRoomForm(props) {
                                 Chỉnh sửa
                             </Button>
                         </>
-                        : "CẬP NHẬT PHÒNG"
-                    : "THÊM PHÒNG"
+                        : "CẬP NHẬT DỊCH VỤ"
+                    : "THÊM DỊCH VỤ"
                 }
             </DialogTitle>
             <Divider />
@@ -95,26 +85,12 @@ export default function AddRoomForm(props) {
                 <DialogContent>
                     <Grid container spacing={2} sx={{ width }}>
                         <Grid item xs={12}>
-                            <TextField inputProps={{ readOnly: props.isView, }} {...register("tenPhong")} id="outlined-basic" label="Tên Phòng" variant="outlined" fullWidth />
-                            {errors.tenPhong && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}> Tên phòng không dược để trống.</span></>}
+                            <TextField inputProps={{ readOnly: props.isView, }} {...register("tenDichVu")} id="outlined-basic" label="Tên Phòng" variant="outlined" fullWidth />
+                            {errors.tenDichVu && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}> Tên phòng không dược để trống.</span></>}
                         </Grid>
                         <Grid item xs={props.item ? 6 : 12}>
-                            <FormControl fullWidth>
-                                <InputLabel id="demo-simple-select-label">Loại Phòng</InputLabel>
-                                <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    {...register("loaiPhongid")}
-                                    value={loaiPhong}
-                                    label="Loại Phòng"
-                                    onChange={handleChangeRoomType}
-                                    inputProps={{ readOnly: props.isView, }}
-                                >
-                                    <MenuItem value={1}>VIP</MenuItem>
-                                    <MenuItem value={2}>Special</MenuItem>
-                                    <MenuItem value={3}>Thường</MenuItem>
-                                </Select>
-                            </FormControl>
+                            <TextField {...register("donGia")} inputProps={{ readOnly: props.isView, }} id="outlined-basic" label="Đơn Giá" variant="outlined" fullWidth />
+                            {errors.donGia && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}> Đơn giá phải là một số.</span></>}
                         </Grid>
                         {
                             props.item ?
@@ -136,22 +112,6 @@ export default function AddRoomForm(props) {
                                     </FormControl>
                                 </Grid> : <></>
                         }
-                        <Grid item xs={6}>
-                            <TextField {...register("donGia")} inputProps={{ readOnly: props.isView, }} id="outlined-basic" label="Đơn Giá" variant="outlined" fullWidth />
-                            {errors.donGia && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}> Đơn giá phải là một số.</span></>}
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField {...register("kichThuoc")} inputProps={{ readOnly: props.isView, }} id="outlined-basic" label="Kích Thước" variant="outlined" fullWidth />
-                            {errors.kichThuoc && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}> Kích thước không được để trống</span></>}
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField type="file" inputProps={{ multiple: true, readOnly: props.isView }} {...register("anh")} id=" outlined-basic" variant="outlined" fullWidth />
-                            {/* <input type== */}
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField {...register("moTa")} inputProps={{ readOnly: props.isView, }} id="outlined-basic" label="Mô tả" variant="outlined" fullWidth multiline rows={4} />
-                            {errors.moTa && <p style={{ color: 'red' }}>{errors.moTa.message}</p>}
-                        </Grid>
                     </Grid>
                 </DialogContent>
                 {!props.isView
