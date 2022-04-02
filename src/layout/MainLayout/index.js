@@ -77,7 +77,6 @@ const MainLayout = () => {
 
     useEffect(() => {
         dispatch({ type: SET_MENU, opened: !matchDownMd });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [matchDownMd]);
 
     return (
@@ -108,7 +107,7 @@ const MainLayout = () => {
                 <Breadcrumbs separator={IconChevronRight} navigation={navigation} icon title rightAlign />
                 <Outlet />
             </Main>
-            <Customization />
+            {/* <Customization /> */}
         </Box>
     );
 };

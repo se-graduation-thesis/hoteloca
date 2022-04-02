@@ -1,36 +1,118 @@
 // assets
-import { IconTypography, IconPalette, IconShadow, IconWindmill } from '@tabler/icons';
+import {
+    IconTypography, IconPalette,
+    IconShadow, IconWindmill, IconUser, IconBuildingSkyscraper, IconChartInfographic, IconReceipt
+} from '@tabler/icons';
 
 // constant
 const icons = {
     IconTypography,
     IconPalette,
     IconShadow,
-    IconWindmill
+    IconWindmill,
+    IconUser,
+    IconBuildingSkyscraper,
+    IconChartInfographic,
+    IconReceipt
 };
 
 // ==============================|| UTILITIES MENU ITEMS ||============================== //
 
 const utilities = {
     id: 'utilities',
-    title: 'Utilities',
+    title: 'Quản lý',
     type: 'group',
     children: [
         {
-            id: 'util-typography',
-            title: 'Typography',
-            type: 'item',
+            id: 'hotel-manager',
+            title: 'Quản Lý Khách Sạn',
+            type: 'collapse',
             url: '/utils/util-typography',
-            icon: icons.IconTypography,
+            icon: icons.IconBuildingSkyscraper,
+            children: [
+                {
+                    id: 'chinhanh',
+                    title: 'Quản lý chi nhánh',
+                    type: 'item',
+                    url: '/icons/tabler-icons',
+                    breadcrumbs: false
+                },
+                {
+                    id: 'loaiphong',
+                    title: 'Quản lý loại phòng',
+                    type: 'item',
+                    url: '/icons/tabler-icons',
+                    breadcrumbs: false
+                },
+                {
+                    id: 'phong',
+                    title: 'Quản lý phòng',
+                    type: 'item',
+                    url: '/icons/material-icons',
+                    breadcrumbs: false
+                },
+                {
+                    id: 'phong',
+                    title: 'Quản lý dịch vụ',
+                    type: 'item',
+                    url: '/icons/material-icons',
+                    breadcrumbs: false
+                }
+            ]
+        },
+        {
+            id: 'account-manager',
+            title: 'Quản Lý Tài Khoản',
+            type: 'collapse',
+            url: '/utils/util-typography',
+            icon: icons.IconUser,
+            children: [
+                {
+                    id: 'customer',
+                    title: 'Quản lý nhân viên',
+                    type: 'item',
+                    url: '/admin/admin-manager',
+                    breadcrumbs: false
+                },
+                {
+                    id: 'material-icons',
+                    title: 'Quản lý khách hàng',
+                    type: 'item',
+                    url: '/icons/material-icons',
+                    breadcrumbs: false
+                }
+            ]
+        },
+        {
+            id: 'hoadon',
+            title: 'Quản lý hóa đơn',
+            type: 'item',
+            url: '/utils/util-shadow',
+            icon: icons.IconReceipt,
             breadcrumbs: false
         },
         {
-            id: 'util-color',
-            title: 'Color',
-            type: 'item',
-            url: '/utils/util-color',
-            icon: icons.IconPalette,
-            breadcrumbs: false
+            id: 'thongke',
+            title: 'Thống kê',
+            type: 'collapse',
+            url: '/utils/util-typography',
+            icon: icons.IconChartInfographic,
+            children: [
+                {
+                    id: 'tkhd',
+                    title: 'Thống kê khách hàng',
+                    type: 'item',
+                    url: '/icons/tabler-icons',
+                    breadcrumbs: false
+                },
+                {
+                    id: 'tkkh',
+                    title: 'Thống kê hóa đơn',
+                    type: 'item',
+                    url: '/icons/material-icons',
+                    breadcrumbs: false
+                }
+            ]
         },
         {
             id: 'util-shadow',

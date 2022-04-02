@@ -5,13 +5,14 @@ import { ButtonBase } from '@mui/material';
 
 // project imports
 import config from 'config';
-import Logo from 'ui-component/Logo';
+import Hoteloka from 'assets/images/logo.png'
+import { width } from '@mui/system';
 
 // ==============================|| MAIN LOGO ||============================== //
 
 const LogoSection = () => (
     <ButtonBase disableRipple component={Link} to={config.defaultPath}>
-        <Logo />
+        <img src={Hoteloka} style={{ width: 100 }} />
     </ButtonBase>
 );
 
