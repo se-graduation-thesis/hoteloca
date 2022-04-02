@@ -99,7 +99,7 @@ const NotificationSection = () => {
                     }
                 }}
             >
-                <ButtonBase sx={{ borderRadius: '12px' }}>
+                {/* <ButtonBase sx={{ borderRadius: '12px' }}>
                     <Avatar
                         variant="rounded"
                         sx={{
@@ -121,7 +121,7 @@ const NotificationSection = () => {
                     >
                         <IconBell stroke={1.5} size="1.3rem" />
                     </Avatar>
-                </ButtonBase>
+                </ButtonBase> */}
             </Box>
             <Popper
                 placement={matchesXs ? 'bottom' : 'bottom-end'}
