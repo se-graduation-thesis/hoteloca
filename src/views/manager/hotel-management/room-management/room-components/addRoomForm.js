@@ -156,7 +156,7 @@ export default function AddRoomForm(props) {
                 </DialogContent>
                 {!props.isView
                     ? <DialogActions>
-                        <Button onClick={handleClose} variant="outlined" >Cancel</Button>
+                        <Button onClick={handleClose} variant="outlined" >Hủy</Button>
                         <Button type="submit" variant="outlined">{props.item ? "Cập nhật" : "Thêm"}</Button>
                     </DialogActions>
                     : <></>
