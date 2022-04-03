@@ -39,6 +39,7 @@ const initialFieldValues = {
     soDienThoai: "",
     taiKhoan: "",
     email: "",
+    quyen: 1
 };
 
 const FirebaseRegister = () => {
@@ -150,6 +151,7 @@ const FirebaseRegister = () => {
 
     const handleSubmit = (e) => {
         // if (validate()) {
+        values.quyen = 1
         actions.register(values).then((res) => {
             if (res) {
                 const admin_account = values;
@@ -218,7 +220,7 @@ const FirebaseRegister = () => {
                 </Grid>
                 <Grid item xs={12} container alignItems="center" justifyContent="center">
                     <Box sx={{ mb: 2 }}>
-                        <Typography variant="subtitle1">Đăng nhập với địa chỉ Email</Typography>
+                        <Typography variant="subtitle1">Đăng kí với địa chỉ Email</Typography>
                     </Box>
                 </Grid>
             </Grid>
