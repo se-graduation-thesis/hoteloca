@@ -17,7 +17,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import logo from '../../../assets/images/logo.png'
 import Button from '@mui/material/Button';
-
+import { Outlet } from 'react-router-dom';
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
@@ -159,7 +159,7 @@ export default function NavbarMainLayout() {
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar elevation={1} position="static" style={{ alignItems: "center", backgroundColor: 'white' }}>
-                <Toolbar style={{ backgroundColor: 'white', boxShadow: 'none', width: '80%' }}>
+                <Toolbar style={{ backgroundColor: 'white', width: '80%' }}>
                     <IconButton
                         size="large"
                         edge="start"
@@ -207,6 +207,7 @@ export default function NavbarMainLayout() {
             </AppBar>
             {renderMobileMenu}
             {renderMenu}
+            <Outlet />
         </Box>
     );
 }
