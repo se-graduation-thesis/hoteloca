@@ -7,66 +7,86 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Button, Grid, TextField } from '@mui/material';
+import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
-import DeleteIcon from '@mui/icons-material/Delete';
-import Visibility from '@mui/icons-material/Visibility';
+import Edit from '@mui/icons-material/Edit';
+
+import InsertBrandDialog from './InsertDialog'
+import UpdateBrand from './UpdateDialog'
+
+import { useState, useEffect } from 'react';
+
 import { useDispatch, useSelector } from 'react-redux';
-import * as actions from "actions/manager.action"
+import * as actions from "actions/category.action"
 import { address } from 'assets/address';
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
-    { id: 'hoNguoidung', label: 'Họ người dùng', minWidth: 100 },
-    { id: 'tenNguoidung', label: 'Tên người dùng', minWidth: 100 },
-    { id: 'taiKhoan', label: 'Tài khoản', minWidth: 100 },
-    { id: 'soDienThoai', label: 'Số điện thoại', minWidth: 100 },
-    { id: 'email', label: 'Email', minWidth: 100 },
-    { id: 'diaChi', label: 'Địa chỉ', minWidth: 100 },
-    { id: 'ngayVao', label: 'Ngày đăng kí', minWidth: 100 },
+    { id: 'tenLoaiPhong', label: 'Tên loại phòng', minWidth: 100 },
+    { id: 'trangthai', label: 'Trạng thái', minWidth: 100 },
 ];
-
 
 export default function CategoryManager() {
     const dispatch = useDispatch();
-    const listaccinrow = [];
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
-    const listAccount = useSelector((state) => state.manager.listManager);
+    const [page, setPage] = useState(0);
+    const rows = []
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const listCategory = useSelector((state) => state.category.listCategory);
+    const [listCategoryShow, setListCategory] = useState([])
+
+    const [open, setOpen] = useState(false);
+    const [openUpdate, setOpenUpdate] = useState(false);
+
+    const [id_brand, setId] = useState(0);
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClickOpenUpdate = (id) => {
+        setOpenUpdate(true);
+        setId(id)
+    };
+    const handleClose = () => {
+        setOpen(false);
+    };
+    const handleCloseUpdate = () => {
+        setOpenUpdate(false);
+    };
+
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
-    const [listacc, setListAccount] = React.useState([])
+
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
-    const rows = []
-    React.useEffect(() => {
-        dispatch(actions.fetchAllManager())
+
+    useEffect(() => {
+        dispatch(actions.fetchAllCategory())
     }, [])
 
-    React.useEffect(() => {
-        if (listAccount) {
-            listAccount.forEach((e, i) => {
+    useEffect(() => {
+        if (listCategory) {
+            listCategory.forEach((e, i) => {
                 e.stt = i + 1
-                e.taiKhoan = e.taiKhoanid.taiKhoan
-                e.khachSan = e.khachSanid.tenKhachSan
             })
-            setListAccount(listAccount)
+            setListCategory(listCategory)
         }
-    }, [listAccount])
-    console.log(address)
+    }, [listCategory])
+
     return (
-        <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }}>
+        <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }} style={{ padding: 20 }}>
             <Grid container spacing={1} style={{ marginTop: 10, padding: 10 }}>
                 <Grid item xs={12}>
-                    <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN NHÂN VIÊN</h3>
+                    <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN CÁC LOẠI PHÒNG</h3>
                 </Grid>
                 <Grid item xs={6}>
-                    <Button variant="contained" color="secondary">Thêm nhân viên</Button>
+                    <Button onClick={handleClickOpen} variant="contained" color="secondary">Thêm loại phòng</Button>
+                    <InsertBrandDialog open={open} isShowForm={handleClose} />
                 </Grid>
+
                 <Grid item xs={6} style={{ padding: 10, textAlign: "right" }}>
                     <TextField
                         label="Nhập nội dung tìm kiếm"
@@ -104,7 +124,7 @@ export default function CategoryManager() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {listacc
+                        {listCategoryShow
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row) => {
                                 return (
@@ -119,12 +139,9 @@ export default function CategoryManager() {
                                                 </TableCell>
                                             );
                                         })}
-                                        <TableCell key={"action"}>
-                                            <IconButton aria-label="delete" color="success">
-                                                <Visibility />
-                                            </IconButton>
-                                            <IconButton aria-label="delete" color="error">
-                                                <DeleteIcon />
+                                        <TableCell key={row.stt}>
+                                            <IconButton key={row.stt} onClick={() => handleClickOpenUpdate(row.id)} aria-label="delete" color="primary">
+                                                <Edit />
                                             </IconButton>
                                         </TableCell>
                                     </TableRow>
@@ -133,6 +150,7 @@ export default function CategoryManager() {
                     </TableBody>
                 </Table>
             </TableContainer>
+
             <TablePagination
                 rowsPerPageOptions={[10, 25, 100]}
                 component="div"
@@ -142,6 +160,8 @@ export default function CategoryManager() {
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
-        </Paper>
+            <UpdateBrand open={openUpdate} id={id_brand} isShowForm={handleCloseUpdate} />
+        </Paper >
+
     );
 }

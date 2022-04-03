@@ -35,4 +35,11 @@ export default {
             findById: (id) => axios.get(url + 'find-by-id/' + id),
         };
     },
+    category(url = baseApi + 'category/') {
+        return {
+            fetchAllCategory: () => axios.get(url + 'get-all-category'),
+            insertCategory: (category) => axios.post(url + 'add-category', category),
+            findById: (id) => axios.get(url + 'find-by-id/' + id),
+        };
+    },
 }
