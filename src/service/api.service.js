@@ -8,6 +8,7 @@ export default {
         return {
             fetchAll: () => axios.get(url + 'get-all-account'),
             register: (account) => axios.post(url + "register", account),
+            login: (username, pass) => axios.post(url + "login/" + username + "&" + pass),
             add_admin: (admin) => axios.post(url + "add-admin", admin),
         };
     },
@@ -20,6 +21,7 @@ export default {
         return {
             fetchAllRoom: () => axios.get(url + 'get-all-room'),
             add_room: (room) => axios.post(url, room),
+            get_all_room_by_brand: (id) => axios.get(url + "get-all-room-by-brand/" + id)
         }
     },
     service(url = baseApi + 'service/') {

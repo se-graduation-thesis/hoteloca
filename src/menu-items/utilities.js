@@ -84,6 +84,28 @@ const utilities = {
             ]
         },
         {
+            id: 'booking',
+            title: 'Quản Lý Đặt Phòng',
+            type: 'collapse',
+            icon: icons.IconUser,
+            children: [
+                {
+                    id: 'customer',
+                    title: 'Đặt phòng',
+                    type: 'item',
+                    url: '/admin/booking',
+                    breadcrumbs: false
+                },
+                {
+                    id: 'material-icons',
+                    title: 'Danh sách đơn đặt',
+                    type: 'item',
+                    url: '/icons/material-icons',
+                    breadcrumbs: false
+                }
+            ]
+        },
+        {
             id: 'hoadon',
             title: 'Quản lý hóa đơn',
             type: 'item',
