@@ -70,11 +70,21 @@ export default function BrandManager() {
     }, [])
 
     useEffect(() => {
-        if (listBrand) {
+        if (listBrand.length > 0 && listBrand !== undefined) {
             listBrand.forEach((e, i) => {
-                var diachi = JSON.parse(e.diaChi)
-                e.stt = i + 1
-                e.diaChi = "Số nhà / Đường " + diachi.no + ", " + diachi.ward + ", Quận / Huyện " + diachi.district + ", Tỉnh / Thành " + diachi.city
+                if (e.diaChi !== null) {
+                    try {
+                        var diachi = JSON.parse(e.diaChi)
+                        console.log(diachi)
+                        e.stt = i + 1
+                        e.diaChi = "Số nhà / Đường " + diachi.no + ", " + diachi.ward + ", Quận / Huyện " + diachi.district + ", Tỉnh / Thành " + diachi.city
+
+                    } catch (e) {
+                        console.log("a")
+                    }
+
+                }
+
             })
             setListBrand(listBrand)
         }
