@@ -200,17 +200,17 @@ export default function UpdateBrand(props) {
                                         name="city"
                                         label="Tỉnh / Thành phố"
                                         inputProps={{ readOnly: disabled }}
-                                        value={values.city}
+                                        value={values.city || ''}
                                         onChange={handleInputChange}
                                     >
-                                        <MenuItem value={values.city}>lậndnj</MenuItem>
-                                        {/* {
+                                        <MenuItem value={values.city}>{values.city}</MenuItem>
+                                        {
                                             address ?
                                                 address.map((a, i) => (
                                                     <MenuItem key={i} value={a.name} onClick={() => getDistrict(a)}>{a.name}</MenuItem>
                                                 )) :
                                                 <></>
-                                        } */}
+                                        }
                                     </Select>
                                 </FormControl>
                             </Grid>
@@ -223,8 +223,10 @@ export default function UpdateBrand(props) {
                                         label="Quận / Huyện"
                                         onChange={handleInputChange}
                                         inputProps={{ readOnly: disabled }}
-                                        value={values.district}
+                                        value={values.district || ''}
                                     >
+
+                                        <MenuItem value={values.district}>{values.district}</MenuItem>
                                         {district ?
                                             district.map((a, i) => (
                                                 <MenuItem key={i} value={a.name} onClick={() => getWards(a)}>{a.name} </MenuItem>
@@ -243,8 +245,9 @@ export default function UpdateBrand(props) {
                                         label="Xã / Phường"
                                         onChange={handleInputChange}
                                         inputProps={{ readOnly: disabled }}
-                                        value={values.ward}
+                                        value={values.ward || ''}
                                     >
+                                        <MenuItem value={values.ward}>{values.ward}</MenuItem>
                                         {
                                             wards ?
                                                 wards.map((a, i) => (

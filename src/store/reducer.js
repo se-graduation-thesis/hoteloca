@@ -8,6 +8,7 @@ import { roomReducer } from '../reducers/room.reducer';
 import { serviceReducer } from '../reducers/service.reducer';
 
 import { brandReducer } from 'reducers/brand.reducer';
+import { categoryReducer } from 'reducers/category.reducer';
 // ==============================|| COMBINE REDUCER ||============================== //
 
 const reducer = combineReducers({
@@ -16,7 +17,9 @@ const reducer = combineReducers({
     manager: managerReducer,
     room: roomReducer,
     service: serviceReducer,
-    brand: brandReducer
+    brand: brandReducer,
+    category: categoryReducer
+
 });
 
 export default reducer;
