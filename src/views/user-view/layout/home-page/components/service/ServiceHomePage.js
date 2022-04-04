@@ -5,28 +5,28 @@ export default function ServiceHomePage() {
     return (
         <div className="bodySerHome">
             <div className="item">
-                <IconWifi style={{ width: 60, height: 60 }} strokeWidth="1" />
-                <p style={{ fontSize: 18, textAlign: 'center' }}>WiFi Miễn Phí</p>
+                <IconWifi style={{ width: 50, height: 50 }} strokeWidth="1" color='#303030' />
+                <p style={{ fontSize: 17, textAlign: 'center', color: '#303030' }}>WiFi Miễn Phí</p>
             </div>
 
             <div className="item">
-                <IconLamp style={{ width: 60, height: 60 }} strokeWidth="1" />
-                <p style={{ fontSize: 18, textAlign: 'center' }}>Đầy Đủ Nội Thất</p>
+                <IconLamp style={{ width: 50, height: 50 }} strokeWidth="1" color='#303030' />
+                <p style={{ fontSize: 17, textAlign: 'center', color: '#303030' }}>Đầy Đủ Nội Thất</p>
             </div>
 
             <div className="item">
-                <IconCar style={{ width: 60, height: 60 }} strokeWidth="1" />
-                <p style={{ fontSize: 18, textAlign: 'center' }}>Đỗ Xe Miễn Phí</p>
+                <IconCar style={{ width: 50, height: 50 }} strokeWidth="1" color='#303030' />
+                <p style={{ fontSize: 17, textAlign: 'center', color: '#303030' }}>Đỗ Xe Miễn Phí</p>
             </div>
 
             <div className="item">
-                <IconSwimming style={{ width: 60, height: 60 }} strokeWidth="1" />
-                <p style={{ fontSize: 18, textAlign: 'center' }}>Dịch Vụ Hồ Bơi</p>
+                <IconSwimming style={{ width: 50, height: 50 }} strokeWidth="1" color='#303030' />
+                <p style={{ fontSize: 17, textAlign: 'center', color: '#303030' }}>Dịch Vụ Hồ Bơi</p>
             </div>
 
             <div className="item">
-                <IconTrash style={{ width: 60, height: 60 }} strokeWidth="1" />
-                <p style={{ fontSize: 18, textAlign: 'center' }}>Dịch Vụ Dọn Dẹp</p>
+                <IconTrash style={{ width: 50, height: 50 }} strokeWidth="1" color='#303030' />
+                <p style={{ fontSize: 17, textAlign: 'center', color: '#303030' }}>Dịch Vụ Dọn Dẹp</p>
             </div>
         </div>
     );

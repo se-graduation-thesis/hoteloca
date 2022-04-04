@@ -10,6 +10,8 @@ const AuthLogin3 = Loadable(lazy(() => import('views/pages/authentication/authen
 const AuthRegister3 = Loadable(lazy(() => import('views/pages/authentication/authentication3/Register3')));
 
 const HomePage = Loadable(lazy(() => import('views/user-view/layout/home-page/HomePage')));
+const ListRoom = Loadable(lazy(() => import('views/user-view/layout/list_room-page/ListRoom')));
+const RoomDetail = Loadable(lazy(() => import('views/user-view/layout/list_room-page/components/room-detail/RoomDetail')));
 // ==============================|| AUTHENTICATION ROUTING ||============================== //
 
 const HomeRoute = {
@@ -19,6 +21,14 @@ const HomeRoute = {
         {
             path: '/',
             element: <HomePage />
+        },
+        {
+            path: '/list-room',
+            element: <ListRoom />
+        },
+        {
+            path: '/list-room/room-detail',
+            element: <RoomDetail />
         },
         {
             path: '/pages/register/register3',

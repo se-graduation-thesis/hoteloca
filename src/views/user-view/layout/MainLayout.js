@@ -18,6 +18,7 @@ import MoreIcon from '@mui/icons-material/MoreVert';
 import logo from '../../../assets/images/logo.png'
 import Button from '@mui/material/Button';
 import { Outlet } from 'react-router-dom';
+import NavBarHomePage from './navbar/NavBarHomePage';
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
@@ -207,6 +208,9 @@ export default function NavbarMainLayout() {
             </AppBar>
             {renderMobileMenu}
             {renderMenu}
+            <div className='navbar'>
+                <NavBarHomePage />
+            </div>
             <Outlet />
         </Box>
     );

@@ -1,12 +1,7 @@
-.navbar {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    /* background-color: #F5F5F5; */
-    background-color: #F5F5F5;
-    margin-top: 3px;
-}
+/* .body {
+    font-family: 'Courier New', Courier, monospace;
+    font-family: Arial, Helvetica, sans-serif;
+} */
 
 .service {
     width: 100%;

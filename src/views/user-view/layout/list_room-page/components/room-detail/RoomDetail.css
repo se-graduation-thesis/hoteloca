@@ -1,0 +1,28 @@
+.room-detail {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.room-detail__body {
+    margin: 50px 90px;
+    /* background-color: yellowgreen; */
+    width: 55%;
+    float: left;
+}
+
+.room-detail_info {
+    margin-top: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid chocolate;
+}
+
+.room-detail_info p {
+    font-size: 16px;
+}
+
+.room-detail-book {
+    border: 1px solid chocolate;
+    padding: 20px 20px;
+    float: left;
+    margin-top: 11 0px;
+    margin-left: -50px;
+}

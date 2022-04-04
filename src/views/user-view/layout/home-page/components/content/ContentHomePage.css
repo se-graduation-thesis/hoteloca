@@ -1,0 +1,16 @@
+.gray-homepage {
+    width: 100%;
+    background-color: #F5F5F5;
+    padding: 30px;
+    color: #303030;
+}
+
+.white-homepage {
+    width: 100%;
+    color: #303030;
+    padding: 30px;
+}
+
+.homepage__container {
+    padding-left: 45px;
+}

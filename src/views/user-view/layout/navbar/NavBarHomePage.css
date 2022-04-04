@@ -1,3 +1,12 @@
+.containerNav {
+    display: block;
+    visibility: inherit;
+    overflow-x: visible;
+    background-color: #F5F5F5;
+    font-family: 'Courier New', Courier, monospace;
+    margin-top: 3px;
+}
+
 .bodyNav {
     display: flex;
     flex-direction: column;
@@ -23,6 +32,7 @@
     cursor: pointer;
 }
 
+.active,
 .bodyNav>ul>li:hover {
     color: #673ab7;
     font-weight: bold;
