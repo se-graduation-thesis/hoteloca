@@ -18,7 +18,7 @@ export default function CarouselHomePage() {
                     <div className="each-slide">
                         <div style={{ 'backgroundImage': `url(${slideImages[0]})` }}>
                             <div className='titleImage'>
-                                <span style={{ fontSize: 60, fontWeight: 'bold' }}>Thành Phố Gác Xếp</span>
+                                <span style={{ fontSize: 60, fontWeight: 'bold' }}>HOTELOKA</span>
                                 <span style={{ fontSize: 40 }}>Cảm thấy như ở nhà khi bạn đi bất cứ đâu.</span>
                             </div>
                         </div>
@@ -26,7 +26,7 @@ export default function CarouselHomePage() {
                     <div className="each-slide">
                         <div style={{ 'backgroundImage': `url(${slideImages[1]})` }}>
                             <div className='titleImage'>
-                                <span style={{ fontSize: 60, fontWeight: 'bold' }}>Thành Phố Gác Xếp</span>
+                                <span style={{ fontSize: 60, fontWeight: 'bold' }}>HOTELOKA</span>
                                 <span style={{ fontSize: 40 }}>Cảm thấy như ở nhà khi bạn đi bất cứ đâu.</span>
                             </div>
                         </div>
@@ -34,7 +34,7 @@ export default function CarouselHomePage() {
                     <div className="each-slide">
                         <div style={{ 'backgroundImage': `url(${slideImages[2]})` }}>
                             <div className='titleImage'>
-                                <span style={{ fontSize: 60, fontWeight: 'bold' }}>Thành Phố Gác Xếp</span>
+                                <span style={{ fontSize: 60, fontWeight: 'bold' }}>HOTELOKA</span>
                                 <span style={{ fontSize: 40 }}>Cảm thấy như ở nhà khi bạn đi bất cứ đâu.</span>
                             </div>
                         </div>
