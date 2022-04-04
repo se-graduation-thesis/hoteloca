@@ -15,6 +15,8 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import * as actions from "actions/category.action"
 
+import * as brandActions from "actions/brand.action"
+
 
 const initialFieldValues = {
     tenLoaiPhong: "",
@@ -25,16 +27,17 @@ export default function InsertBrandDialog(props) {
     const dispatch = useDispatch();
     let vertical = 'top';
     let horizontal = 'right';
-    const [district, setDistrict] = useState([])
-    const [wards, setWards] = useState([])
 
-    const getDistrict = (a) => {
-        setDistrict(a.districts)
-        setWards([])
-    }
-    const getWards = (a) => {
-        setWards(a.wards)
-    }
+    const listBrand = useSelector((state) => state.brand.listBrand);
+    const [listBrandShow, setListBrand] = useState([])
+
+    useEffect(() => {
+        dispatch(brandActions.fetchAllBrand())
+    }, [])
+    useEffect(() => {
+        setListBrand(listBrand)
+    }, [listBrand])
+    console.log(listBrandShow)
     const [alertOpen, setAlertOpen] = useState(false);
 
     const handleClose = (event, reason) => {
@@ -77,6 +80,8 @@ export default function InsertBrandDialog(props) {
         };
         console.log(values)
     }
+
+
     return (
         <>
             <Dialog keepMounted open={props.open} fullWidth={true} maxWidth={'sm'}>
@@ -106,9 +111,11 @@ export default function InsertBrandDialog(props) {
                                         label="Chi nhánh"
                                         onChange={handleInputChange}
                                     >
-                                        <MenuItem value={1} >ABC</MenuItem>
-                                        <MenuItem value={3} >Khang</MenuItem>
-                                        <MenuItem value={4} >Haha</MenuItem>
+                                        {
+                                            listBrandShow.map((e) => (
+                                                <MenuItem value={e.id} >{e.tenKhachSan}</MenuItem>
+                                            ))
+                                        }
                                     </Select>
                                 </FormControl>
                             </Grid>
