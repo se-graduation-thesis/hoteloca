@@ -5,7 +5,7 @@ import './NavBarHomePage.css'
 export default function NavBarHomePage() {
 
     const [active, setActive] = useState({
-        home: null,
+        home: 'active',
         listRoom: null,
         view: null,
         about: null,

@@ -28,6 +28,7 @@ const CategoryManager = Loadable(lazy(() => import('views/manager/hotel-manager/
 
 
 // sample page routing
+const CustomerManagement = Loadable(lazy(() => import('views/manager/account-manager/customer-management/Customer')));
 const SamplePage = Loadable(lazy(() => import('views/sample-page')));
 
 // ==============================|| MAIN ROUTING ||============================== //
@@ -87,6 +88,10 @@ const MainRoutes = {
         {
             path: '/admin/hotel-management/service',
             element: <ServiceManagement />
+        },
+        {
+            path: '/admin/customer-management',
+            element: <CustomerManagement />
         },
         {
             path: '/sample-page',

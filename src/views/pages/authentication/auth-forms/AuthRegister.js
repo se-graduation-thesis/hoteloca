@@ -306,7 +306,7 @@ const FirebaseRegister = () => {
                     >
                         {
                             address.map((a) => (
-                                <MenuItem value={a.id} onClick={() => getDistrict(a)}>{a.name}</MenuItem>
+                                <MenuItem key={a.id} value={a.id} onClick={() => getDistrict(a)}>{a.name}</MenuItem>
                             ))
                         }
                     </Select>
@@ -322,7 +322,7 @@ const FirebaseRegister = () => {
                     >
                         {
                             district.map((a) => (
-                                <MenuItem value={a.id} onClick={() => getWards(a)}>{a.name} </MenuItem>
+                                <MenuItem key={a.id} value={a.id} onClick={() => getWards(a)}>{a.name} </MenuItem>
                             ))
                         }
                     </Select>
@@ -338,7 +338,7 @@ const FirebaseRegister = () => {
                     >
                         {
                             wards.map((a) => (
-                                <MenuItem value={a.id} > {a.prefix + " " + a.name} </MenuItem>
+                                <MenuItem key={a.id} value={a.id} > {a.prefix + " " + a.name} </MenuItem>
                             ))
                         }
                     </Select>
