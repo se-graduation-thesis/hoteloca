@@ -44,4 +44,10 @@ export default {
             findById: (id) => axios.get(url + 'find-by-id/' + id),
         };
     },
+    customer(url = baseApi + 'customer/') {
+        return {
+            fetchAllCustomer: () => axios.get(url + 'get-all-customer'),
+            add_customer: (customer) => axios.post(url, customer),
+        }
+    },
 }
