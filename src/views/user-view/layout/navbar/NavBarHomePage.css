@@ -4,7 +4,8 @@
     overflow-x: visible;
     background-color: #F5F5F5;
     font-family: 'Courier New', Courier, monospace;
-    margin-top: 3px;
+    border-top: 1px solid gray;
+    width: 100%;
 }
 
 .bodyNav {

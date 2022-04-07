@@ -20,7 +20,7 @@ export default function ListRoom() {
                         <FilterForm />
                     </div>
 
-                    <hr maxWidth="1" style={{ border: '1px solid Chocolate' }} />
+                    <hr style={{ border: '1px solid Chocolate' }} />
 
                     <div className="listroom-listroom">
                         <Rooms />

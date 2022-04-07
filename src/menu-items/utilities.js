@@ -78,7 +78,7 @@ const utilities = {
                     id: 'material-icons',
                     title: 'Quản lý khách hàng',
                     type: 'item',
-                    url: '/icons/material-icons',
+                    url: '/admin/customer-management',
                     breadcrumbs: false
                 }
             ]
