@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as actions from 'actions/room.action';
 import * as actionCategory from 'actions/category.action';
 import PositionedSnackbar from '../../components/PositionedSnackbar';
+import { ContactSupportOutlined } from '@mui/icons-material';
 
 const width = 500;
 
@@ -27,7 +28,7 @@ const SignupSchema = yup.object().shape({
 export default function AddRoomForm(props) {
     const dispatch = useDispatch();
     const categories = useSelector(state => state.category.listCategory);
-
+    const roombyname = useSelector((state) => state.room.room_by_name);
     const { register, handleSubmit, watch, formState: { errors }, reset, setValue } = useForm({
         resolver: yupResolver(SignupSchema)
     });
@@ -42,8 +43,9 @@ export default function AddRoomForm(props) {
     const buttonRef = useRef(null);
     const [snackbarState, setSnackbarState] = useState(false);
     const [message, setMessage] = useState(null);
+    const [named, setNamed] = useState(false);
 
-    const onSubmit = data => {
+    const onSubmit = (data) => {
         data.anh = null;
         if (props.item) {
             data.id = props.item.id;
@@ -52,6 +54,7 @@ export default function AddRoomForm(props) {
             data.trangThai = 1;
             setMessage("Thêm thành công.");
         }
+
         dispatch(actions.addRoom(data));
         props.isShowAddForm(false);
         reset();
@@ -61,6 +64,10 @@ export default function AddRoomForm(props) {
             setSnackbarState(false);
         }, 3000);
     };
+
+    const checkName = (name) => {
+        dispatch(actions.get_room_by_name(name));
+    }
 
     useEffect(() => {
         if (props.item) {
@@ -118,6 +125,7 @@ export default function AddRoomForm(props) {
                             <Grid item xs={12}>
                                 <TextField inputProps={{ readOnly: props.isView, }} {...register("tenPhong")} id="outlined-basic" label="Tên Phòng" variant="outlined" fullWidth />
                                 {errors.tenPhong && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}> Tên phòng không dược để trống.</span></>}
+                                {named && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}> Tên phòng đã tồn tại.</span></>}
                             </Grid>
                             <Grid item xs={props.item ? 6 : 12}>
                                 <FormControl fullWidth>
