@@ -41,6 +41,7 @@ export default {
     category(url = baseApi + 'category/') {
         return {
             fetchAllCategory: () => axios.get(url + 'get-all-category'),
+            fetchAllCategoryByBrand: (id) => axios.get(url + 'get-all-category-by-brand/' + id),
             insertCategory: (category) => axios.post(url + 'add-category', category),
             findById: (id) => axios.get(url + 'find-by-id/' + id),
         };

@@ -30,14 +30,15 @@ export default function InsertBrandDialog(props) {
 
     const listBrand = useSelector((state) => state.brand.listBrand);
     const [listBrandShow, setListBrand] = useState([])
-
+    const listCategory = useSelector((state) => state.category.listCategoryByBrand);
+    const [listCategoryShow, setListCategory] = useState([])
+    const account = useSelector((state) => state.account.userAuth);
     useEffect(() => {
         dispatch(brandActions.fetchAllBrand())
     }, [])
     useEffect(() => {
         setListBrand(listBrand)
     }, [listBrand])
-    console.log(listBrandShow)
     const [alertOpen, setAlertOpen] = useState(false);
 
     const handleClose = (event, reason) => {
@@ -46,14 +47,42 @@ export default function InsertBrandDialog(props) {
         }
         setAlertOpen(false);
     };
+
+    useEffect(() => {
+        dispatch(actions.fetchAllCategoryByBrand(JSON.parse(account).khachsan_id))
+    }, [account])
+
+    useEffect(() => {
+        if (listCategory) {
+            listCategory.forEach((e, i) => {
+                e.stt = i + 1
+            })
+            setListCategory(listCategory)
+        }
+    }, [listCategory])
+
+
     // ADD BRAND MANAGER
     const validate = (fieldValues = values) => {
         let temp = { ...errors };
         if ("tenLoaiPhong" in fieldValues) {
-            if (fieldValues.tenLoaiPhong === "") {
-                temp.tenLoaiPhong = fieldValues.tenLoaiPhong ? "" : "Tên khách sạn không được để trống";
+            let err = 0;
+            listCategoryShow.map((u) => {
+                if (
+                    u.tenLoaiPhong.toLowerCase() === fieldValues.tenLoaiPhong.toLowerCase()
+                ) {
+                    err = err + 1;
+                }
+            });
+            if (err >= 1) {
+                err < 1
+                    ? (temp.tenLoaiPhong = "")
+                    : (temp.tenLoaiPhong = "Loại phòng này đã có");
             }
-            if (fieldValues.tenLoaiPhong !== "") {
+            else if (fieldValues.tenLoaiPhong === "") {
+                temp.tenLoaiPhong = fieldValues.tenLoaiPhong ? "" : "Tên loại phòng không được để trống";
+            }
+            else if (fieldValues.tenLoaiPhong !== "") {
                 temp.tenLoaiPhong =
                     /^[a-zA-ZàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]{1,15}(?: [a-zA-ZàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]+){0,6}$/.test(
                         fieldValues.tenLoaiPhong
@@ -78,7 +107,6 @@ export default function InsertBrandDialog(props) {
             resetForm()
             setAlertOpen(true)
         };
-        console.log(values)
     }
 
 
@@ -109,11 +137,12 @@ export default function InsertBrandDialog(props) {
                                         labelId="demo-simple-select-label"
                                         name="khachSanid"
                                         label="Chi nhánh"
+                                        defaultValue=""
                                         onChange={handleInputChange}
                                     >
                                         {
-                                            listBrandShow.map((e) => (
-                                                <MenuItem value={e.id} >{e.tenKhachSan}</MenuItem>
+                                            listBrandShow.map((e, i) => (
+                                                <MenuItem key={i} value={e.id} >{e.tenKhachSan}</MenuItem>
                                             ))
                                         }
                                     </Select>

@@ -1,4 +1,4 @@
-import { IconWifi, IconLamp, IconCar, IconTrash, IconSwimming } from '@tabler/icons';
+import { IconWifi, IconCar, IconTrash, IconSwimming } from '@tabler/icons';
 import './ServiceHomePage.css';
 export default function ServiceHomePage() {
 
@@ -7,11 +7,6 @@ export default function ServiceHomePage() {
             <div className="item">
                 <IconWifi style={{ width: 50, height: 50 }} strokeWidth="1" color='#303030' />
                 <p style={{ fontSize: 17, textAlign: 'center', color: '#303030' }}>WiFi Miễn Phí</p>
-            </div>
-
-            <div className="item">
-                <IconLamp style={{ width: 50, height: 50 }} strokeWidth="1" color='#303030' />
-                <p style={{ fontSize: 17, textAlign: 'center', color: '#303030' }}>Đầy Đủ Nội Thất</p>
             </div>
 
             <div className="item">

@@ -37,7 +37,7 @@ export default function NavBarHomePage() {
                     </li>
                     <li style={{ borderLeft: '1px solid #D0D0D0' }}>
                         <Link to="#" style={{ textDecoration: 'none' }}>
-                            <p className={'title ' + active.about} onClick={() => handleActive('about')}>About</p>
+                            <p className={'title ' + active.about} onClick={() => handleActive('about')}>Giới Thiệu</p>
                         </Link>
                     </li>
                     <li style={{ borderLeft: '1px solid #D0D0D0' }}>

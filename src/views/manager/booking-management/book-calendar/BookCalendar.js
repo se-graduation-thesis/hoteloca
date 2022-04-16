@@ -4,7 +4,6 @@ import {
 } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import TableCell from '@mui/material/TableCell';
-import Typography from '@mui/material/Typography';
 import { ViewState, EditingState } from '@devexpress/dx-react-scheduler';
 import classNames from 'clsx';
 import {
@@ -12,7 +11,6 @@ import {
   MonthView,
   WeekView,
   DayView,
-  TodayButton,
   Appointments,
   Toolbar,
   DateNavigator,
@@ -21,12 +19,13 @@ import {
   EditRecurrenceMenu,
   Resources,
   DragDropProvider,
+  CurrentTimeIndicator,
+  TodayButton,
+  ViewSwitcher,
 } from '@devexpress/dx-react-scheduler-material-ui';
-import WbSunny from '@mui/icons-material/WbSunny';
-import FilterDrama from '@mui/icons-material/FilterDrama';
-import Opacity from '@mui/icons-material/Opacity';
-import ColorLens from '@mui/icons-material/ColorLens';
 import { owners } from './Task';
+import { useDispatch, useSelector } from 'react-redux';
+import moment from 'moment';
 
 const PREFIX = 'Demo';
 
@@ -64,22 +63,6 @@ const getBorder = theme => (`1px solid ${theme.palette.mode === 'light'
 const DayScaleCell = props => (
   <MonthView.DayScaleCell {...props} style={{ textAlign: 'center', fontWeight: 'bold' }} />
 );
-
-const StyledOpacity = styled(Opacity)(() => ({
-  [`&.${classes.rain}`]: {
-    color: '#4FC3F7',
-  },
-}));
-const StyledWbSunny = styled(WbSunny)(() => ({
-  [`&.${classes.sun}`]: {
-    color: '#FFEE58',
-  },
-}));
-const StyledFilterDrama = styled(FilterDrama)(() => ({
-  [`&.${classes.cloud}`]: {
-    color: '#90A4AE',
-  },
-}));
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${classes.cell}`]: {
@@ -120,12 +103,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     opacity: '0.5',
   },
 }));
-const StyledDivText = styled('div')(() => ({
-  [`&.${classes.text}`]: {
-    padding: '0.5em',
-    textAlign: 'center',
-  },
-}));
+
 const StyledDivContent = styled('div')(() => ({
   [`&.${classes.content}`]: {
     display: 'flex',
@@ -164,66 +142,75 @@ const StyledAppointmentsAppointmentContent = styled(Appointments.AppointmentCont
   },
 }));
 
+const appointmentStyle = {
+  backgroundColor: 'Khaki',
+  marginRight: 5,
+  marginBottom: 5,
+  width: '100%',
+  padding: "2px 2px 2px 5px",
+  borderRadius: 8
+}
+
 const appointments = [
   {
     id: 0,
     title: 'Watercolor Landscape',
-    startDate: new Date(2018, 6, 23, 9, 30),
-    endDate: new Date(2018, 6, 23, 11, 30),
+    startDate: new Date(2022, 2, 9, 9, 30),
+    endDate: new Date(2022, 2, 9, 11, 30),
     ownerId: 1,
   }, {
     id: 1,
     title: 'Monthly Planning',
-    startDate: new Date(2018, 5, 28, 9, 30),
-    endDate: new Date(2018, 5, 28, 11, 30),
+    startDate: new Date(2022, 2, 28, 9, 30),
+    endDate: new Date(2022, 2, 28, 11, 30),
     ownerId: 1,
   }, {
     id: 2,
     title: 'Recruiting students',
-    startDate: new Date(2018, 6, 9, 12, 0),
-    endDate: new Date(2018, 6, 9, 13, 0),
+    startDate: new Date(2022, 2, 22, 12, 0),
+    endDate: new Date(2022, 2, 22, 13, 0),
     ownerId: 2,
   }, {
     id: 3,
     title: 'Oil Painting',
-    startDate: new Date(2018, 6, 18, 14, 30),
-    endDate: new Date(2018, 6, 18, 15, 30),
+    startDate: new Date(2022, 2, 22, 14, 30),
+    endDate: new Date(2022, 2, 22, 15, 30),
     ownerId: 2,
   }, {
     id: 4,
     title: 'Open Day',
-    startDate: new Date(2018, 6, 20, 12, 0),
-    endDate: new Date(2018, 6, 20, 13, 35),
+    startDate: new Date(2022, 2, 20, 12, 0),
+    endDate: new Date(2022, 2, 20, 13, 35),
     ownerId: 6,
   }, {
     id: 5,
     title: 'Watercolor Landscape',
-    startDate: new Date(2018, 6, 6, 13, 0),
-    endDate: new Date(2018, 6, 6, 14, 0),
-    rRule: 'FREQ=WEEKLY;BYDAY=FR;UNTIL=20180816',
-    exDate: '20180713T100000Z,20180727T100000Z',
+    startDate: new Date(2022, 2, 6, 13, 0),
+    endDate: new Date(2022, 2, 6, 14, 0),
+    rRule: 'FREQ=WEEKLY;BYDAY=FR;UNTIL=20220816',
+    exDate: '20220713T100000Z,20220727T100000Z',
     ownerId: 2,
   }, {
     id: 6,
     title: 'Meeting of Instructors',
-    startDate: new Date(2018, 5, 28, 12, 0),
-    endDate: new Date(2018, 5, 28, 12, 30),
-    rRule: 'FREQ=WEEKLY;BYDAY=TH;UNTIL=20180727',
-    exDate: '20180705T090000Z,20180719T090000Z',
+    startDate: new Date(2022, 2, 28, 12, 0),
+    endDate: new Date(2022, 2, 28, 12, 30),
+    rRule: 'FREQ=WEEKLY;BYDAY=TH;UNTIL=20220727',
+    exDate: '20220705T090000Z,20220719T090000Z',
     ownerId: 5,
   }, {
     id: 7,
     title: 'Oil Painting for Beginners',
-    startDate: new Date(2018, 6, 3, 11, 0),
-    endDate: new Date(2018, 6, 3, 12, 0),
-    rRule: 'FREQ=WEEKLY;BYDAY=TU;UNTIL=20180801',
-    exDate: '20180710T080000Z,20180724T080000Z',
+    startDate: new Date(2022, 2, 3, 11, 0),
+    endDate: new Date(2022, 2, 4, 12, 0),
+    rRule: 'FREQ=WEEKLY;BYDAY=TU;UNTIL=20220801',
+    exDate: '20220710T080000Z,20220724T080000Z',
     ownerId: 3,
   }, {
     id: 8,
     title: 'Watercolor Workshop',
-    startDate: new Date(2018, 6, 9, 11, 0),
-    endDate: new Date(2018, 6, 9, 12, 0),
+    startDate: new Date(2022, 2, 22, 13, 30),
+    endDate: new Date(2022, 2, 22, 14, 20),
     ownerId: 3,
   },
 ];
@@ -234,43 +221,47 @@ const resources = [{
   instances: owners,
 }];
 
-const WeatherIcon = ({ id }) => {
-  switch (id) {
-    case 0:
-      return <StyledOpacity className={classes.rain} fontSize="large" />;
-    case 1:
-      return <StyledWbSunny className={classes.sun} fontSize="large" />;
-    case 2:
-      return <StyledFilterDrama className={classes.cloud} fontSize="large" />;
-    default:
-      return null;
-  }
-};
+const StyledDivText = styled('div')(() => ({
+  [`&.${classes.text}`]: {
+    padding: '0.5em',
+    // textAlign: 'center',
+  },
+}));
 
 const CellBase = React.memo(({
   startDate,
   formatDate,
-  otherMonth,
+  onSubmit,
+  handleAppointmentData,
+  data
 }) => {
   const iconId = Math.abs(Math.floor(Math.sin(startDate.getDate()) * 10) % 3);
   const isFirstMonthDay = startDate.getDate() === 1;
+  const currentDate = new Date();
+  const dateActive = currentDate.getDate() === startDate.getDate() && currentDate.getMonth() === startDate.getMonth() ? true : false;
   const formatOptions = isFirstMonthDay
     ? { day: 'numeric', month: 'long' }
     : { day: 'numeric' };
+  const rs = data.filter(item => moment(item.startDate).format("YYYY-MM-DD") <= moment(startDate).format("YYYY-MM-DD") && moment(item.endDate).format("YYYY-MM-DD") >= moment(startDate).format("YYYY-MM-DD"))
+  const appItem = {
+    startDate,
+    endDate: startDate,
+    title: '',
+    allDay: null,
+  };
+  const handleSubmit = (e) => {
+    onSubmit();
+    handleAppointmentData(e)
+    console.log(e);
+  }
   return (
     <StyledTableCell
+      onDoubleClick={() => handleSubmit(appItem)}
       tabIndex={0}
       className={classNames({
         [classes.cell]: true,
-        // [classes.rainBack]: iconId === 0,
-        // [classes.sunBack]: iconId === 1,
-        // [classes.cloudBack]: iconId === 2,
-        // [classes.opacity]: otherMonth,
       })}
     >
-      {/* <StyledDivContent className={classes.content}>
-        <WeatherIcon classes={classes} id={iconId} />
-      </StyledDivContent> */}
       <StyledDivText className={classes.text}>
         {formatDate(startDate, formatOptions)}
       </StyledDivText>
@@ -278,7 +269,6 @@ const CellBase = React.memo(({
   );
 });
 
-const TimeTableCell = (CellBase);
 
 const Appointment = (({ ...restProps }) => (
   <StyledAppointmentsAppointment
@@ -293,92 +283,148 @@ const AppointmentContent = (({ ...restProps }) => (
 
 const FlexibleSpace = (({ ...restProps }) => (
   <StyledToolbarFlexibleSpace {...restProps} className={classes.flexibleSpace}>
-    {/* <div className={classes.flexContainer}>
-      <ColorLens fontSize="large" htmlColor="#FF7043" />
-      <Typography variant="h5" style={{ marginLeft: '10px' }}>Art School</Typography>
-    </div> */}
+    <div className={classes.flexContainer}>
+    </div>
   </StyledToolbarFlexibleSpace>
 ));
 
-export default class Test extends React.PureComponent {
-  constructor(props) {
-    super(props);
+export default function CalendarContent(props) {
+  const dispatch = useDispatch();
+  const appointmentList = useSelector(state => state.appointments);
+  const [data, setData] = React.useState(appointments);
+  const commitChanges = ({ added, changed, deleted }) => {
+    if (added) {
+      const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
+      setData([...data, { id: startingAddedId, ...added }]);
+      console.log('added  > ', added);
+    }
+    if (changed) {
+      setData(data.map(appointment => (
+        changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment)));
+      console.log('changed  > ', changed);
+    }
+    if (deleted !== undefined) {
+      setData(data.filter(appointment => appointment.id !== deleted));
+      console.log('deleted  > ', deleted);
+    }
 
-    this.state = {
-      data: appointments,
-    };
-
-    this.commitChanges = this.commitChanges.bind(this);
   }
+  const date = new Date();
 
-  commitChanges({ added, changed, deleted }) {
-    this.setState((state) => {
-      let { data } = state;
-      if (added) {
-        const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
-        data = [...data, { id: startingAddedId, ...added }];
-      }
-      if (changed) {
-        data = data.map(appointment => (
-          changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment));
-      }
-      if (deleted !== undefined) {
-        data = data.filter(appointment => appointment.id !== deleted);
-      }
-      return { data };
-    });
-  }
+  const [formState, setFormState] = React.useState(false);
+  const [appointmentData, setAppointmentData] = React.useState({
+    startDate: null,
+    endDate: null,
+    title: '',
+    allDay: null,
+    id: ''
+  });
 
-  render() {
-    const { data } = this.state;
+  const handleFormState = () => setFormState(!formState);
 
-    return (
-      <Paper>
-        <Scheduler
-          data={data}
-        >
-          <EditingState
-            onCommitChanges={this.commitChanges}
-          />
-          <ViewState
-            defaultCurrentDate="2018-07-17"
-          />
+  const handleAppointmentData = (item) => setAppointmentData({
+    ...appointmentData,
+    startDate: item.startDate,
+    endDate: item.endDate,
+    title: item.title,
+    allDay: item.allDay
+  });
 
+  return (
+    <Paper>
+      <Scheduler
+        data={data}
+        height={700}
+      >
+        {/* Controls the editing state */}
+        <EditingState
+          onCommitChanges={commitChanges}
+        />
 
-          <MonthView
-            timeTableCellComponent={TimeTableCell}
-            dayScaleCellComponent={DayScaleCell}
-          />
-          <DayView
-            startDayHour={7.5}
-            endDayHour={17.5}
-          />
-          <WeekView
-            startDayHour={7.5}
-            endDayHour={17.5}
-          />
-          <Appointments
-            appointmentComponent={Appointment}
-            appointmentContentComponent={AppointmentContent}
-          />
-          <Resources
-            data={resources}
-          />
-          <Toolbar
-            flexibleSpaceComponent={FlexibleSpace}
-          />
-          <TodayButton />
-          <DateNavigator />
-          <EditRecurrenceMenu />
-          <AppointmentTooltip
-            showCloseButton
-            showDeleteButton
-            showOpenButton
-          />
-          <AppointmentForm />
-          <DragDropProvider />
-        </Scheduler>
-      </Paper>
-    );
-  }
+        {/* Manages the current view's state */}
+        <ViewState
+          defaultCurrentDate={date}
+        />
+
+        {/* Renders Scheduler data for a month */}
+        <MonthView
+          onSubmit={handleFormState}
+          timeTableCellComponent={(props) =>
+            <CellBase
+              onSubmit={handleFormState}
+              handleAppointmentData={handleAppointmentData}
+              data={data}
+              {...props}
+            />}
+          dayScaleCellComponent={DayScaleCell}
+        />
+
+        {/* Renders the Scheduler's week view */}
+        <WeekView
+          startDayHour={8}
+          endDayHour={18}
+        />
+
+        {/* Renders Scheduler data for a day */}
+        <DayView
+          startDayHour={9}
+          endDayHour={18}
+        />
+
+        {/* Renders appointments */}
+        <Appointments
+          appointmentComponent={Appointment}
+          appointmentContentComponent={AppointmentContent}
+        />
+
+        {/* Allows to assign appointments to difference resources */}
+        <Resources
+          data={resources}
+        />
+
+        {/* Renders the Toolbar */}
+        <Toolbar
+          flexibleSpaceComponent={FlexibleSpace}
+        />
+
+        {/* allows a user to switch between views at runtime. */}
+        <ViewSwitcher />
+
+        {/* Renders the Scheduler's button that is used to navigate to the today's date */}
+        <TodayButton />
+
+        {/* Renders Scheduler's date navigator */}
+        <DateNavigator />
+
+        {/* Implements editing in the Scheduler */}
+        <EditRecurrenceMenu />
+
+        {/* Display information about the appointment and contains buttons that manage the appointment */}
+        <AppointmentTooltip
+          showCloseButton
+          showDeleteButton
+          showOpenButton
+        />
+
+        {/* Render a form that visualizes appointment's data and allows a user to modify this data */}
+        <AppointmentForm
+          visible={formState}
+          onVisibilityChange={handleFormState}
+          appointmentData={appointmentData}
+          onAppointmentDataChange={commitChanges}
+        />
+
+        {/* Enables users to edit appointments via drag and drop */}
+        <DragDropProvider />
+
+        {/* Display a current time indicator and shade appointments and cell up to the current time */}
+        {/* Cái timeline nè anh */}
+        <CurrentTimeIndicator
+          shadePreviousCells={true}
+          shadePreviousAppointments={true}
+          updateInterval={10000}
+        />
+      </Scheduler>
+    </Paper>
+  );
 }
