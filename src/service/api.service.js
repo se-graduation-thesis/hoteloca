@@ -19,9 +19,10 @@ export default {
     },
     room(url = baseApi + 'room/') {
         return {
-            fetchAllRoom: () => axios.get(url + 'get-all-room'),
+            fetchAllRoomByCategory: (id, kid) => axios.get(url + 'getRoomBycategoryID/' + id + '&' + kid),
             add_room: (room) => axios.post(url, room),
-            get_all_room_by_brand: (id) => axios.get(url + "get-all-room-by-brand/" + id)
+            get_all_room_by_brand: (id) => axios.get(url + "get-all-room-by-brand/" + id),
+            get_room_by_name: (name) => axios.get(url + "getRoomByName/" + name),
         }
     },
     service(url = baseApi + 'service/') {
@@ -43,5 +44,11 @@ export default {
             insertCategory: (category) => axios.post(url + 'add-category', category),
             findById: (id) => axios.get(url + 'find-by-id/' + id),
         };
+    },
+    customer(url = baseApi + 'customer/') {
+        return {
+            fetchAllCustomer: () => axios.get(url + 'get-all-customer'),
+            add_customer: (customer) => axios.post(url, customer),
+        }
     },
 }

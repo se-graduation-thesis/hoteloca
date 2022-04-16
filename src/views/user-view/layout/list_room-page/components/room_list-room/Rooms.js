@@ -26,7 +26,7 @@ export default function Rooms() {
     const arr = Array.from(new Array(5));
     return (
 
-        room.map((item) => <RoomItem room={item} />)
+        room.map((item) => <RoomItem key={item.id} room={item} />)
 
     )
 }

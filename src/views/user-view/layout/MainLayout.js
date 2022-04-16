@@ -159,59 +159,64 @@ export default function NavbarMainLayout() {
 
     return (
         <Box sx={{ flexGrow: 1 }}>
-            <AppBar elevation={1} position="static" style={{ alignItems: "center", backgroundColor: 'white' }}>
-                <Toolbar style={{ backgroundColor: 'white', width: '80%' }}>
-                    <IconButton
-                        size="large"
-                        edge="start"
-                        color="secondary"
-                        aria-label="open drawer"
-                        sx={{ mr: 2 }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="div"
-                        sx={{ display: { xs: 'none', sm: 'block' } }}
-                    >
-                        <img src={logo} alt="logo" style={{ height: 40 }} />
-                    </Typography>
-                    <Search>
-                        <SearchIconWrapper>
-                            <SearchIcon />
-                        </SearchIconWrapper>
-                        <StyledInputBase
-                            placeholder="Search…"
-                            inputProps={{ 'aria-label': 'search' }}
-                        />
-                    </Search>
-                    <Box sx={{ flexGrow: 1 }} />
-                    <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                        <Button variant="contained" color="secondary">Đăng nhập</Button> &nbsp;
-                        <Button variant="contained" color="secondary">Đăng kí</Button>
-                    </Box>
-                    <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+            <div style={{ position: 'fixed', top: 0, width: '100%', zIndex: 100000 }}>
+                <AppBar elevation={1} position="static" style={{ alignItems: "center", backgroundColor: 'white' }}>
+                    <Toolbar style={{ backgroundColor: 'white', width: '80%' }}>
                         <IconButton
                             size="large"
-                            aria-label="show more"
-                            aria-controls={mobileMenuId}
-                            aria-haspopup="true"
-                            onClick={handleMobileMenuOpen}
-                            color="inherit"
+                            edge="start"
+                            color="secondary"
+                            aria-label="open drawer"
+                            sx={{ mr: 2 }}
                         >
-                            <MoreIcon />
+                            <MenuIcon />
                         </IconButton>
-                    </Box>
-                </Toolbar>
-            </AppBar>
-            {renderMobileMenu}
-            {renderMenu}
-            <div className='navbar'>
-                <NavBarHomePage />
+                        <Typography
+                            variant="h6"
+                            noWrap
+                            component="div"
+                            sx={{ display: { xs: 'none', sm: 'block' } }}
+                        >
+                            <img src={logo} alt="logo" style={{ height: 40 }} />
+                        </Typography>
+                        <Search>
+                            <SearchIconWrapper>
+                                <SearchIcon />
+                            </SearchIconWrapper>
+                            <StyledInputBase
+                                placeholder="Search…"
+                                inputProps={{ 'aria-label': 'search' }}
+                            />
+                        </Search>
+                        <Box sx={{ flexGrow: 1 }} />
+                        <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                            <Button variant="contained" color="secondary">Đăng nhập</Button> &nbsp;
+                            <Button variant="contained" color="secondary">Đăng kí</Button>
+                        </Box>
+                        <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+                            <IconButton
+                                size="large"
+                                aria-label="show more"
+                                aria-controls={mobileMenuId}
+                                aria-haspopup="true"
+                                onClick={handleMobileMenuOpen}
+                                color="inherit"
+                            >
+                                <MoreIcon />
+                            </IconButton>
+                        </Box>
+                    </Toolbar>
+                </AppBar>
+                {renderMobileMenu}
+                {renderMenu}
+                <div className='navbar' >
+                    <NavBarHomePage />
+                </div>
+
             </div>
-            <Outlet />
+            <div style={{ marginTop: 140 }}>
+                <Outlet />
+            </div>
         </Box>
     );
 }

@@ -6,6 +6,7 @@ import { accountReducer } from '../reducers/account.reducer';
 import { managerReducer } from '../reducers/manager.reducer';
 import { roomReducer } from '../reducers/room.reducer';
 import { serviceReducer } from '../reducers/service.reducer';
+import { customerReducer } from '../reducers/customer.reducer';
 
 import { brandReducer } from 'reducers/brand.reducer';
 import { categoryReducer } from 'reducers/category.reducer';
@@ -18,7 +19,8 @@ const reducer = combineReducers({
     room: roomReducer,
     service: serviceReducer,
     brand: brandReducer,
-    category: categoryReducer
+    category: categoryReducer,
+    customer: customerReducer
 
 });
 
