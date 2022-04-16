@@ -64,14 +64,6 @@ export default function InsertBrandDialog(props) {
             if (fieldValues.soDienThoai === "") {
                 temp.soDienThoai = fieldValues.soDienThoai ? "" : "Số điện thoại không được để trống";
             }
-            // if (fieldValues.soDienThoai !== "") {
-            //     temp.soDienThoai =
-            //         /^[a-zA-ZàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]{1,15}(?: [a-zA-ZàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]+){0,6}$/.test(
-            //             fieldValues.soDienThoai
-            //         )
-            //             ? ""
-            //             : "Số điện thoại sai định dạng";
-            // }
         }
         if ("diaChi" in fieldValues) {
             temp.diaChi = fieldValues.diaChi ? "" : "Địa chỉ không được để trống";
@@ -143,9 +135,9 @@ export default function InsertBrandDialog(props) {
                                     <InputLabel id="demo-simple-select-label">Tỉnh / Thành phố</InputLabel>
                                     <Select
                                         labelId="demo-simple-select-label"
-                                        // id="demo-simple-select"
                                         name="city"
                                         label="Tỉnh / Thành phố"
+                                        defaultValue=""
                                         onChange={handleInputChange}
                                     >
                                         {
@@ -163,6 +155,7 @@ export default function InsertBrandDialog(props) {
                                     <InputLabel id="demo-simple-select-label">Quận / Huyện</InputLabel>
                                     <Select
                                         labelId="demo-simple-select-label"
+                                        defaultValue=""
                                         name="district"
                                         label="Quận / Huyện"
                                         onChange={handleInputChange}
@@ -182,6 +175,7 @@ export default function InsertBrandDialog(props) {
                                     <Select
                                         labelId="demo-simple-select-label"
                                         name="ward"
+                                        defaultValue=""
                                         label="Xã / Phường"
                                         onChange={handleInputChange}
                                     >

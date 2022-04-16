@@ -32,9 +32,9 @@ export default function CategoryManager() {
     const [page, setPage] = useState(0);
     const rows = []
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const listCategory = useSelector((state) => state.category.listCategory);
+    const listCategory = useSelector((state) => state.category.listCategoryByBrand);
     const [listCategoryShow, setListCategory] = useState([])
-
+    const account = useSelector((state) => state.account.userAuth);
     const [open, setOpen] = useState(false);
     const [openUpdate, setOpenUpdate] = useState(false);
 
@@ -62,10 +62,9 @@ export default function CategoryManager() {
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
-
     useEffect(() => {
-        dispatch(actions.fetchAllCategory())
-    }, [])
+        dispatch(actions.fetchAllCategoryByBrand(JSON.parse(account).khachsan_id))
+    }, [account])
 
     useEffect(() => {
         if (listCategory) {
@@ -75,7 +74,6 @@ export default function CategoryManager() {
             setListCategory(listCategory)
         }
     }, [listCategory])
-
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }} style={{ padding: 20 }}>
             <Grid container spacing={1} style={{ marginTop: 10, padding: 10 }}>

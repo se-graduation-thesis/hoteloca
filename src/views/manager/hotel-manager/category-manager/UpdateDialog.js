@@ -17,6 +17,7 @@ import * as actions from "actions/category.action"
 
 import { Edit } from '@mui/icons-material';
 
+import * as brandActions from "actions/brand.action"
 const initialFieldValues = {
     tenKhachSan: "",
     diaChi: "",
@@ -25,17 +26,20 @@ const initialFieldValues = {
 };
 export default function UpdateBrand(props) {
     const dispatch = useDispatch();
-    const brand = useSelector((state) => state.brand.brand_by_id);
+    const listBrand = useSelector((state) => state.brand.listBrand);
+    const [listBrandShow, setListBrand] = useState([])
+
     let vertical = 'top';
     let horizontal = 'right';
-    const [district, setDistrict] = useState([])
-    const [wards, setWards] = useState([])
 
     const [edit, setEdit] = useState(false)
     const [disabled, setDisabled] = useState(true)
     const [displayButton, setDisplayButton] = useState('none')
-
     const [alertOpen, setAlertOpen] = useState(false);
+    const [tenLp, setTenLp] = useState('');
+    const listCategory = useSelector((state) => state.category.listCategoryByBrand);
+    const [listCategoryShow, setListCategory] = useState([])
+    const account = useSelector((state) => state.account.userAuth);
 
     const onEdit = () => {
         setDisabled(false)
@@ -59,15 +63,47 @@ export default function UpdateBrand(props) {
         setAlertOpen(false);
     };
 
+    useEffect(() => {
+        dispatch(brandActions.fetchAllBrand())
+    }, [])
+    useEffect(() => {
+        setListBrand(listBrand)
+    }, [listBrand])
+
+    useEffect(() => {
+        dispatch(actions.fetchAllCategoryByBrand(JSON.parse(account).khachsan_id))
+    }, [account])
+
+    useEffect(() => {
+        if (listCategory) {
+            listCategory.forEach((e, i) => {
+                e.stt = i + 1
+            })
+            setListCategory(listCategory)
+        }
+    }, [listCategory])
 
     // ADD BRAND MANAGER
     const validate = (fieldValues = values) => {
         let temp = { ...errors };
         if ("tenLoaiPhong" in fieldValues) {
-            if (fieldValues.tenLoaiPhong === "") {
+            let err = 0;
+            listCategoryShow.map((u) => {
+                if (
+                    u.tenLoaiPhong.toLowerCase() === fieldValues.tenLoaiPhong.toLowerCase() && fieldValues.tenLoaiPhong !== tenLp
+                ) {
+                    err = err + 1;
+                }
+            });
+            if (err >= 1) {
+                err < 1
+                    ? (temp.tenLoaiPhong = "")
+                    : (temp.tenLoaiPhong = "Loại phòng này đã có");
+            }
+            else if (fieldValues.tenLoaiPhong === "") {
                 temp.tenLoaiPhong = fieldValues.tenLoaiPhong ? "" : "Tên khách sạn không được để trống";
             }
-            if (fieldValues.tenLoaiPhong !== "") {
+            else if (fieldValues.tenLoaiPhong !== "") {
                 temp.tenLoaiPhong =
                     /^[a-zA-ZàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]{1,15}(?: [a-zA-ZàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]+){0,6}$/.test(
                         fieldValues.tenLoaiPhong
@@ -101,10 +137,12 @@ export default function UpdateBrand(props) {
                     tenLoaiPhong: res.data.tenLoaiPhong,
                     trangthai: res.data.trangthai,
                     khachSanid: res.data.khachSanid.id,
-                })
+                }),
+                    setTenLp(res.data.tenLoaiPhong)
             })
         }
     }, [props.id])
+
     return (
         <>
             <Dialog keepMounted open={props.open} fullWidth={true} maxWidth={'sm'}>
@@ -144,13 +182,16 @@ export default function UpdateBrand(props) {
                                         labelId="demo-simple-select-label"
                                         name="khachSanid"
                                         label="Chi nhánh"
+                                        defaultValue=""
                                         value={values.khachSanid || ''}
                                         inputProps={{ readOnly: disabled }}
                                         onChange={handleInputChange}
                                     >
-                                        <MenuItem value={1} >ABC</MenuItem>
-                                        <MenuItem value={3} >Khang</MenuItem>
-                                        <MenuItem value={4} >Haha</MenuItem>
+                                        {
+                                            listBrandShow.map((e, i) => (
+                                                <MenuItem key={i} value={e.id} >{e.tenKhachSan}</MenuItem>
+                                            ))
+                                        }
                                     </Select>
                                 </FormControl>
                             </Grid>
@@ -163,10 +204,10 @@ export default function UpdateBrand(props) {
                                         labelId="demo-simple-select-label"
                                         name="trangthai"
                                         label="Trạng thái"
+                                        defaultValue=""
                                         onChange={handleInputChange}
                                         value={values.trangthai || ''}
                                         inputProps={{ readOnly: disabled }}
-                                    // inputProps={{ readOnly: disabled }}
                                     >
                                         <MenuItem value={'Đang hoạt động'} >{'Đang hoạt động'} </MenuItem>
                                         <MenuItem value={'Tạm ngưng'} >{'Tạm ngưng'} </MenuItem>

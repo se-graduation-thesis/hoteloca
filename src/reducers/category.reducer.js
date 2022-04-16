@@ -2,7 +2,8 @@ import { ACTION_TYPES } from "../actions/category.action";
 
 const initialState = {
     listCategory: [],
-    brand_by_id: null
+    brand_by_id: null,
+    listCategoryByBrand: [],
 };
 
 export const categoryReducer = (state = initialState, action) => {
@@ -17,6 +18,11 @@ export const categoryReducer = (state = initialState, action) => {
                 ...state,
                 listCategory: [...action.payload],
             };
+        case ACTION_TYPES.FETCH_ALL_CATEGORY_BY_BRAND:
+            return {
+                ...state,
+                listCategoryByBrand: [...action.payload]
+            }
         default:
             return state;
     }
