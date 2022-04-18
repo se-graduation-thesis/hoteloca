@@ -27,14 +27,14 @@ const SignupSchema = yup.object().shape({
 
 export default function AddRoomForm(props) {
     const dispatch = useDispatch();
-    const categories = useSelector(state => state.category.listCategory);
+    const categories = useSelector(state => state.category.listCategoryByBrand);
     const roombyname = useSelector((state) => state.room.room_by_name);
+    const account = useSelector((state) => state.account.userAuth);
     const { register, handleSubmit, watch, formState: { errors }, reset, setValue } = useForm({
         resolver: yupResolver(SignupSchema)
     });
-
     useEffect(() => {
-        dispatch(actionCategory.fetchAllCategory());
+        dispatch(actionCategory.fetchAllCategoryByBrand(JSON.parse(account).khachsan_id));
     }, [])
 
     const [loaiPhong, setLoaiPhong] = useState(1);
