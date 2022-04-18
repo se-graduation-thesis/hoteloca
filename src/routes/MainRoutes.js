@@ -3,6 +3,7 @@ import { lazy } from 'react';
 // project imports
 import MainLayout from 'layout/MainLayout';
 import Loadable from 'ui-component/Loadable';
+import Calendar from 'views/manager/booking-management/book-calendar/Calendar';
 
 
 // dashboard routing
@@ -59,8 +60,12 @@ const MainRoutes = {
         },
         {
             path: '/admin/booking-calendar',
+            element: <Calendar />
+        }, {
+            path: '/admin/booking-calendar1',
             element: <BookingCalendar />
         },
+
         {
             path: '/default',
             element: <DashboardDefault />
