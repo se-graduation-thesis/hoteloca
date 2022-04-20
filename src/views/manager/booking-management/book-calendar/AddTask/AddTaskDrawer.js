@@ -30,10 +30,10 @@ function AddTaskDrawer(props) {
       sx={{ width: 700, padding: '20px 30px 30px 30px' }}
       role="presentation"
     >
-      <IconButton style={{ float: 'right', marginBottom: '20px', cursor: 'pointer' }}
+      {/* <IconButton style={{ float: 'right', marginBottom: '20px', cursor: 'pointer' }}
         onClick={toggleDrawer(false)}>
         <CloseIcon />
-      </IconButton>
+      </IconButton> */}
       <AddTaskForm handleStateForm={props.handleStateForm} dateChoice={props.dateChoice} />
     </Box>
   );
