@@ -24,10 +24,11 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import * as actions from 'actions/room.action'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function BrandManager() {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const account = useSelector((state) => state.account.userAuth);
     const room = useSelector((state) => state.room.room_by_brand);
     const [list_room_hotel, setListRoomHotel] = useState([])
@@ -93,39 +94,40 @@ export default function BrandManager() {
                     {
                         list_room_hotel.map((e, i) => (
                             <Grid item xs={3} key={i}>
-                                < Link to="/admin/booking-calendar" style={{ textDecoration: 'none' }}>
-                                    <Card style={{ backgroundColor: "#e3f2fd", border: '2px solid #e6e6e6' }}>
-                                        <CardContent>
-                                            <Typography variant="body2"
-                                                style={{
-                                                    color: "black",
-                                                    textTransform: 'uppercase',
-                                                    fontWeight: 'bold'
-                                                }}
-                                            >
-                                                PHÒNG: {e.tenPhong}
-                                            </Typography>
-                                            <br></br>
-                                            <Chip
-                                                icon={e.trangThai === 1 && e.loaiPhongid.trangThai === 1 && e.loaiPhongid.khachSanid.trangThai === 1 ? < CheckCircleOutlinedIcon /> : <CancelOutlinedIcon />}
-                                                label={e.trangThai === 1 && e.loaiPhongid.trangThai === 1 && e.loaiPhongid.khachSanid.trangThai === 1 ? "Đang hoạt động" : "Tạm ngưng"}
-                                                color={e.trangThai === 1 && e.loaiPhongid.trangThai === 1 && e.loaiPhongid.khachSanid.trangThai === 1 ? "info" : "warning"}
-                                            />
-                                        </CardContent>
-                                        <CardActions disableSpacing>
-                                            <IconButton size="small" aria-label="add to favorites">
-                                                <CellWifiOutlinedIcon style={{
-                                                    color: "black",
-                                                }} />
-                                            </IconButton>
-                                            <IconButton size="small" aria-label="share">
-                                                <AcUnitOutlinedIcon style={{
-                                                    color: "black",
-                                                }} />
-                                            </IconButton>
-                                        </CardActions>
-                                    </Card>
-                                </Link>
+                                {/* < Link to="/admin/booking-calendar/" style={{ textDecoration: 'none' }}> */}
+                                <Card style={{ backgroundColor: "#e3f2fd", border: '2px solid #e6e6e6' }}
+                                    onClick={() => navigate(`/admin/booking-calendar/${e.id}`)}>
+                                    <CardContent>
+                                        <Typography variant="body2"
+                                            style={{
+                                                color: "black",
+                                                textTransform: 'uppercase',
+                                                fontWeight: 'bold'
+                                            }}
+                                        >
+                                            PHÒNG: {e.ten}
+                                        </Typography>
+                                        <br></br>
+                                        <Chip
+                                            icon={e.trangThai === 1 && e.loaiPhongid.trangThai === 1 && e.loaiPhongid.khachSanid.trangThai === 1 ? < CheckCircleOutlinedIcon /> : <CancelOutlinedIcon />}
+                                            label={e.trangThai === 1 && e.loaiPhongid.trangThai === 1 && e.loaiPhongid.khachSanid.trangThai === 1 ? "Đang hoạt động" : "Tạm ngưng"}
+                                            color={e.trangThai === 1 && e.loaiPhongid.trangThai === 1 && e.loaiPhongid.khachSanid.trangThai === 1 ? "info" : "warning"}
+                                        />
+                                    </CardContent>
+                                    <CardActions disableSpacing>
+                                        <IconButton size="small" aria-label="add to favorites">
+                                            <CellWifiOutlinedIcon style={{
+                                                color: "black",
+                                            }} />
+                                        </IconButton>
+                                        <IconButton size="small" aria-label="share">
+                                            <AcUnitOutlinedIcon style={{
+                                                color: "black",
+                                            }} />
+                                        </IconButton>
+                                    </CardActions>
+                                </Card>
+                                {/* </Link> */}
                             </Grid>
                         ))
                     }

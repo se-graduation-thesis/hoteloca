@@ -90,7 +90,7 @@ const utilities = {
             icon: icons.IconUser,
             children: [
                 {
-                    id: 'customer',
+                    id: 'datphong',
                     title: 'Đặt phòng',
                     type: 'item',
                     url: '/admin/booking',
@@ -100,7 +100,7 @@ const utilities = {
                     id: 'material-icons',
                     title: 'Danh sách đơn đặt',
                     type: 'item',
-                    url: '/icons/material-icons',
+                    url: '/admin/list-booking',
                     breadcrumbs: false
                 }
             ]
