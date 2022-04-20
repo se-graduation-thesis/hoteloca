@@ -3,7 +3,8 @@ import { lazy } from 'react';
 // project imports
 import MainLayout from 'layout/MainLayout';
 import Loadable from 'ui-component/Loadable';
-import Calendar from 'views/manager/booking-management/book-calendar/Calendar';
+
+
 
 
 // dashboard routing
@@ -22,7 +23,9 @@ const RoomManagement = Loadable(lazy(() => import('views/manager/hotel-managemen
 const ServiceManagement = Loadable(lazy(() => import('views/manager/hotel-management/service-management/service')));
 
 const ListRoomBooking = Loadable(lazy(() => import('views/manager/booking-management/booking/ListRoomBooking')));
+const Calendar = Loadable(lazy(() => import('views/manager/booking-management/book-calendar/Calendar')));
 const BookingCalendar = Loadable(lazy(() => import('views/manager/booking-management/book-calendar/BookCalendar')));
+const TabBooking = Loadable(lazy(() => import('views/manager/booking-management/list-booking/TabBooking')));
 
 const BrandManager = Loadable(lazy(() => import('views/manager/hotel-manager/brand-manager/BrandManager')));
 const CategoryManager = Loadable(lazy(() => import('views/manager/hotel-manager/category-manager/CategoryManager')));
@@ -59,13 +62,16 @@ const MainRoutes = {
             element: <CategoryManager />
         },
         {
-            path: '/admin/booking-calendar',
+            path: '/admin/booking-calendar/:roomId',
             element: <Calendar />
         }, {
             path: '/admin/booking-calendar1',
             element: <BookingCalendar />
         },
-
+        {
+            path: '/admin/list-booking',
+            element: <TabBooking />
+        },
         {
             path: '/default',
             element: <DashboardDefault />
