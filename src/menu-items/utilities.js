@@ -34,14 +34,14 @@ const utilities = {
                     id: 'chinhanh',
                     title: 'Quản lý chi nhánh',
                     type: 'item',
-                    url: '/icons/tabler-icons',
+                    url: '/admin/brand-manager',
                     breadcrumbs: false
                 },
                 {
                     id: 'loaiphong',
                     title: 'Quản lý loại phòng',
                     type: 'item',
-                    url: '/icons/tabler-icons',
+                    url: '/admin/category-manager',
                     breadcrumbs: false
                 },
                 {
@@ -52,10 +52,10 @@ const utilities = {
                     breadcrumbs: false
                 },
                 {
-                    id: 'phong',
+                    id: 'dichVu',
                     title: 'Quản lý dịch vụ',
                     type: 'item',
-                    url: '/icons/material-icons',
+                    url: '/admin/hotel-management/service',
                     breadcrumbs: false
                 }
             ]
@@ -77,6 +77,28 @@ const utilities = {
                 {
                     id: 'material-icons',
                     title: 'Quản lý khách hàng',
+                    type: 'item',
+                    url: '/admin/customer-management',
+                    breadcrumbs: false
+                }
+            ]
+        },
+        {
+            id: 'booking',
+            title: 'Quản Lý Đặt Phòng',
+            type: 'collapse',
+            icon: icons.IconUser,
+            children: [
+                {
+                    id: 'customer',
+                    title: 'Đặt phòng',
+                    type: 'item',
+                    url: '/admin/booking',
+                    breadcrumbs: false
+                },
+                {
+                    id: 'material-icons',
+                    title: 'Danh sách đơn đặt',
                     type: 'item',
                     url: '/icons/material-icons',
                     breadcrumbs: false
@@ -114,36 +136,36 @@ const utilities = {
                 }
             ]
         },
-        {
-            id: 'util-shadow',
-            title: 'Shadow',
-            type: 'item',
-            url: '/utils/util-shadow',
-            icon: icons.IconShadow,
-            breadcrumbs: false
-        },
-        {
-            id: 'icons',
-            title: 'Icons',
-            type: 'collapse',
-            icon: icons.IconWindmill,
-            children: [
-                {
-                    id: 'tabler-icons',
-                    title: 'Tabler Icons',
-                    type: 'item',
-                    url: '/icons/tabler-icons',
-                    breadcrumbs: false
-                },
-                {
-                    id: 'material-icons',
-                    title: 'Material Icons',
-                    type: 'item',
-                    url: '/icons/material-icons',
-                    breadcrumbs: false
-                }
-            ]
-        }
+        // {
+        //     id: 'util-shadow',
+        //     title: 'Shadow',
+        //     type: 'item',
+        //     url: '/utils/util-shadow',
+        //     icon: icons.IconShadow,
+        //     breadcrumbs: false
+        // },
+        // {
+        //     id: 'icons',
+        //     title: 'Icons',
+        //     type: 'collapse',
+        //     icon: icons.IconWindmill,
+        //     children: [
+        //         {
+        //             id: 'tabler-icons',
+        //             title: 'Tabler Icons',
+        //             type: 'item',
+        //             url: '/icons/tabler-icons',
+        //             breadcrumbs: false
+        //         },
+        //         {
+        //             id: 'material-icons',
+        //             title: 'Material Icons',
+        //             type: 'item',
+        //             url: '/icons/material-icons',
+        //             breadcrumbs: false
+        //         }
+        //     ]
+        // }
     ]
 };
 

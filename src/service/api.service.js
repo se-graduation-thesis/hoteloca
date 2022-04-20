@@ -7,7 +7,8 @@ export default {
     account(url = baseApi + 'account/') {
         return {
             fetchAll: () => axios.get(url + 'get-all-account'),
-            register: (account) => axios.post(url + "register", account),
+            register: (account) => axios.post(url + "employee/register", account),
+            login: (username, pass) => axios.post(url + "login/" + username + "&" + pass),
             add_admin: (admin) => axios.post(url + "add-admin", admin),
         };
     },
@@ -18,8 +19,37 @@ export default {
     },
     room(url = baseApi + 'room/') {
         return {
-            fetchAllRoom: () => axios.get(url + 'get-all-room'),
+            fetchAllRoomByCategory: (id, kid) => axios.get(url + 'getRoomBycategoryID/' + id + '&' + kid),
             add_room: (room) => axios.post(url, room),
+            get_all_room_by_brand: (id) => axios.get(url + "get-all-room-by-brand/" + id),
+            get_room_by_name: (name) => axios.get(url + "getRoomByName/" + name),
+        }
+    },
+    service(url = baseApi + 'service/') {
+        return {
+            fetchAllService: () => axios.get(url + 'get-all-service'),
+            add_service: (service) => axios.post(url, service),
+        }
+    },
+    brand(url = baseApi + 'brand/') {
+        return {
+            fetchAllBrand: () => axios.get(url + 'get-all-brand'),
+            insertBrand: (brand) => axios.post(url + 'add-brand', brand),
+            findById: (id) => axios.get(url + 'find-by-id/' + id),
         };
     },
-};
+    category(url = baseApi + 'category/') {
+        return {
+            fetchAllCategory: () => axios.get(url + 'get-all-category'),
+            fetchAllCategoryByBrand: (id) => axios.get(url + 'get-all-category-by-brand/' + id),
+            insertCategory: (category) => axios.post(url + 'add-category', category),
+            findById: (id) => axios.get(url + 'find-by-id/' + id),
+        };
+    },
+    customer(url = baseApi + 'customer/') {
+        return {
+            fetchAllCustomer: () => axios.get(url + 'get-all-customer'),
+            add_customer: (customer) => axios.post(url, customer),
+        }
+    },
+}

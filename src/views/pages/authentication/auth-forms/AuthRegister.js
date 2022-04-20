@@ -34,11 +34,13 @@ import * as actions from "actions/account.action"
 const initialFieldValues = {
     diaChi: "",
     matKhau: "",
-    hoNguoidung: "",
-    tenNguoidung: "",
-    soDienThoai: "",
+    ho: "",
+    ten: "",
+    dienThoai: "",
     taiKhoan: "",
     email: "",
+    quyen: 1,
+    trangthai: 1,
 };
 
 const FirebaseRegister = () => {
@@ -52,7 +54,6 @@ const FirebaseRegister = () => {
     const [wards, setWards] = useState([])
     const handleChange = (event) => {
         setAge(event.target.value);
-        console.log(event.target.value)
     };
 
     const googleHandler = async () => {
@@ -150,26 +151,24 @@ const FirebaseRegister = () => {
 
     const handleSubmit = (e) => {
         // if (validate()) {
+        values.quyen = 1
+        values.trangThai = 1
+        values.luong = 100
+        values.boPhanid = {
+            id: 1
+        }
+        values.khachSanid = {
+            id: 1
+        }
+        values.cmnd = "9879765877"
+        values.chucVu = "nhanvien"
+
+        values.ngayVaoLam = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString()
         actions.register(values).then((res) => {
-            if (res) {
-                const admin_account = values;
-                admin_account.khachSanid = 1
-                admin_account.taiKhoanid = {
-                    id: res.data.id
-                }
-                actions.addAdmin(admin_account).then((response) => {
-                    console.log(response)
-                })
-            }
+            console.log(res)
         }
         ).catch((err) => console.log(err));
-        //     alert.success("Register Successfull !!! Login now !");
-        //     navigate("/login");
-        // }
-        // dispatch(actions.fetchAllAccount())
-        console.log(values)
     };
-    console.log(address)
     return (
         <>
             <Grid container direction="column" justifyContent="center" spacing={2}>
@@ -218,7 +217,7 @@ const FirebaseRegister = () => {
                 </Grid>
                 <Grid item xs={12} container alignItems="center" justifyContent="center">
                     <Box sx={{ mb: 2 }}>
-                        <Typography variant="subtitle1">Đăng nhập với địa chỉ Email</Typography>
+                        <Typography variant="subtitle1">Đăng kí với địa chỉ Email</Typography>
                     </Box>
                 </Grid>
             </Grid>
@@ -232,10 +231,10 @@ const FirebaseRegister = () => {
                             fullWidth
                             id="first-name"
                             label="Họ"
-                            name="hoNguoidung"
+                            name="ho"
                             variant="outlined"
                             helperText=" "
-                            value={values.hoNguoidung}
+                            value={values.ho}
                             onChange={handleInputChange}
                         // {...(errors.firstName && {
                         //     error: true,
@@ -247,11 +246,11 @@ const FirebaseRegister = () => {
                         <TextField
                             id="last-name"
                             label="Tên"
-                            name="tenNguoidung"
+                            name="ten"
                             variant="outlined"
                             fullWidth
                             helperText=" "
-                            value={values.tenNguoidung}
+                            value={values.ten}
                             onChange={handleInputChange}
                         // {...(errors.lastName && { error: true, helperText: errors.lastName })}
                         />
@@ -265,15 +264,15 @@ const FirebaseRegister = () => {
                     label="Số điện thoại"
                     variant="outlined"
                     helperText=" "
-                    name="soDienThoai"
+                    name="dienThoai"
                     type="text"
                     fullWidth
-                    value={values.soDienThoai}
+                    value={values.dienThoai}
                     onChange={handleInputChange}
                 // {...(errors.age && { error: true, helperText: errors.age })}
                 />
                 <TextField
-                    id="address"
+                    id="email"
                     label="Email"
                     name="email"
                     variant="outlined"
@@ -300,11 +299,12 @@ const FirebaseRegister = () => {
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         label="Tỉnh / Thành phố"
+                        defaultValue={""}
                         onChange={handleChange}
                     >
                         {
                             address.map((a) => (
-                                <MenuItem value={a.id} onClick={() => getDistrict(a)}>{a.name}</MenuItem>
+                                <MenuItem key={a.id} value={a.id} onClick={() => getDistrict(a)}>{a.name}</MenuItem>
                             ))
                         }
                     </Select>
@@ -316,11 +316,12 @@ const FirebaseRegister = () => {
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         label="Quận / Huyện"
+                        defaultValue={""}
                         onChange={handleChange}
                     >
                         {
                             district.map((a) => (
-                                <MenuItem value={a.id} onClick={() => getWards(a)}>{a.name} </MenuItem>
+                                <MenuItem key={a.id} value={a.id} onClick={() => getWards(a)}>{a.name} </MenuItem>
                             ))
                         }
                     </Select>
@@ -332,11 +333,12 @@ const FirebaseRegister = () => {
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         label="Xã / Phường"
+                        defaultValue={""}
                         onChange={handleChange}
                     >
                         {
                             wards.map((a) => (
-                                <MenuItem value={a.id} > {a.prefix + " " + a.name} </MenuItem>
+                                <MenuItem key={a.id} value={a.id} > {a.prefix + " " + a.name} </MenuItem>
                             ))
                         }
                     </Select>

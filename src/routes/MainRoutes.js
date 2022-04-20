@@ -3,6 +3,7 @@ import { lazy } from 'react';
 // project imports
 import MainLayout from 'layout/MainLayout';
 import Loadable from 'ui-component/Loadable';
+import Calendar from 'views/manager/booking-management/book-calendar/Calendar';
 
 
 // dashboard routing
@@ -18,8 +19,17 @@ const UtilsTablerIcons = Loadable(lazy(() => import('views/utilities/TablerIcons
 //Manager
 const AdminManager = Loadable(lazy(() => import('views/manager/account-manager/AdminManager')));
 const RoomManagement = Loadable(lazy(() => import('views/manager/hotel-management/room-management/Room')));
+const ServiceManagement = Loadable(lazy(() => import('views/manager/hotel-management/service-management/service')));
+
+const ListRoomBooking = Loadable(lazy(() => import('views/manager/booking-management/booking/ListRoomBooking')));
+const BookingCalendar = Loadable(lazy(() => import('views/manager/booking-management/book-calendar/BookCalendar')));
+
+const BrandManager = Loadable(lazy(() => import('views/manager/hotel-manager/brand-manager/BrandManager')));
+const CategoryManager = Loadable(lazy(() => import('views/manager/hotel-manager/category-manager/CategoryManager')));
+
 
 // sample page routing
+const CustomerManagement = Loadable(lazy(() => import('views/manager/account-manager/customer-management/Customer')));
 const SamplePage = Loadable(lazy(() => import('views/sample-page')));
 
 // ==============================|| MAIN ROUTING ||============================== //
@@ -36,6 +46,26 @@ const MainRoutes = {
             path: '/admin/admin-manager',
             element: <AdminManager />
         },
+        {
+            path: '/admin/brand-manager',
+            element: <BrandManager />
+        },
+        {
+            path: '/admin/booking',
+            element: <ListRoomBooking />
+        },
+        {
+            path: '/admin/category-manager',
+            element: <CategoryManager />
+        },
+        {
+            path: '/admin/booking-calendar',
+            element: <Calendar />
+        }, {
+            path: '/admin/booking-calendar1',
+            element: <BookingCalendar />
+        },
+
         {
             path: '/default',
             element: <DashboardDefault />
@@ -59,6 +89,14 @@ const MainRoutes = {
         {
             path: '/admin/hotel-management/room',
             element: <RoomManagement />
+        },
+        {
+            path: '/admin/hotel-management/service',
+            element: <ServiceManagement />
+        },
+        {
+            path: '/admin/customer-management',
+            element: <CustomerManagement />
         },
         {
             path: '/sample-page',

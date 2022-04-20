@@ -1,153 +1,278 @@
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import { Divider, FormControl, Grid, InputLabel, MenuItem, Select } from '@mui/material';
-import { useForm } from 'react-hook-form';
-import { useEffect, useState } from 'react';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from "yup";
-import { useDispatch } from 'react-redux';
+import * as actionCategory from 'actions/category.action';
 import * as actions from 'actions/room.action';
+import PositionedSnackbar from "../../components/PositionedSnackbar";
+
 
 const width = 500;
 
-const SignupSchema = yup.object().shape({
-    tenPhong: yup.string().required(),
-    donGia: yup.number().required().positive().integer(),
-    kichThuoc: yup.string().required(),
-    moTa: yup.string()
-});
+const initialPhong = {
+    ten: '',
+    loaiPhongid: 1,
+    soGiuong: '',
+    soNguoi: '',
+    donGia: '',
+    dienTich: '',
+    trangThai: 1,
+    moTa: '',
+    hinhAnh: ''
+};
 
 export default function AddRoomForm(props) {
+
     const dispatch = useDispatch();
 
-    const { register, handleSubmit, watch, formState: { errors }, reset, setValue } = useForm({
-        resolver: yupResolver(SignupSchema)
+
+    const categories = useSelector(state => state.category.listCategoryByBrand);
+    const account = useSelector((state) => state.account.userAuth);
+    useEffect(() => {
+        if (account)
+            dispatch(actionCategory.fetchAllCategoryByBrand(JSON.parse(account).khachsan_id));
+    }, [])
+    const rooms = useSelector((state) => state.room.rooms);
+
+    const [snackbarState, setSnackbarState] = useState(false);
+
+
+    const [phong, setPhong] = useState({
+        ten: '',
+        loaiPhongid: 1,
+        soGiuong: '',
+        soNguoi: '',
+        donGia: '',
+        dienTich: '',
+        trangThai: 1,
+        moTa: '',
+        hinhAnh: ''
     });
 
-    const [loaiPhong, setLoaiPhong] = useState(1);
-    const [trangThai, setTrangThai] = useState(1);
+    const [error, setError] = useState({
+        ten: null,
+        soGiuong: null,
+        soNguoi: null,
+        donGia: null,
+        dienTich: null
+    });
 
-    const onSubmit = data => {
-        data.anh = null;
-        props.item ?
-            data.id = props.item.id :
-            data.trangThai = 1;
-        dispatch(actions.addRoom(data));
-        props.isShowAddForm(false);
-        reset();
-    };
+    const reset = () => {
+        setPhong(initialPhong);
+    }
 
-    useEffect(() => {
-        if (props.item) {
-            setValue("tenPhong", props.item.tenPhong);
-            setValue("donGia", props.item.donGia);
-            setValue("kichThuoc", props.item.kichThuoc);
-            setValue("moTa", props.item.moTa);
-            setLoaiPhong(props.item.loaiPhongid.id);
-        }
-    }, [props.item])
+    const handleTen = (event) => {
+        setPhong({ ...phong, ten: event.target.value });
 
+        let checkName = rooms.filter(e => e.ten === event.target.value).length;
+
+        checkName > 0 ?
+            setError({ ...error, ten: 'Tên phòng đã tồn tại.' }) :
+            setError({ ...error, ten: null })
+    }
 
     const handleChangeRoomType = (event) => {
-        setLoaiPhong(event.target.value);
-    };
-
-    const handleChangeState = (event) => {
-        setTrangThai(event.target.value);
+        setPhong({ ...phong, loaiPhongid: event.target.value });
     };
 
     const handleClose = () => {
         props.isShowAddForm(false);
-        props.handleEditRoom(null);
-        props.handleIsView(false);
-        reset();
+    }
+
+    const handleCheckValidation = () => {
+        const reNum = new RegExp(/\d+$/);
+        const reString = new RegExp(/\w+/);
+
+        let soNguoi = null;
+        let soGiuong = null;
+        let donGia = null;
+        let ten = null;
+        let dienTich = null;
+
+        let kt = false;
+
+        if (!reNum.test(phong.soNguoi)) {
+            soNguoi = 'Số người phải là một con số.';
+            kt = true;
+        }
+
+        if (!reNum.test(phong.soGiuong)) {
+            soGiuong = 'Số Giường phải là một con số.';
+            kt = true;
+        }
+
+        if (!reNum.test(phong.donGia)) {
+            donGia = 'Đơn giá phải là một con số.';
+            kt = true;
+        }
+
+        if (!reString.test(phong.ten)) {
+            ten = 'Tên không được để trống.';
+            kt = true;
+        }
+
+        if (!reString.test(phong.dienTich)) {
+            dienTich = 'Diện tích không được để trống.';
+            kt = true;
+        }
+
+        setError({
+            ten,
+            soGiuong,
+            soNguoi,
+            donGia,
+            dienTich
+        })
+        return !kt;
+
+    }
+
+    const submit = () => {
+        if (handleCheckValidation()) {
+            dispatch(actions.addRoom(phong));
+
+            props.isShowAddForm(false);
+            reset();
+
+            setSnackbarState(true);
+            setTimeout(function () {
+                setSnackbarState(false);
+            }, 3000);
+        }
+
     }
 
     return (
-        <Dialog open={props.open} onClose={handleClose} >
-            <DialogTitle sx={{ fontSize: 18 }}>
-                {!props.item ? "THÊM PHÒNG" : "CẬP NHẬT PHÒNG"}
-                <Button style={{ float: 'right' }} onClick={() => props.handleIsView(false)} variant="outlined">Chỉnh sửa</Button>
-            </DialogTitle>
-            <Divider />
+        <>
+            <Dialog open={props.open} onClose={handleClose}>
+                <DialogTitle sx={{ fontSize: 18 }}>THÊM PHÒNG</DialogTitle>
+                <Divider />
 
-            <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
                 <DialogContent>
                     <Grid container spacing={2} sx={{ width }}>
+                        {/* Tên Phòng */}
                         <Grid item xs={12}>
-                            <TextField inputProps={{ readOnly: props.isView, }} {...register("tenPhong")} id="outlined-basic" label="Tên Phòng" variant="outlined" fullWidth />
-                            {errors.tenPhong && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}> Tên phòng không dược để trống.</span></>}
+                            <TextField
+                                value={phong.ten}
+                                inputProps={{ readOnly: props.isView, }}
+                                autoFocus
+                                id="outlined-basic"
+                                label="Tên Phòng"
+                                variant="outlined"
+                                fullWidth
+
+                                onChange={handleTen}
+                            />
+                            {error.ten && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.ten}</span></>}
                         </Grid>
-                        <Grid item xs={props.item ? 6 : 12}>
+
+                        {/* Loại Phòng */}
+                        <Grid item xs={12}>
                             <FormControl fullWidth>
                                 <InputLabel id="demo-simple-select-label">Loại Phòng</InputLabel>
                                 <Select
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
-                                    {...register("loaiPhongid")}
-                                    value={loaiPhong}
+                                    value={phong.loaiPhongid}
                                     label="Loại Phòng"
-                                    onChange={handleChangeRoomType}
                                     inputProps={{ readOnly: props.isView, }}
+
+                                    onChange={handleChangeRoomType}
                                 >
-                                    <MenuItem value={1}>VIP</MenuItem>
-                                    <MenuItem value={2}>Special</MenuItem>
-                                    <MenuItem value={3}>Thường</MenuItem>
+                                    {categories.map((item) => <MenuItem key={item.id} value={item.id}>{item.ten}</MenuItem>)}
                                 </Select>
                             </FormControl>
                         </Grid>
-                        {
-                            props.item ?
-                                <Grid item xs={6}>
-                                    <FormControl fullWidth>
-                                        <InputLabel id="demo-simple-select-label">Trạng Thái</InputLabel>
-                                        <Select
-                                            labelId="demo-simple-select-label"
-                                            id="demo-simple-select"
-                                            {...register("trangThai")}
-                                            value={trangThai}
-                                            label="Trạng Thái"
-                                            onChange={handleChangeState}
-                                            inputProps={{ readOnly: props.isView, }}
-                                        >
-                                            <MenuItem value={1}>Hoạt động</MenuItem>
-                                            <MenuItem value={0}>Ngừng hoạt động</MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                </Grid> : <></>
-                        }
+
+                        {/* Số Giường - Số Người */}
                         <Grid item xs={6}>
-                            <TextField {...register("donGia")} inputProps={{ readOnly: props.isView, }} id="outlined-basic" label="Đơn Giá" variant="outlined" fullWidth />
-                            {errors.donGia && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}> Đơn giá phải là một số.</span></>}
+                            <TextField
+                                value={phong.soGiuong}
+                                inputProps={{ readOnly: props.isView, }}
+                                id="outlined-basic"
+                                label="Số Giường"
+                                variant="outlined"
+                                fullWidth
+
+                                onChange={(e) => setPhong({ ...phong, soGiuong: e.target.value })}
+                            />
+                            {error.soGiuong && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.soGiuong}</span></>}
                         </Grid>
                         <Grid item xs={6}>
-                            <TextField {...register("kichThuoc")} inputProps={{ readOnly: props.isView, }} id="outlined-basic" label="Kích Thước" variant="outlined" fullWidth />
-                            {errors.kichThuoc && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}> Kích thước không được để trống</span></>}
+                            <TextField
+                                value={phong.soNguoi}
+                                inputProps={{ readOnly: props.isView, }}
+                                id="outlined-basic"
+                                label="Số Người"
+                                variant="outlined"
+                                fullWidth
+
+                                onChange={(e) => setPhong({ ...phong, soNguoi: e.target.value })}
+                            />
+
+                            {error.soNguoi && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.soNguoi}</span></>}
+
                         </Grid>
-                        <Grid item xs={12}>
-                            <TextField type="file" inputProps={{ multiple: true, readOnly: props.isView }} {...register("anh")} id=" outlined-basic" variant="outlined" fullWidth />
-                            {/* <input type== */}
+
+                        {/* Đơn Giá - Diện Tích */}
+                        <Grid item xs={6}>
+                            <TextField
+                                value={phong.donGia}
+                                inputProps={{ readOnly: props.isView, }}
+                                id="outlined-basic"
+                                label="Đơn Giá"
+                                variant="outlined"
+                                fullWidth
+
+                                onChange={(e) => setPhong({ ...phong, donGia: e.target.value })}
+                            />
+                            {error.donGia && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.donGia}</span></>}
                         </Grid>
+                        <Grid item xs={6}>
+                            <TextField
+                                value={phong.dienTich}
+                                inputProps={{ readOnly: props.isView, }}
+                                id="outlined-basic"
+                                label="Diện Tích"
+                                variant="outlined"
+                                fullWidth
+
+                                onChange={(e) => setPhong({ ...phong, dienTich: e.target.value })}
+                            />
+                            {error.dienTich && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.dienTich}</span></>}
+                        </Grid>
+
+                        {/* File */}
                         <Grid item xs={12}>
-                            <TextField {...register("moTa")} inputProps={{ readOnly: props.isView, }} id="outlined-basic" label="Mô tả" variant="outlined" fullWidth multiline rows={4} />
-                            {errors.moTa && <p style={{ color: 'red' }}>{errors.moTa.message}</p>}
+                            <TextField type="file" inputProps={{ multiple: true, readOnly: props.isView }} id=" outlined-basic" variant="outlined" fullWidth />
+                        </Grid>
+
+                        {/* Mô Tả */}
+                        <Grid item xs={12}>
+                            <TextField
+                                value={phong.moTa}
+                                inputProps={{ readOnly: props.isView, }}
+                                id="outlined-basic"
+                                label="Mô tả"
+                                variant="outlined"
+                                fullWidth
+                                multiline
+                                rows={4}
+
+                                onChange={(e) => setPhong({ ...phong, moTa: e.target.value })}
+                            />
                         </Grid>
                     </Grid>
                 </DialogContent>
-                {!props.isView
-                    ? <DialogActions>
-                        <Button onClick={handleClose} variant="outlined" >Cancel</Button>
-                        <Button type="submit" variant="outlined">{props.item ? "Cập nhật" : "Thêm"}</Button>
-                    </DialogActions>
-                    : <></>
-                }
-            </form>
-        </Dialog >
+                <DialogActions>
+                    <Button onClick={handleClose} variant="outlined">Hủy</Button>
+                    <Button onClick={submit} variant="outlined">Thêm</Button>
+                </DialogActions>
+            </Dialog>
 
-    );
+            <div>
+                <PositionedSnackbar open={snackbarState} message={"Thêm Thành Công."} />
+            </div>
+        </>
+    )
 }
