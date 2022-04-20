@@ -17,9 +17,9 @@ import * as actions from "actions/brand.action"
 import { address } from 'assets/address';
 
 const initialFieldValues = {
-    tenKhachSan: "",
+    ten: "",
     diaChi: "",
-    trangthai: "",
+    trangThai: "",
     soDienThoai: ""
 };
 export default function InsertBrandDialog(props) {
@@ -47,14 +47,14 @@ export default function InsertBrandDialog(props) {
     // ADD BRAND MANAGER
     const validate = (fieldValues = values) => {
         let temp = { ...errors };
-        if ("tenKhachSan" in fieldValues) {
-            if (fieldValues.tenKhachSan === "") {
-                temp.tenKhachSan = fieldValues.tenKhachSan ? "" : "Tên khách sạn không được để trống";
+        if ("ten" in fieldValues) {
+            if (fieldValues.ten === "") {
+                temp.ten = fieldValues.ten ? "" : "Tên khách sạn không được để trống";
             }
-            if (fieldValues.tenKhachSan !== "") {
-                temp.tenKhachSan =
+            if (fieldValues.ten !== "") {
+                temp.ten =
                     /^[a-zA-ZàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]{1,15}(?: [a-zA-ZàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]+){0,6}$/.test(
-                        fieldValues.tenKhachSan
+                        fieldValues.ten
                     )
                         ? ""
                         : "Tên khách sạn không chứa chữ số hoặc kí tự đặc biệt";
@@ -82,14 +82,14 @@ export default function InsertBrandDialog(props) {
     const handleSubmit = (e) => {
         if (validate()) {
             let brand_save = {
-                tenKhachSan: values.tenKhachSan,
+                ten: values.ten,
                 diaChi: JSON.stringify({
                     no: values.diaChi,
                     ward: values.ward,
                     district: values.district,
                     city: values.city
                 }),
-                trangthai: "Đang hoạt động",
+                trangThai: 1,
                 soDienThoai: values.soDienThoai
             }
             dispatch(actions.insertBrand(brand_save))
@@ -109,12 +109,12 @@ export default function InsertBrandDialog(props) {
                             label="Tên Khách Sạn"
                             variant="outlined"
                             helperText=" "
-                            name="tenKhachSan"
+                            name="ten"
                             type="text"
                             fullWidth
-                            value={values.tenKhachSan}
+                            value={values.ten}
                             onChange={handleInputChange}
-                            {...(errors.tenKhachSan && { error: true, helperText: errors.tenKhachSan })}
+                            {...(errors.ten && { error: true, helperText: errors.ten })}
                         />
                         <div><br></br></div>
                         <TextField

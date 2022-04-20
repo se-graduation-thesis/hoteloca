@@ -23,8 +23,8 @@ import * as actions from "actions/category.action"
 import { address } from 'assets/address';
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
-    { id: 'tenLoaiPhong', label: 'Tên loại phòng', minWidth: 100 },
-    { id: 'trangthai', label: 'Trạng thái', minWidth: 100 },
+    { id: 'ten', label: 'Tên loại phòng', minWidth: 100 },
+    { id: 'trangThai', label: 'Trạng thái', minWidth: 100 },
 ];
 
 export default function CategoryManager() {
@@ -63,13 +63,21 @@ export default function CategoryManager() {
         setPage(0);
     };
     useEffect(() => {
-        dispatch(actions.fetchAllCategoryByBrand(JSON.parse(account).khachsan_id))
+        if (account) {
+            dispatch(actions.fetchAllCategoryByBrand(JSON.parse(account).khachsan_id))
+        }
+
     }, [account])
 
     useEffect(() => {
         if (listCategory) {
             listCategory.forEach((e, i) => {
                 e.stt = i + 1
+                if (e.trangThai === 1) {
+                    e.trangThai = "Đang hoạt động"
+                } else if (e.trangThai === 2) {
+                    e.trangThai = "Tạm ngưng"
+                }
             })
             setListCategory(listCategory)
         }

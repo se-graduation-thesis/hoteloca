@@ -27,7 +27,7 @@ function AddTaskDrawer(props) {
 
   const list = (anchor) => (
     <Box
-      sx={{ width: 1300, padding: '20px 30px 30px 30px' }}
+      sx={{ width: 700, padding: '20px 30px 30px 30px' }}
       role="presentation"
     >
       <IconButton style={{ float: 'right', marginBottom: '20px', cursor: 'pointer' }}

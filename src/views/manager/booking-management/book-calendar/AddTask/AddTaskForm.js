@@ -91,25 +91,21 @@ function AddTaskForm(props) {
     <div>
       <form onSubmit={form.handleSubmit(handleSubmit)}>
         <Grid container spacing={1}>
-          <Grid item xs={7}>
+          <Grid item xs={12}>
             <Typography className="detail">Thông tin đặt phòng</Typography>
           </Grid>
-          <Grid item xs={5}>
-            <Typography className="detail">Dịch vụ sử dụng</Typography>
-          </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={6}>
             <InputField name="soDienThoai" label="Số điện thoại" form={form} />
             <InputField name="hoTen" label="Họ tên" form={form} />
             <TimeField name="startTime" label="Ngày đến" form={form} />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={6}>
             <InputField name="email" label="Email" form={form} />
             <InputField name="hoTen" label="Số CMND" form={form} />
             <TimeField name="endTime" label="Ngày đi" form={form} />
           </Grid>
-          <Grid item xs={1} >
-          </Grid>
-          <Grid item xs={5} >
+          <Grid item xs={12} >
+            <Typography className="detail">Dịch vụ sử dụng</Typography>
             <p>Các dịch vụ đang có sẵn tại phòng</p>
             {
               chipData.map((e) => (

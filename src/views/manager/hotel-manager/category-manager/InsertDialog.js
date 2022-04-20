@@ -19,8 +19,8 @@ import * as brandActions from "actions/brand.action"
 
 
 const initialFieldValues = {
-    tenLoaiPhong: "",
-    trangthai: "Đang hoạt động",
+    ten: "",
+    trangThai: 1,
     khachSanid: 0,
 };
 export default function InsertBrandDialog(props) {
@@ -49,7 +49,10 @@ export default function InsertBrandDialog(props) {
     };
 
     useEffect(() => {
-        dispatch(actions.fetchAllCategoryByBrand(JSON.parse(account).khachsan_id))
+        if (account) {
+            dispatch(actions.fetchAllCategoryByBrand(JSON.parse(account).khachsan_id))
+        }
+
     }, [account])
 
     useEffect(() => {
@@ -61,31 +64,30 @@ export default function InsertBrandDialog(props) {
         }
     }, [listCategory])
 
-
     // ADD BRAND MANAGER
     const validate = (fieldValues = values) => {
         let temp = { ...errors };
-        if ("tenLoaiPhong" in fieldValues) {
+        if ("ten" in fieldValues) {
             let err = 0;
             listCategoryShow.map((u) => {
                 if (
-                    u.tenLoaiPhong.toLowerCase() === fieldValues.tenLoaiPhong.toLowerCase()
+                    u.ten.toLowerCase() === fieldValues.ten.toLowerCase()
                 ) {
                     err = err + 1;
                 }
             });
             if (err >= 1) {
                 err < 1
-                    ? (temp.tenLoaiPhong = "")
-                    : (temp.tenLoaiPhong = "Loại phòng này đã có");
+                    ? (temp.ten = "")
+                    : (temp.ten = "Loại phòng này đã có");
             }
-            else if (fieldValues.tenLoaiPhong === "") {
-                temp.tenLoaiPhong = fieldValues.tenLoaiPhong ? "" : "Tên loại phòng không được để trống";
+            else if (fieldValues.ten === "") {
+                temp.ten = fieldValues.ten ? "" : "Tên loại phòng không được để trống";
             }
-            else if (fieldValues.tenLoaiPhong !== "") {
-                temp.tenLoaiPhong =
+            else if (fieldValues.ten !== "") {
+                temp.ten =
                     /^[a-zA-ZàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]{1,15}(?: [a-zA-ZàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]+){0,6}$/.test(
-                        fieldValues.tenLoaiPhong
+                        fieldValues.ten
                     )
                         ? ""
                         : "Tên khách sạn không chứa chữ số hoặc kí tự đặc biệt";
@@ -102,6 +104,9 @@ export default function InsertBrandDialog(props) {
         useForm(initialFieldValues, validate, 0);
 
     const handleSubmit = (e) => {
+        if (account) {
+            values.khachSanid = JSON.parse(account).khachsan_id
+        }
         if (validate()) {
             dispatch(actions.insertCategory(values))
             resetForm()
@@ -117,38 +122,17 @@ export default function InsertBrandDialog(props) {
                 <DialogContent style={{ padding: 30 }}>
                     <Formsy onSubmit={handleSubmit} >
                         <TextField
-                            id="tenLoaiPhong"
+                            id="ten"
                             label="Tên Loại Phòng"
                             variant="outlined"
                             helperText=" "
-                            name="tenLoaiPhong"
+                            name="ten"
                             type="text"
                             fullWidth
-                            value={values.tenLoaiPhong}
+                            value={values.ten}
                             onChange={handleInputChange}
-                            {...(errors.tenLoaiPhong && { error: true, helperText: errors.tenLoaiPhong })}
+                            {...(errors.ten && { error: true, helperText: errors.ten })}
                         />
-                        <div><br></br></div>
-                        <Grid container spacing={1}>
-                            <Grid item xs={12}>
-                                <FormControl fullWidth>
-                                    <InputLabel id="demo-simple-select-label">Chi nhánh</InputLabel>
-                                    <Select
-                                        labelId="demo-simple-select-label"
-                                        name="khachSanid"
-                                        label="Chi nhánh"
-                                        defaultValue=""
-                                        onChange={handleInputChange}
-                                    >
-                                        {
-                                            listBrandShow.map((e, i) => (
-                                                <MenuItem key={i} value={e.id} >{e.tenKhachSan}</MenuItem>
-                                            ))
-                                        }
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-                        </Grid>
                         <div><br></br></div>
                         <Button
                             fullWidth
