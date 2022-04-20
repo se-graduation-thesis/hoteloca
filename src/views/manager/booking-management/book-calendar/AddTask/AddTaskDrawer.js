@@ -1,9 +1,10 @@
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, Button, Drawer, IconButton, Step, StepButton, StepLabel, Stepper, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-// import AddTaskForm from "./AddTaskForm";
+import AddTaskForm from "./AddTaskForm";
 import * as React from 'react';
 import CustomerInfo from './components/customerInfo';
+import ReservationInfo from './components/reservationInfo';
 
 const useStyles = makeStyles((theme) => ({
   drawerWrapper: {
@@ -115,7 +116,7 @@ function AddTaskDrawer(props) {
               {activeStep === 0 ?
                 <CustomerInfo /> :
                 activeStep === 1 ?
-                  <></> :
+                  <ReservationInfo /> :
                   <></>
               }
             </div>

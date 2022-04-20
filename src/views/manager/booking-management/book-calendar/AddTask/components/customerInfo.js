@@ -36,7 +36,7 @@ export default function CustomerInfo() {
         <>
             <Grid container spacing={2}>
                 <Grid item xs={12} sx={{ marginTop: 5 }}>
-                    <Typography sx={{ fontWeight: 'bold', fontSize: 18 }}>Thông tin khách hàng</Typography>
+                    <Typography sx={{ fontWeight: 'bold', fontSize: 18 }}>Thông tin Khách hàng</Typography>
                 </Grid>
 
                 {/* HỌ - Tên */}
