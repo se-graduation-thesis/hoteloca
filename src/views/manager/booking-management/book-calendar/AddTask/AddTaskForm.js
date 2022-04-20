@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, Typography } from "@mui/material";
+import { Button, Checkbox, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import moment from "moment";
 import React from "react";
@@ -14,6 +14,7 @@ import SelectField from "../form-controls/SelectField";
 import TimeField from "../form-controls/TimeField";
 import { addTaskToLocalStorage } from 'actions/localStorage';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import imga from "assets/images/icons/room.png"
 
 import "./AddTask.scss";
 const priorityList = [
@@ -35,7 +36,14 @@ const useStyles = makeStyles((theme) => ({
 
 function AddTaskForm(props) {
   const [open, setOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = React.useState(false);
 
+  const handleClickIsOpen = () => {
+    setIsOpen(true);
+  };
+  const handleIsClose = () => {
+    setIsOpen(false);
+  };
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -89,6 +97,7 @@ function AddTaskForm(props) {
 
   return (
     <div>
+      <Button onClick={handleClickIsOpen}>gad</Button>
       <form onSubmit={form.handleSubmit(handleSubmit)}>
         <Grid container spacing={1}>
           <Grid item xs={12}>
@@ -130,6 +139,43 @@ function AddTaskForm(props) {
         >
           Add
         </Button>
+        <div style={{
+          backgroundColor: 'white',
+          position: "fixed",
+          zIndex: 1,
+          top: 0,
+          bottom: 0,
+          left: 700,
+          width: !isOpen ? "0px" : "500px",
+          transition: "width 1s",
+          display: "block",
+          visibility: !isOpen ? "hidden" : "visible",
+          padding: "50px 20px 10px 10px"
+        }}>
+          <Grid container spacing={5}>
+            <Grid item xs={3}>
+              <img src={imga} alt="bk" width={"100%"} />
+              <p>Phòng 101</p>
+              <Checkbox
+                inputProps={{ 'aria-label': 'controlled' }}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <img src={imga} alt="bk" width={"100%"} />
+            </Grid><Grid item xs={3}>
+              <img src={imga} alt="bk" width={"100%"} />
+            </Grid><Grid item xs={3}>
+              <img src={imga} alt="bk" width={"100%"} />
+            </Grid><Grid item xs={3}>
+              <img src={imga} alt="bk" width={"100%"} />
+            </Grid><Grid item xs={3}>
+              <img src={imga} alt="bk" width={"100%"} />
+            </Grid>
+            <Grid item xs={3}>
+              <img src={imga} alt="bk" width={"100%"} />
+            </Grid>
+          </Grid>
+        </div>
       </form>
       <Dialog
         open={open}
