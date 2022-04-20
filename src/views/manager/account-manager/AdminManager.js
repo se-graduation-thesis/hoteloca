@@ -18,13 +18,12 @@ import * as actions from "actions/manager.action"
 import { address } from 'assets/address';
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
-    { id: 'hoNguoidung', label: 'Họ người dùng', minWidth: 100 },
-    { id: 'tenNguoidung', label: 'Tên người dùng', minWidth: 100 },
-    { id: 'taiKhoan', label: 'Tài khoản', minWidth: 100 },
-    { id: 'soDienThoai', label: 'Số điện thoại', minWidth: 100 },
+    { id: 'ho', label: 'Họ người dùng', minWidth: 100 },
+    { id: 'ten', label: 'Tên người dùng', minWidth: 100 },
+    { id: 'dienThoai', label: 'Số điện thoại', minWidth: 100 },
     { id: 'email', label: 'Email', minWidth: 100 },
     { id: 'diaChi', label: 'Địa chỉ', minWidth: 100 },
-    { id: 'ngayVao', label: 'Ngày đăng kí', minWidth: 100 },
+    { id: 'ngayVaoLam', label: 'Ngày đăng kí', minWidth: 100 },
 ];
 
 export default function StickyHeadTable() {
@@ -50,7 +49,6 @@ export default function StickyHeadTable() {
         if (listAccount) {
             listAccount.forEach((e, i) => {
                 e.stt = i + 1
-                e.taiKhoan = e.taiKhoanid.taiKhoan
                 e.khachSan = e.khachSanid.tenKhachSan
             })
             setListAccount(listAccount)
