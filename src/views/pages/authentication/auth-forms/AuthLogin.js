@@ -70,7 +70,7 @@ const FirebaseLogin = ({ ...others }) => {
             if (res && res.data.id) {
                 const permission = {
                     user_id: res.data.id,
-                    role: res.data.taiKhoanid.quyen,
+                    role: 1,
                     khachsan_id: res.data.khachSanid.id
                 }
                 dispatch(actions.isAuthenticated(permission))

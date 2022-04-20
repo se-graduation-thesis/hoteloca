@@ -1,173 +1,171 @@
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import { DialogContentText, Divider, FormControl, Grid, InputLabel, MenuItem, Select } from '@mui/material';
-import { useForm } from 'react-hook-form';
-import { useEffect, useRef, useState } from 'react';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from "yup";
-import { useDispatch } from 'react-redux';
-import * as actions from 'actions/service.action';
-import PositionedSnackbar from '../../components/PositionedSnackbar';
+import PositionedSnackbar from "../../components/PositionedSnackbar";
+import * as actions from "actions/service.action";
+
 
 const width = 500;
 
-const SignupSchema = yup.object().shape({
-    tenDichVu: yup.string().required(),
-    donGia: yup.number().required().positive().integer(),
-});
+const initialService = {
+    ten: '',
+    donGia: '',
+    trangThai: 1,
+    moTa: ''
+};
 
 export default function AddServiceForm(props) {
+
     const dispatch = useDispatch();
 
-    const { register, handleSubmit, watch, formState: { errors }, reset, setValue } = useForm({
-        resolver: yupResolver(SignupSchema)
+    const services = useSelector((state) => state.service.services);
+    useEffect(() => {
+        dispatch(actions.fetchAllService())
+    }, [])
+    const [snackbarState, setSnackbarState] = useState(false);
+
+
+    const [service, setService] = useState({
+        ten: '',
+        donGia: '',
+        trangThai: 1,
+        moTa: ''
     });
 
-    const [trangThai, setTrangThai] = useState(1);
-    const [confirm, setConfirm] = useState(false);
-    const buttonRef = useRef(null);
-    const [snackbarState, setSnackbarState] = useState(false);
-    const [message, setMessage] = useState(null);
+    const [error, setError] = useState({
+        ten: null,
+        donGia: null,
+    });
 
-    const onSubmit = data => {
-        if (props.item) {
-            data.id = props.item.id;
-            setMessage("Cập nhật thành công.");
-        } else {
-            data.trangThai = 1;
-            setMessage("Thêm thành công.");
-        }
-        dispatch(actions.addService(data));
-        props.isShowAddForm(false);
-        reset();
+    const reset = () => {
+        setService(initialService);
+    }
 
-        setSnackbarState(true);
-        setTimeout(function () {
-            setSnackbarState(false);
-        }, 3000);
-    };
+    const handleTen = (event) => {
+        setService({ ...service, ten: event.target.value });
 
-    useEffect(() => {
-        if (props.item) {
-            setValue("tenDichVu", props.item.tenDichVu);
-            setValue("donGia", props.item.donGia);
-            props.item.trangThai === "Hoạt động" ?
-                setTrangThai(1) :
-                setTrangThai(0);
-        }
-    }, [props.item])
+        let checkName = services.filter(e => e.ten === event.target.value).length;
 
+        checkName > 0 ?
+            setError({ ...error, ten: 'Tên phòng đã tồn tại.' }) :
+            setError({ ...error, ten: null })
+    }
 
-
-    const handleChangeState = (event) => {
-        setTrangThai(event.target.value);
-    };
 
     const handleClose = () => {
         props.isShowAddForm(false);
-        props.handleEditService(null);
-        props.handleIsView(false);
-        reset();
+    }
+
+    const handleCheckValidation = () => {
+        const reNum = new RegExp(/\d+$/);
+        const reString = new RegExp(/\w+/);
+
+        let ten = null;
+        let donGia = null;
+
+        let kt = false;
+
+        if (!reNum.test(service.donGia)) {
+            donGia = 'Đơn giá phải là một con số.';
+            kt = true;
+        }
+
+        if (!reString.test(service.ten)) {
+            ten = 'Tên không được để trống.';
+            kt = true;
+        }
+
+        setError({
+            ten,
+            donGia
+        })
+        return !kt;
+
+    }
+
+    const submit = () => {
+        if (handleCheckValidation()) {
+            dispatch(actions.addService(service));
+
+            props.isShowAddForm(false);
+            reset();
+
+            setSnackbarState(true);
+            setTimeout(function () {
+                setSnackbarState(false);
+            }, 3000);
+        }
+
+        console.log(service)
+
     }
 
     return (
         <>
-            <Dialog open={props.open} onClose={handleClose} >
-                <DialogTitle sx={{ fontSize: 18 }}>
-                    {props.item ?
-                        props.isView ?
-                            <>
-                                CHI TIẾT DỊCH VỤ
-                                <Button style={{ float: 'right' }}
-                                    onClick={() => props.handleIsView(false)}
-                                    variant="outlined"
-                                >
-                                    Chỉnh sửa
-                                </Button>
-                            </>
-                            : "CẬP NHẬT DỊCH VỤ"
-                        : "THÊM DỊCH VỤ"
-                    }
-                </DialogTitle>
+            <Dialog open={props.open} onClose={handleClose}>
+                <DialogTitle sx={{ fontSize: 18 }}>THÊM DỊCH VỤ</DialogTitle>
                 <Divider />
 
-                <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-                    <DialogContent>
-                        <Grid container spacing={2} sx={{ width }}>
-                            <Grid item xs={12}>
-                                <TextField inputProps={{ readOnly: props.isView, }} {...register("tenDichVu")} id="outlined-basic" label="Tên Phòng" variant="outlined" fullWidth />
-                                {errors.tenDichVu && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}> Tên phòng không dược để trống.</span></>}
-                            </Grid>
-                            <Grid item xs={props.item ? 6 : 12}>
-                                <TextField {...register("donGia")} inputProps={{ readOnly: props.isView, }} id="outlined-basic" label="Đơn Giá" variant="outlined" fullWidth />
-                                {errors.donGia && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}> Đơn giá phải là một số.</span></>}
-                            </Grid>
-                            {
-                                props.item ?
-                                    <Grid item xs={6}>
-                                        <FormControl fullWidth>
-                                            <InputLabel id="demo-simple-select-label">Trạng Thái</InputLabel>
-                                            <Select
-                                                labelId="demo-simple-select-label"
-                                                id="demo-simple-select"
-                                                {...register("trangThai")}
-                                                value={trangThai}
-                                                label="Trạng Thái"
-                                                onChange={handleChangeState}
-                                                inputProps={{ readOnly: props.isView, }}
-                                            >
-                                                <MenuItem value={1}>Hoạt động</MenuItem>
-                                                <MenuItem value={0}>Ngừng hoạt động</MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                    </Grid> : <></>
-                            }
-                        </Grid>
-                    </DialogContent>
-                    {!props.isView
-                        ? <DialogActions>
-                            <Button onClick={handleClose} variant="outlined" >Hủy</Button>
-                            <Button ref={buttonRef} type="submit" style={props.item ? hidden : {}} variant="outlined">Thêm</Button>
-                            <Button onClick={() => setConfirm(true)} variant="outlined" style={!props.item ? hidden : {}}>Cập nhật</Button>
-                        </DialogActions>
-                        : <></>
-                    }
-                </form>
-            </Dialog >
-            <div>
-                <Dialog
-                    open={confirm}
-                    onClose={() => setConfirm(false)}
-                    aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                >
-                    <DialogTitle id="alert-dialog-title">
-                        {"Bạn chắc chắn muốn thay đổi thông tin Dịch vụ?"}
-                    </DialogTitle>
-                    <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                            Thông tin dịch vụ sẽ được thay đổi và cập nhật loại toàn bộ trong hệ thống.
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={() => setConfirm(false)}>Hủy</Button>
-                        <Button onClick={() => { buttonRef.current.click(); setConfirm(false) }} autoFocus>
-                            Đồng ý
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-            </div>
-            <PositionedSnackbar open={snackbarState} message={message} />
-        </>
-    );
-}
+                <DialogContent>
+                    <Grid container spacing={2} sx={{ width }}>
+                        {/* Tên Phòng */}
+                        <Grid item xs={12}>
+                            <TextField
+                                value={service.ten}
+                                inputProps={{ readOnly: props.isView, }}
+                                autoFocus
+                                id="outlined-basic"
+                                label="Tên Dịch Vụ"
+                                variant="outlined"
+                                fullWidth
 
-const hidden = {
-    visibility: 'hidden',
-    position: 'absolute',
+                                onChange={handleTen}
+                            />
+                            {error.ten && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.ten}</span></>}
+                        </Grid>
+
+                        {/* Đơn Giá */}
+                        <Grid item xs={12}>
+                            <TextField
+                                value={service.donGia}
+                                inputProps={{ readOnly: props.isView, }}
+                                id="outlined-basic"
+                                label="Đơn Giá"
+                                variant="outlined"
+                                fullWidth
+
+                                onChange={(e) => setService({ ...service, donGia: e.target.value })}
+                            />
+                            {error.donGia && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.donGia}</span></>}
+                        </Grid>
+
+                        {/* Mô Tả */}
+                        <Grid item xs={12}>
+                            <TextField
+                                value={service.moTa}
+                                inputProps={{ readOnly: props.isView, }}
+                                id="outlined-basic"
+                                label="Mô tả"
+                                variant="outlined"
+                                fullWidth
+                                multiline
+                                rows={4}
+
+                                onChange={(e) => setService({ ...service, moTa: e.target.value })}
+                            />
+                        </Grid>
+                    </Grid>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} variant="outlined">Hủy</Button>
+                    <Button onClick={submit} variant="outlined">Thêm</Button>
+                </DialogActions>
+            </Dialog>
+
+            <div>
+                <PositionedSnackbar open={snackbarState} message={"Thêm Thành Công."} />
+            </div>
+        </>
+    )
 }

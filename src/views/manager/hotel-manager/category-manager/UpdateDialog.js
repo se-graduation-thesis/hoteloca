@@ -19,7 +19,7 @@ import { Edit } from '@mui/icons-material';
 
 import * as brandActions from "actions/brand.action"
 const initialFieldValues = {
-    tenKhachSan: "",
+    ten: "",
     diaChi: "",
     trangthai: "",
     soDienThoai: ""
@@ -86,27 +86,27 @@ export default function UpdateBrand(props) {
     // ADD BRAND MANAGER
     const validate = (fieldValues = values) => {
         let temp = { ...errors };
-        if ("tenLoaiPhong" in fieldValues) {
+        if ("ten" in fieldValues) {
             let err = 0;
             listCategoryShow.map((u) => {
                 if (
-                    u.tenLoaiPhong.toLowerCase() === fieldValues.tenLoaiPhong.toLowerCase() && fieldValues.tenLoaiPhong !== tenLp
+                    u.ten.toLowerCase() === fieldValues.ten.toLowerCase() && fieldValues.ten !== tenLp
                 ) {
                     err = err + 1;
                 }
             });
             if (err >= 1) {
                 err < 1
-                    ? (temp.tenLoaiPhong = "")
-                    : (temp.tenLoaiPhong = "Loại phòng này đã có");
+                    ? (temp.ten = "")
+                    : (temp.ten = "Loại phòng này đã có");
             }
-            else if (fieldValues.tenLoaiPhong === "") {
-                temp.tenLoaiPhong = fieldValues.tenLoaiPhong ? "" : "Tên khách sạn không được để trống";
+            else if (fieldValues.ten === "") {
+                temp.ten = fieldValues.ten ? "" : "Tên khách sạn không được để trống";
             }
-            else if (fieldValues.tenLoaiPhong !== "") {
-                temp.tenLoaiPhong =
+            else if (fieldValues.ten !== "") {
+                temp.ten =
                     /^[a-zA-ZàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]{1,15}(?: [a-zA-ZàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]+){0,6}$/.test(
-                        fieldValues.tenLoaiPhong
+                        fieldValues.ten
                     )
                         ? ""
                         : "Tên khách sạn không chứa chữ số hoặc kí tự đặc biệt";
@@ -134,11 +134,11 @@ export default function UpdateBrand(props) {
             actions.findById(props.id).then((res) => {
                 setValues({
                     id: res.data.id,
-                    tenLoaiPhong: res.data.tenLoaiPhong,
-                    trangthai: res.data.trangthai,
+                    ten: res.data.ten,
+                    trangThai: res.data.trangThai,
                     khachSanid: res.data.khachSanid.id,
                 }),
-                    setTenLp(res.data.tenLoaiPhong)
+                    setTenLp(res.data.ten)
             })
         }
     }, [props.id])
@@ -161,56 +161,34 @@ export default function UpdateBrand(props) {
                 <DialogContent style={{ padding: 30 }}>
                     <Formsy onSubmit={handleSubmit} >
                         <TextField
-                            id="tenLoaiPhong"
+                            id="ten"
                             label="Tên Loại Phòng"
                             variant="outlined"
                             helperText=" "
-                            name="tenLoaiPhong"
+                            name="ten"
                             type="text"
                             fullWidth
-                            value={values.tenLoaiPhong || ''}
+                            value={values.ten || ''}
                             onChange={handleInputChange}
                             inputProps={{ readOnly: disabled }}
-                            {...(errors.tenLoaiPhong && { error: true, helperText: errors.tenLoaiPhong })}
+                            {...(errors.ten && { error: true, helperText: errors.ten })}
                         />
-                        <div><br></br></div>
                         <Grid container spacing={1}>
-                            <Grid item xs={12}>
-                                <FormControl fullWidth>
-                                    <InputLabel id="demo-simple-select-label">Chi nhánh</InputLabel>
-                                    <Select
-                                        labelId="demo-simple-select-label"
-                                        name="khachSanid"
-                                        label="Chi nhánh"
-                                        defaultValue=""
-                                        value={values.khachSanid || ''}
-                                        inputProps={{ readOnly: disabled }}
-                                        onChange={handleInputChange}
-                                    >
-                                        {
-                                            listBrandShow.map((e, i) => (
-                                                <MenuItem key={i} value={e.id} >{e.tenKhachSan}</MenuItem>
-                                            ))
-                                        }
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-
                             <Grid item xs={12}>
                                 <div><br></br></div>
                                 <FormControl fullWidth>
                                     <InputLabel id="demo-simple-select-label">Trạng thái</InputLabel>
                                     <Select
                                         labelId="demo-simple-select-label"
-                                        name="trangthai"
+                                        name="trangThai"
                                         label="Trạng thái"
                                         defaultValue=""
                                         onChange={handleInputChange}
-                                        value={values.trangthai || ''}
+                                        value={values.trangThai || ''}
                                         inputProps={{ readOnly: disabled }}
                                     >
-                                        <MenuItem value={'Đang hoạt động'} >{'Đang hoạt động'} </MenuItem>
-                                        <MenuItem value={'Tạm ngưng'} >{'Tạm ngưng'} </MenuItem>
+                                        <MenuItem value={1} >{'Đang hoạt động'} </MenuItem>
+                                        <MenuItem value={2} >{'Tạm ngưng'} </MenuItem>
                                     </Select>
                                 </FormControl>
                             </Grid>

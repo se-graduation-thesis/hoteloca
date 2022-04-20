@@ -7,7 +7,7 @@ export default {
     account(url = baseApi + 'account/') {
         return {
             fetchAll: () => axios.get(url + 'get-all-account'),
-            register: (account) => axios.post(url + "register", account),
+            register: (account) => axios.post(url + "employee/register", account),
             login: (username, pass) => axios.post(url + "login/" + username + "&" + pass),
             add_admin: (admin) => axios.post(url + "add-admin", admin),
         };

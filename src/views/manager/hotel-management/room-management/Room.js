@@ -14,16 +14,20 @@ import SearchIcon from "@mui/icons-material/Search";
 import Visibility from '@mui/icons-material/Visibility';
 import { useDispatch, useSelector } from 'react-redux';
 import * as actions from "actions/room.action";
+import * as actionCategory from 'actions/category.action';
 import EditIcon from '@mui/icons-material/Edit';
 import AddRoomForm from './room-components/addRoomForm';
+import EditRoomForm from './room-components/editRoomForm';
 
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
-    { id: 'tenPhong', label: 'Tên Phòng', minWidth: 100 },
+    { id: 'ten', label: 'Tên Phòng', minWidth: 100 },
     { id: 'loaiPhongid', label: 'Loại Phòng', minWidth: 100 },
+    { id: 'soNguoi', label: 'Số Người', minWidth: 100 },
+    { id: 'soGiuong', label: 'Số Giường', minWidth: 100 },
     { id: 'donGia', label: 'Đơn Giá', minWidth: 100 },
     { id: 'trangThai', label: 'Trạng Thái', minWidth: 100 },
-    { id: 'kichThuoc', label: 'KichThuoc', minWidth: 100 },
+    { id: 'dienTich', label: 'KichThuoc', minWidth: 100 },
     { id: 'anh', label: 'Ảnh', minWidth: 100 },
     { id: 'moTa', label: 'Mô Tả', minWidth: 100 },
 ];
@@ -40,17 +44,19 @@ export default function Room() {
     const rooms = useSelector((state) => state.room.rooms);
     const roombyname = useSelector((state) => state.room.room_by_name);
     const [addForm, setAddForm] = React.useState(false);
+    const [editForm, setEditForm] = React.useState(false);
     const [editRoom, setEditRoom] = React.useState(null);
     const [isView, setIsView] = React.useState(false);
     const [searchContent, setSearchContent] = React.useState("");
 
-    const categories = useSelector(state => state.category.listCategory);
+    const categories = useSelector(state => state.category.listCategoryByBrand);
 
     const handleIsView = (value) => setIsView(value);
 
     const handleEditRoom = (item) => setEditRoom(item);
 
     const isShowAddForm = (value) => setAddForm(value);
+    const isShowEditForm = (value) => setEditForm(value);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -64,6 +70,10 @@ export default function Room() {
     };
 
     const rows = []
+
+    React.useEffect(() => {
+        dispatch(actionCategory.fetchAllCategoryByBrand(user.khachsan_id));
+    }, [])
 
     React.useEffect(() => {
         dispatch(actions.fetchAllRoomByCategory(loaiPhong, user.khachsan_id))
@@ -136,7 +146,7 @@ export default function Room() {
                                 onChange={handleChangeRoomType}
                             >
                                 <MenuItem value={0}>Tất cả</MenuItem>
-                                {categories.map((item) => <MenuItem key={item.id} value={item.id}>{item.tenLoaiPhong}</MenuItem>)}
+                                {categories.map((item) => <MenuItem key={item.id} value={item.id}>{item.ten}</MenuItem>)}
                             </Select>
                         </FormControl>
                     </Grid>
@@ -180,7 +190,7 @@ export default function Room() {
                         </TableHead>
                         <TableBody>
                             {listRoom
-                                .filter(item => item.tenPhong.includes(searchContent))
+                                .filter(item => item.ten.includes(searchContent))
                                 .filter(item => stateRoom === "full" ? item : item.trangThai === stateRoom)
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row) => {
@@ -192,17 +202,17 @@ export default function Room() {
                                                     <TableCell key={column.id} align={column.align}>
                                                         {column.format && typeof value === 'number'
                                                             ? column.format(value)
-                                                            : column.id === 'loaiPhongid' ? value.tenLoaiPhong
+                                                            : column.id === 'loaiPhongid' ? value.ten
                                                                 : value
                                                         }
                                                     </TableCell>
                                                 );
                                             })}
                                             <TableCell key={"action"}>
-                                                <IconButton aria-label="show" color="success" onClick={() => { handleEditRoom(row); isShowAddForm(true); handleIsView(true) }}>
+                                                <IconButton aria-label="show" color="success" onClick={() => { handleEditRoom(row); isShowEditForm(true); handleIsView(true) }}>
                                                     <Visibility />
                                                 </IconButton>
-                                                <IconButton aria-label="edit" color="primary" onClick={() => { handleEditRoom(row); isShowAddForm(true); }}>
+                                                <IconButton aria-label="edit" color="primary" onClick={() => { handleEditRoom(row); isShowEditForm(true); }}>
                                                     <EditIcon />
                                                 </IconButton>
                                             </TableCell>
@@ -225,10 +235,14 @@ export default function Room() {
             <div>
                 <AddRoomForm open={addForm}
                     isShowAddForm={isShowAddForm}
-                    item={editRoom}
-                    handleEditRoom={handleEditRoom}
-                    isView={isView}
-                    handleIsView={handleIsView}
+                />
+
+                <EditRoomForm
+                    open={editForm}
+                    isShowEditForm={isShowEditForm}
+                    item={editRoom}  //item
+                    isView={isView} //type = view
+                    handleIsView={handleIsView} // changetype
                 />
             </div>
         </div>

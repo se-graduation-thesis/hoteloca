@@ -16,13 +16,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as actions from "actions/service.action";
 import EditIcon from '@mui/icons-material/Edit';
 import AddServiceForm from './service-components/addServiceForm';
+import EditServiceForm from './service-components/EditServiceForm';
 // import AddRoomForm from './room-components/addRoomForm';
 
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
-    { id: 'tenDichVu', label: 'Tên Dịch Vụ', minWidth: 100 },
+    { id: 'ten', label: 'Tên Dịch Vụ', minWidth: 100 },
     { id: 'donGia', label: 'Đơn Giá', minWidth: 100 },
     { id: 'trangThai', label: 'Trạng Thái', minWidth: 100 },
+    { id: 'moTa', label: 'Mô Tả', minWidth: 100 },
 ];
 
 export default function Service() {
@@ -32,6 +34,7 @@ export default function Service() {
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const services = useSelector((state) => state.service.services);
     const [addForm, setAddForm] = React.useState(false);
+    const [editForm, setEditForm] = React.useState(false);
     const [editService, setEditService] = React.useState(null);
     const [isView, setIsView] = React.useState(false);
 
@@ -40,6 +43,7 @@ export default function Service() {
     const handleEditService = (item) => setEditService(item);
 
     const isShowAddForm = (value) => setAddForm(value);
+    const isShowEditForm = (value) => setEditForm(value);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -131,17 +135,16 @@ export default function Service() {
                                                     <TableCell key={column.id} align={column.align}>
                                                         {column.format && typeof value === 'number'
                                                             ? column.format(value)
-                                                            : column.id === 'loaiPhongid' ? value.tenLoaiPhong
-                                                                : value
+                                                            : value
                                                         }
                                                     </TableCell>
                                                 );
                                             })}
                                             <TableCell key={"action"}>
-                                                <IconButton aria-label="show" color="success" onClick={() => { handleEditService(row); isShowAddForm(true); handleIsView(true) }}>
+                                                <IconButton aria-label="show" color="success" onClick={() => { handleEditService(row); isShowEditForm(true); handleIsView(true) }}>
                                                     <Visibility />
                                                 </IconButton>
-                                                <IconButton aria-label="edit" color="primary" onClick={() => { handleEditService(row); isShowAddForm(true); }}>
+                                                <IconButton aria-label="edit" color="primary" onClick={() => { handleEditService(row); isShowEditForm(true); }}>
                                                     <EditIcon />
                                                 </IconButton>
                                             </TableCell>
@@ -164,8 +167,12 @@ export default function Service() {
             <div>
                 <AddServiceForm open={addForm}
                     isShowAddForm={isShowAddForm}
+                />
+
+                <EditServiceForm
+                    open={editForm}
+                    isShowEditForm={isShowEditForm}
                     item={editService}
-                    handleEditService={handleEditService}
                     isView={isView}
                     handleIsView={handleIsView}
                 />

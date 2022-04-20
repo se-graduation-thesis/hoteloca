@@ -16,7 +16,7 @@ export const categoryReducer = (state = initialState, action) => {
         case ACTION_TYPES.INSERT_CATEGORY:
             return {
                 ...state,
-                listCategory: [...action.payload],
+                listCategoryByBrand: [...action.payload],
             };
         case ACTION_TYPES.FETCH_ALL_CATEGORY_BY_BRAND:
             return {

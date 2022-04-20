@@ -1,3 +1,6 @@
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import * as actions from "actions/room.action";
 import RoomItem from "./RoomItem";
 
 const room = [
@@ -23,10 +26,16 @@ const room = [
 ]
 
 export default function Rooms() {
-    const arr = Array.from(new Array(5));
+    const dispatch = useDispatch();
+
+    const rooms = useSelector((state) => state.room.rooms);
+    useEffect(() => {
+        dispatch(actions.fetchAllRoomByCategory(0, 1))
+    }, [])
+
     return (
 
-        room.map((item) => <RoomItem key={item.id} room={item} />)
+        rooms.map((item) => <RoomItem key={item.id} room={item} />)
 
     )
 }

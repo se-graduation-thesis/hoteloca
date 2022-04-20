@@ -8,15 +8,15 @@ export default function RoomItem({ room }) {
         <div className="body-room__list-room" style={{ borderBottom: '1px solid Chocolate', paddingBottom: 30, marginTop: 30 }}>
             <Grid container spacing={2}>
                 <Grid item xs={4}>
-                    <img src={room.img}
+                    <img src={room.hinhAnh}
                         alt="image"
                         style={{ height: 190 }} />
                 </Grid>
 
                 <Grid item xs={5.5}>
                     <div className="room-title" style={{ borderBottom: '1px solid Chocolate', marginTop: -10 }}>
-                        <h2 style={{ color: '#505050' }}>{room.title}</h2>
-                        <p>Phòng cơ sở của chúng tôi cũng cấp tầm nhìn ngoạn mục của đường chân trời.</p>
+                        <h2 style={{ color: '#505050' }}>{room.ten}</h2>
+                        <p>Phòng cơ sở của chúng tôi cung cấp tầm nhìn ngoạn mục của đường chân trời.</p>
                         <ul>
                             <li>Size: 24 m2</li>
                             <li>Giường: 2 giường đôi </li>
@@ -33,7 +33,7 @@ export default function RoomItem({ room }) {
                 <Grid item xs={2.5}>
                     <div style={{ textAlign: 'center', marginTop: 50 }}>
                         From
-                        <h1 style={{ fontSize: 30 }}>{room.price}</h1>
+                        <h1 style={{ fontSize: 30 }}>{room.donGia}</h1>
                         <Link to="/home/list-room/room-detail" style={{ textDecoration: 'none' }}>
                             <Button variant="contained" sx={{ backgroundColor: 'Chocolate', color: 'white' }}>Thêm Thông Tin</Button>
                         </Link>

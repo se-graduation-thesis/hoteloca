@@ -23,10 +23,10 @@ import * as actions from "actions/brand.action"
 import { address } from 'assets/address';
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
-    { id: 'tenKhachSan', label: 'Tên khách sạn', minWidth: 100 },
+    { id: 'ten', label: 'Tên khách sạn', minWidth: 100 },
     { id: 'soDienThoai', label: 'Số điện thoại', minWidth: 100 },
     { id: 'diaChi', label: 'Địa chỉ', minWidth: 100 },
-    { id: 'trangthai', label: 'Trạng thái', minWidth: 100 },
+    { id: 'trangThai', label: 'Trạng thái', minWidth: 100 },
 ];
 
 export default function BrandManager() {
@@ -88,7 +88,7 @@ export default function BrandManager() {
             setListBrand(listBrand)
         }
     }, [listBrand])
-
+    console.log(listBrandShow)
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }} style={{ padding: 20 }}>
             <Grid container spacing={1} style={{ marginTop: 10, padding: 10 }}>
@@ -139,9 +139,9 @@ export default function BrandManager() {
                     <TableBody>
                         {listBrandShow
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row) => {
+                            .map((row, i) => {
                                 return (
-                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.stt}>
+                                    <TableRow hover role="checkbox" tabIndex={-1} key={i}>
                                         {columns.map((column) => {
                                             const value = row[column.id];
                                             return (
