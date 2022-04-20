@@ -52,4 +52,9 @@ export default {
             add_customer: (customer) => axios.post(url, customer),
         }
     },
+    bill_detail(url = baseApi + 'bill-detail/') {
+        return {
+            fetchAllBillDetailByStatus: (id) => axios.get(url + 'get-all-bill-detail-by-status/' + id),
+        }
+    }
 }
