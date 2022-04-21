@@ -6,7 +6,10 @@ import CustomerInfo from './components/customerInfo';
 import ReservationInfo from './components/reservationInfo';
 import ServiceInfo from './components/serviceInfo';
 import moment from "moment";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import * as actionCustomer from 'actions/customer.action';
+import * as actionBillDetail from 'actions/bill-detail.action';
+import * as actionBill from 'actions/bill.action';
 
 const useStyles = makeStyles((theme) => ({
   drawerWrapper: {
@@ -18,6 +21,7 @@ const steps = ['Thông tin khách hàng', 'Thông tin đặt phòng', 'Thông ti
 
 function AddTaskDrawer(props) {
   const classes = useStyles();
+  const dispatch = useDispatch();
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -106,12 +110,33 @@ function AddTaskDrawer(props) {
     ngayRa: moment(new Date()).format('YYYY-MM-DDTHH:mm:ss'),
     tienCoc: '',
     trangThai: 1,
-    yeuCau: ''
+    yeuCau: '',
+    khachHangid: null
   })
 
-  console.log(reservation)
   const handleReservation = (title, value) => {
     setReservation({ ...reservation, [title]: value })
+  }
+  // ============================================
+
+
+  const saveCustomer = () => {
+    actionCustomer.addCustomer(customer).then((response) => {
+      reservation.khachHangid = response.data.id;
+      saveBill(reservation)
+      // setReservation({ ...reservation, khachHangid: response.data.id })
+    }).then();
+
+  }
+
+  const saveBill = (a) => {
+    console.log(a)
+    dispatch(actionBill.addBill(a));
+  }
+  console.log(reservation);
+
+  const submit = () => {
+    saveCustomer();
   }
 
   const list = (anchor) => (
@@ -131,7 +156,7 @@ function AddTaskDrawer(props) {
             {/* <Typography sx={{ mt: 2, mb: 1 }}>
               All steps completed - you're finished
             </Typography> */}
-            <Button variant="contained" fullWidth sx={{ mt: 20 }}>ADD</Button>
+            <Button variant="contained" fullWidth sx={{ mt: 20 }} onClick={submit}>ADD</Button>
             <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
               <Box sx={{ flex: '1 1 auto' }} />
               <Button onClick={handleReset}>Đặt lại</Button>

@@ -49,6 +49,7 @@ export default {
     customer(url = baseApi + 'customer/') {
         return {
             fetchAllCustomer: () => axios.get(url + 'get-all-customer'),
+            getCustomerById: (id) => axios.get(url + id),
             add_customer: (customer) => axios.post(url, customer),
         }
     },
@@ -58,15 +59,12 @@ export default {
             add_bill_detail: (billDetail) => axios.post(url, billDetail),
         }
     },
-    bill(url = baseApi + 'bill/') {
-        return {
-            add_bill: (bill) => axios.post(url, bill),
-        }
-    },
+
     bill(url = baseApi + 'bill/') {
         return {
             fetchAllBillByStatusAccept: () => axios.get(url + 'get-all-bill-by-status-accept/'),
-            fetchAllBillByStatusFinish: () => axios.get(url + 'get-all-bill-by-status-finish/'),
+            fetchAllBillByStatus: (id) => axios.get(url + 'get-all-bill-by-status/' + id),
+            add_bill: (bill) => axios.post(url, bill),
         }
     }
 }

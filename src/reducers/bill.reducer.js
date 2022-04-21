@@ -3,6 +3,7 @@ import { ACTION_TYPES } from "../actions/bill.action";
 const initialState = {
     listBillByStatusAccept: [],
     listBillByStatusFinish: [],
+    bill: null
 };
 
 export const billReducer = (state = initialState, action) => {
@@ -16,6 +17,12 @@ export const billReducer = (state = initialState, action) => {
             return {
                 ...state,
                 listBillByStatusFinish: [...action.payload],
+            };
+
+        case ACTION_TYPES.ADD_BILL:
+            return {
+                ...state,
+                bill: action.payload,
             };
         default:
             return state;
