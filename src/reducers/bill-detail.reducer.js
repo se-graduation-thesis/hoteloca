@@ -2,6 +2,7 @@ import { ACTION_TYPES } from "../actions/bill-detail.action";
 
 const initialState = {
     listBillByStatus: [],
+    bills: [],
 };
 
 export const billDetailReducer = (state = initialState, action) => {

@@ -1,4 +1,4 @@
-import { DatePicker, LocalizationProvider } from "@mui/lab";
+import { DatePicker, DateTimePicker, LocalizationProvider } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { Button, Divider, Grid, InputAdornment, OutlinedInput, TextField } from "@mui/material";
 import { useState } from "react";
@@ -13,9 +13,9 @@ export default function FilterForm() {
     return (
         <div style={{ border: '1px solid Chocolate', padding: "10px 10px" }}>
             <Grid container spacing={1}>
-                <Grid item xs={2.5}>
+                <Grid item xs={3}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
-                        <DatePicker
+                        <DateTimePicker
                             label="Check - In"
                             value={checkIn}
                             minDate={new Date()}
@@ -27,9 +27,9 @@ export default function FilterForm() {
                     </LocalizationProvider>
                 </Grid>
 
-                <Grid item xs={2.5}>
+                <Grid item xs={3}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
-                        <DatePicker
+                        <DateTimePicker
                             label="Check - Out"
                             value={checkOut}
                             minDate={checkIn}
@@ -41,7 +41,7 @@ export default function FilterForm() {
                     </LocalizationProvider>
                 </Grid>
 
-                <Grid item xs={2.5}>
+                <Grid item xs={2}>
                     <OutlinedInput
                         id="outlined-adornment-amount"
                         defaultValue={1}
@@ -50,7 +50,7 @@ export default function FilterForm() {
                     />
                 </Grid>
 
-                <Grid item xs={2.5}>
+                <Grid item xs={2}>
                     <OutlinedInput
                         id="outlined-adornment-amount"
                         defaultValue={0}
