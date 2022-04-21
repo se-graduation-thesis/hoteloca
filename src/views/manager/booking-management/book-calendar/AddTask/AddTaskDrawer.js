@@ -84,6 +84,8 @@ function AddTaskDrawer(props) {
     setCompleted({});
   };
 
+  // ===================================================================
+
   const [customer, setCustomer] = React.useState({
     ho: '',
     ten: '',
@@ -117,27 +119,25 @@ function AddTaskDrawer(props) {
   const handleReservation = (title, value) => {
     setReservation({ ...reservation, [title]: value })
   }
-  // ============================================
 
-
-  const saveCustomer = () => {
-    actionCustomer.addCustomer(customer).then((response) => {
-      reservation.khachHangid = response.data.id;
-      saveBill(reservation)
-      // setReservation({ ...reservation, khachHangid: response.data.id })
-    }).then();
-
-  }
-
-  const saveBill = (a) => {
-    console.log(a)
-    dispatch(actionBill.addBill(a));
-  }
-  console.log(reservation);
+  let params = location.href.split('/');
+  let token = params[params.length - 1];
 
   const submit = () => {
-    saveCustomer();
+    actionCustomer.addCustomer(customer).then((response) => {
+      reservation.khachHangid = response.data.id;
+      actionBill.addBill(reservation).then((resonpe) => {
+        const billDetail = {
+          phieuThueid: response.data.id,
+          phongId: token
+        }
+        dispatch(actionBillDetail.addBillDetail(billDetail));
+      })
+    }).then();
+
+    toggleDrawer(false)
   }
+
 
   const list = (anchor) => (
     <Box sx={{ width: 700, padding: '20px 30px 30px 30px' }}>
@@ -169,7 +169,7 @@ function AddTaskDrawer(props) {
                 <CustomerInfo customer={customer} handleCustomer={handleCustomer} /> :
                 activeStep === 1 ?
                   <ReservationInfo reservation={reservation} handleReservation={handleReservation} /> :
-                  <ServiceInfo />
+                  <ServiceInfo token={token} />
               }
             </div>
             <div style={{ position: 'fixed', top: 650 }}>

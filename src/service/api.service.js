@@ -64,5 +64,10 @@ export default {
             fetchAllBillByStatus: (id) => axios.get(url + 'get-all-bill-by-status/' + id),
             add_bill: (bill) => axios.post(url, bill),
         }
+    },
+    phongTN(url = baseApi + 'phongTN/') {
+        return {
+            getByPhongId: (id) => axios.get(url + 'get-by-phong/' + id),
+        }
     }
 }

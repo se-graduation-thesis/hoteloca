@@ -10,6 +10,7 @@ import { customerReducer } from '../reducers/customer.reducer';
 
 import { brandReducer } from 'reducers/brand.reducer';
 import { categoryReducer } from 'reducers/category.reducer';
+import { phongTNReducer } from 'reducers/phongTN.reducer';
 import taskReducer from 'reducers/booking.reducer';
 
 import { billDetailReducer } from 'reducers/bill-detail.reducer';
@@ -26,6 +27,7 @@ const reducer = combineReducers({
     brand: brandReducer,
     category: categoryReducer,
     customer: customerReducer,
+    phongTN: phongTNReducer,
     task: taskReducer,
     bill_detail: billDetailReducer,
     bill: billReducer

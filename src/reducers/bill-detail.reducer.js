@@ -2,7 +2,7 @@ import { ACTION_TYPES } from "../actions/bill-detail.action";
 
 const initialState = {
     listBillByStatus: [],
-    billDetails: [],
+    billDetail: null,
 };
 
 export const billDetailReducer = (state = initialState, action) => {
@@ -16,7 +16,7 @@ export const billDetailReducer = (state = initialState, action) => {
         case ACTION_TYPES.ADD_BILL_DETAIL:
             return {
                 ...state,
-                billDetails: [...action.payload],
+                billDetail: action.payload,
             };
         default:
             return state;

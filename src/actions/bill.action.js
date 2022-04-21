@@ -6,17 +6,10 @@ export const ACTION_TYPES = {
 };
 
 
-export const addBill = (bill) => (dispatch) => {
-    apiService
+export const addBill = (bill) => {
+    return apiService
         .bill()
         .add_bill(bill)
-        .then((response) => {
-            dispatch({
-                type: ACTION_TYPES.ADD_BILL,
-                payload: response.data,
-            });
-        })
-        .catch((err) => console.log(err))
 };
 
 export const fetchBillByStatus = (status) => (dispatch) => {
