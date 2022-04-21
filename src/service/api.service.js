@@ -65,7 +65,8 @@ export default {
     },
     bill(url = baseApi + 'bill/') {
         return {
-            fetchAllBillByStatus: (id) => axios.get(url + 'get-all-bill-by-status/' + id),
+            fetchAllBillByStatusAccept: () => axios.get(url + 'get-all-bill-by-status-accept/'),
+            fetchAllBillByStatusFinish: () => axios.get(url + 'get-all-bill-by-status-finish/'),
         }
     }
 }
