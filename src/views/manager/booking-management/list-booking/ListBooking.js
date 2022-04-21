@@ -19,14 +19,15 @@ import UpdateBrand from './UpdateBrand'
 import { useState, useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import * as actions from "actions/bill-detail.action"
+import * as actions from "actions/bill.action"
 import { address } from 'assets/address';
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
-    { id: 'ten', label: 'Tên khách sạn', minWidth: 100 },
-    { id: 'soDienThoai', label: 'Số điện thoại', minWidth: 100 },
-    { id: 'diaChi', label: 'Địa chỉ', minWidth: 100 },
-    { id: 'trangThai', label: 'Trạng thái', minWidth: 100 },
+    { id: '', label: 'Thông tin khách hàng', minWidth: 100 },
+    { id: 'soDienThoai', label: 'Ngày đến', minWidth: 100 },
+    { id: 'diaChi', label: 'Ngày đi', minWidth: 100 },
+    { id: 'trangThai', label: 'Phòng', minWidth: 100 },
+    { id: 'trangThai', label: 'Phòng', minWidth: 100 },
 ];
 
 export default function BrandManager() {
@@ -34,7 +35,7 @@ export default function BrandManager() {
     const [page, setPage] = useState(0);
     const rows = []
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const listBillByStatus = useSelector((state) => state.bill_detail.listBillByStatus);
+    const listBillByStatus = useSelector((state) => state.bill.listBillByStatus);
     const [listBillByStatusShow, setListBillByStatusBrand] = useState([])
 
     const [open, setOpen] = useState(false);
@@ -66,7 +67,7 @@ export default function BrandManager() {
     };
 
     useEffect(() => {
-        dispatch(actions.fetchBillDetaiByStatus(1))
+        dispatch(actions.fetchBillByStatus(1))
     }, [])
     console.log(listBillByStatus)
     // useEffect(() => {

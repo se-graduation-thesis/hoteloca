@@ -56,5 +56,10 @@ export default {
         return {
             fetchAllBillDetailByStatus: (id) => axios.get(url + 'get-all-bill-detail-by-status/' + id),
         }
+    },
+    bill(url = baseApi + 'bill/') {
+        return {
+            fetchAllBillByStatus: (id) => axios.get(url + 'get-all-bill-by-status/' + id),
+        }
     }
 }
