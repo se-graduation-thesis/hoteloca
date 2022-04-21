@@ -55,6 +55,12 @@ export default {
     bill_detail(url = baseApi + 'bill-detail/') {
         return {
             fetchAllBillDetailByStatus: (id) => axios.get(url + 'get-all-bill-detail-by-status/' + id),
+            add_bill_detail: (billDetail) => axios.post(url, billDetail),
+        }
+    },
+    bill(url = baseApi + 'bill/') {
+        return {
+            add_bill: (bill) => axios.post(url, bill),
         }
     }
 }
