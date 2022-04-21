@@ -12,7 +12,9 @@ import { brandReducer } from 'reducers/brand.reducer';
 import { categoryReducer } from 'reducers/category.reducer';
 import taskReducer from 'reducers/booking.reducer';
 
-import { billDetailReducer } from 'reducers/bill-reducer.action';
+import { billDetailReducer } from 'reducers/bill-detail.reducer';
+
+import { billReducer } from 'reducers/bill.reducer';
 // ==============================|| COMBINE REDUCER ||============================== //
 
 const reducer = combineReducers({
@@ -25,7 +27,8 @@ const reducer = combineReducers({
     category: categoryReducer,
     customer: customerReducer,
     task: taskReducer,
-    bill_detail: billDetailReducer
+    bill_detail: billDetailReducer,
+    bill: billReducer
 });
 
 export default reducer;
