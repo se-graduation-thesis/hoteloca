@@ -23,6 +23,7 @@ export default {
             add_room: (room) => axios.post(url, room),
             get_all_room_by_brand: (id) => axios.get(url + "get-all-room-by-brand/" + id),
             get_room_by_name: (name) => axios.get(url + "getRoomByName/" + name),
+            get_all_roomm: () => axios.get(url + "get-all-room")
         }
     },
     service(url = baseApi + 'service/') {
@@ -65,6 +66,13 @@ export default {
             fetchAllBillByStatusAccept: () => axios.get(url + 'get-all-bill-by-status-accept/'),
             fetchAllBillByStatus: (id) => axios.get(url + 'get-all-bill-by-status/' + id),
             add_bill: (bill) => axios.post(url, bill),
+            fetchBillById: (id) => axios.get(url + 'get-by-id/' + id),
+            fetchAllBillByStatusFinish: () => axios.get(url + 'get-all-bill-by-status-finish/'),
+        }
+    },
+    phongTN(url = baseApi + 'phongTN/') {
+        return {
+            getByPhongId: (id) => axios.get(url + 'get-by-phong/' + id),
         }
     }
 }

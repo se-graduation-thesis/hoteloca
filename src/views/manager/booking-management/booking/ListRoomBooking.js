@@ -30,18 +30,11 @@ export default function BrandManager() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const account = useSelector((state) => state.account.userAuth);
-    const room = useSelector((state) => state.room.room_by_brand);
+    const room = useSelector((state) => state.room.list_room);
     const [list_room_hotel, setListRoomHotel] = useState([])
     useEffect(() => {
-        if (account) {
-            try {
-                dispatch(actions.get_all_room_by_brand(JSON.parse(account).khachsan_id))
-            } catch {
-                console.log("a")
-            }
-        }
-
-    }, [account])
+        dispatch(actions.fetchAllRoom())
+    }, [])
     useEffect(() => {
         if (room) {
             setListRoomHotel(room)

@@ -1,7 +1,8 @@
 // assets
 import {
     IconTypography, IconPalette,
-    IconShadow, IconWindmill, IconUser, IconBuildingSkyscraper, IconChartInfographic, IconReceipt
+    IconShadow, IconWindmill, IconUser, IconBuildingSkyscraper, IconChartInfographic, IconReceipt, IconBuildingWarehouse, IconBrandSlack
+    , IconReceipt2
 } from '@tabler/icons';
 
 // constant
@@ -13,52 +14,42 @@ const icons = {
     IconUser,
     IconBuildingSkyscraper,
     IconChartInfographic,
-    IconReceipt
+    IconReceipt,
+    IconBuildingWarehouse,
+    IconBrandSlack,
+    IconReceipt2
 };
 
 // ==============================|| UTILITIES MENU ITEMS ||============================== //
 
 const utilities = {
     id: 'utilities',
-    title: 'Quản lý',
+    title: 'Quản lý khách sạn',
     type: 'group',
     children: [
         {
             id: 'hotel-manager',
-            title: 'Quản Lý Khách Sạn',
-            type: 'collapse',
-            url: '/utils/util-typography',
+            title: 'Quản Lý Loại Phòng',
+            type: 'item',
+            url: '/admin/category-manager',
             icon: icons.IconBuildingSkyscraper,
-            children: [
-                {
-                    id: 'chinhanh',
-                    title: 'Quản lý chi nhánh',
-                    type: 'item',
-                    url: '/admin/brand-manager',
-                    breadcrumbs: false
-                },
-                {
-                    id: 'loaiphong',
-                    title: 'Quản lý loại phòng',
-                    type: 'item',
-                    url: '/admin/category-manager',
-                    breadcrumbs: false
-                },
-                {
-                    id: 'phong',
-                    title: 'Quản lý phòng',
-                    type: 'item',
-                    url: '/admin/hotel-management/room',
-                    breadcrumbs: false
-                },
-                {
-                    id: 'dichVu',
-                    title: 'Quản lý dịch vụ',
-                    type: 'item',
-                    url: '/admin/hotel-management/service',
-                    breadcrumbs: false
-                }
-            ]
+            breadcrumbs: false
+        },
+        {
+            id: 'loaiphong',
+            title: 'Quản lý phòng',
+            type: 'item',
+            url: '/admin/hotel-management/room',
+            icon: icons.IconBuildingWarehouse,
+            breadcrumbs: false
+        },
+        {
+            id: 'dchvu',
+            title: 'Quản lý dịch vụ',
+            type: 'item',
+            url: '/admin/hotel-management/service',
+            icon: icons.IconBrandSlack,
+            breadcrumbs: false
         },
         {
             id: 'account-manager',
@@ -69,14 +60,14 @@ const utilities = {
             children: [
                 {
                     id: 'customer',
-                    title: 'Quản lý nhân viên',
+                    title: 'Quản lý tài khoản nhân viên',
                     type: 'item',
                     url: '/admin/admin-manager',
                     breadcrumbs: false
                 },
                 {
                     id: 'material-icons',
-                    title: 'Quản lý khách hàng',
+                    title: 'Quản lý tài khoản khách hàng',
                     type: 'item',
                     url: '/admin/customer-management',
                     breadcrumbs: false
@@ -87,7 +78,7 @@ const utilities = {
             id: 'booking',
             title: 'Quản Lý Đặt Phòng',
             type: 'collapse',
-            icon: icons.IconUser,
+            icon: icons.IconReceipt,
             children: [
                 {
                     id: 'datphong',
@@ -110,7 +101,7 @@ const utilities = {
             title: 'Quản lý hóa đơn',
             type: 'item',
             url: '/utils/util-shadow',
-            icon: icons.IconReceipt,
+            icon: icons.IconReceipt2,
             breadcrumbs: false
         },
         {

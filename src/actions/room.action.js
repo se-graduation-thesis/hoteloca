@@ -5,6 +5,20 @@ export const ACTION_TYPES = {
     ADD_ROOM: "ADD_ROOM",
     GET_ALL_ROOM_BY_BRAND: "GET_ALL_ROOM_BY_BRAND",
     GET_ROOM_BY_NAME: "GET_ROOM_BY_NAME",
+    GET_ALL_ROOM: "GET_ALL_ROOM"
+};
+
+export const fetchAllRoom = () => (dispatch) => {
+    apiService
+        .room()
+        .get_all_roomm()
+        .then((response) => {
+            dispatch({
+                type: ACTION_TYPES.GET_ALL_ROOM,
+                payload: response.data,
+            });
+        })
+        .catch((err) => console.log(err));
 };
 
 export const fetchAllRoomByCategory = (id, kid) => (dispatch) => {

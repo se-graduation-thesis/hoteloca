@@ -7,33 +7,39 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import Edit from '@mui/icons-material/Edit';
 
-import InsertBrandDialog from './InsertDialog'
-import UpdateBrand from './UpdateDialog'
+import InsertBrandDialog from './InsertBrandDialog'
+import UpdateBrand from './UpdateBrand'
 
 import { useState, useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import * as actions from "actions/category.action"
+import * as actions from "actions/bill.action"
 import { address } from 'assets/address';
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
-    { id: 'ten', label: 'Tên loại phòng', minWidth: 100 },
+    { id: 'khachhang', label: 'Thông tin khách hàng', minWidth: 100 },
+    { id: 'ngayVao', label: 'Ngày đến', minWidth: 100 },
+    { id: 'ngayRa', label: 'Ngày đi', minWidth: 100 },
+    // { id: 'loaiphong', label: 'Loại Phòng', minWidth: 100 },
+    { id: 'soluongphong', label: 'Số Lượng Phòng', minWidth: 100 },
+    { id: 'tenPhong', label: 'Tên Phòng', minWidth: 100 },
+    { id: 'trangThai', label: 'Ghi chú', minWidth: 100 },
 ];
 
-export default function CategoryManager() {
+export default function BookingPendingApprove() {
     const dispatch = useDispatch();
     const [page, setPage] = useState(0);
     const rows = []
-    const [rowsPerPage, setRowsPerPage] = useState(10);
-    const listCategory = useSelector((state) => state.category.listCategory);
-    const [listCategoryShow, setListCategory] = useState([])
-    const account = useSelector((state) => state.account.userAuth);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const listBillByStatus = useSelector((state) => state.bill.listBillByStatusFinish);
+    const [listBillByStatusShow, setListBillByStatusShow] = useState([])
+
     const [open, setOpen] = useState(false);
     const [openUpdate, setOpenUpdate] = useState(false);
 
@@ -61,35 +67,41 @@ export default function CategoryManager() {
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
-    useEffect(() => {
-        if (account) {
-            dispatch(actions.fetchAllCategory())
-        }
-
-    }, [account])
 
     useEffect(() => {
-        if (listCategory) {
-            listCategory.forEach((e, i) => {
-                e.stt = i + 1
-                if (e.trangThai === 1) {
-                    e.trangThai = "Đang hoạt động"
-                } else if (e.trangThai === 2) {
-                    e.trangThai = "Tạm ngưng"
+        dispatch(actions.fetchBillByStatusFinish())
+    }, [])
+    console.log(listBillByStatus)
+    useEffect(() => {
+        if (listBillByStatus.length > 0 && listBillByStatus !== undefined) {
+            listBillByStatus.forEach((e, i) => {
+                e.stt = i;
+                e.ngayVao = e.ngayVao
+                e.khachhang = e.khachHangid.ho + " " + e.khachHangid.ten
+                if (e.chiTietPhieuThueList.length > 0) {
+
+                    e.soluongphong = e.chiTietPhieuThueList.length;
+                    let tenphong = "";
+                    e.chiTietPhieuThueList.forEach((e1) => {
+                        tenphong += e1.phongId.ten + " "
+                        // listBillByStatus.loaiphong
+                    });
+                    e.tenPhong = tenphong
                 }
+
             })
-            setListCategory(listCategory)
+            setListBillByStatusShow(listBillByStatus)
         }
-    }, [listCategory])
+    }, [listBillByStatus])
     return (
-        <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }} style={{ padding: 20 }}>
-            <Grid container spacing={1} style={{ marginTop: 10, padding: 10 }}>
+        <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }}>
+            <Grid container spacing={1} style={{ padding: 10 }}>
                 <Grid item xs={12}>
-                    <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN CÁC LOẠI PHÒNG</h3>
+                    <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN CÁC ĐƠN ĐẶT HÀNG HIỆN CÓ</h3>
                 </Grid>
                 <Grid item xs={6}>
-                    <Button onClick={handleClickOpen} variant="contained" color="secondary">Thêm loại phòng</Button>
-                    <InsertBrandDialog open={open} isShowForm={handleClose} />
+                    {/* <Button onClick={handleClickOpen} variant="contained" color="secondary">Thêm chi nhánh</Button>
+                    <InsertBrandDialog open={open} isShowForm={handleClose} /> */}
                 </Grid>
 
                 <Grid item xs={6} style={{ padding: 10, textAlign: "right" }}>
@@ -121,19 +133,19 @@ export default function CategoryManager() {
                                     {column.label}
                                 </TableCell>
                             ))}
-                            <TableCell
+                            {/* <TableCell
                                 key={"action"}
                             >
                                 {"Hành động"}
-                            </TableCell>
+                            </TableCell> */}
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {listCategoryShow
+                        {listBillByStatusShow
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row) => {
+                            .map((row, i) => {
                                 return (
-                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.stt}>
+                                    <TableRow hover role="checkbox" tabIndex={-1} key={i}>
                                         {columns.map((column) => {
                                             const value = row[column.id];
                                             return (
@@ -144,20 +156,29 @@ export default function CategoryManager() {
                                                 </TableCell>
                                             );
                                         })}
-                                        <TableCell key={row.stt}>
+                                        {/* <TableCell key={row.stt}>
                                             <IconButton key={row.stt} onClick={() => handleClickOpenUpdate(row.id)} aria-label="delete" color="primary">
                                                 <Edit />
                                             </IconButton>
-                                        </TableCell>
+                                        </TableCell> */}
                                     </TableRow>
                                 );
                             })}
                     </TableBody>
                 </Table>
+                {
+                    listBillByStatusShow.length ?
+                        <div></div>
+                        :
+                        <div style={{ textAlign: "center" }}>
+                            <Typography style={{ padding: 30, fontSize: 16 }}>Không có đơn nào đã thanh toán </Typography>
+                        </div>
+                }
             </TableContainer>
 
             <TablePagination
-                rowsPerPageOptions={[10, 25, 100]}
+                labelRowsPerPage='Số hàng'
+                rowsPerPageOptions={[5, 10, 25, 100]}
                 component="div"
                 count={rows.length}
                 rowsPerPage={rowsPerPage}
@@ -167,6 +188,5 @@ export default function CategoryManager() {
             />
             <UpdateBrand open={openUpdate} id={id_brand} isShowForm={handleCloseUpdate} />
         </Paper >
-
     );
 }
