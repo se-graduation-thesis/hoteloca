@@ -13,6 +13,7 @@ import { makeStyles } from '@mui/styles';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import ListBooking from './ListBooking'
+import BookingFinish from './BookingFinish';
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -25,8 +26,8 @@ function TabPanel(props) {
             {...other}
         >
             {value === index && (
-                <Box sx={{ p: 3 }}>
-                    <Typography>{children}</Typography>
+                <Box sx={{ p: 3, height: '100%' }} >
+                    <div sx={{ p: 3, height: '100%' }}>{children}</div>
                 </Box>
             )}
         </div>
@@ -65,7 +66,7 @@ export default function FullWidthTabs() {
     };
 
     return (
-        <Box sx={{ bgcolor: 'background.paper' }}>
+        <Box sx={{ bgcolor: 'background.paper', height: '100%' }}>
             <Box>
                 <Tabs
                     value={value}
@@ -78,14 +79,14 @@ export default function FullWidthTabs() {
                         className={classes.wrapper}
                         icon={<EventAvailableIcon />}
                         label="Danh sách đơn đặt hiện có" {...a11yProps(0)} />
-                    <Tab style={{ padding: 20 }}
+                    {/* <Tab style={{ padding: 20 }}
                         className={classes.wrapper}
                         icon={<AddTaskIcon />}
-                        label="Danh sách đơn đặt chờ duyệt" {...a11yProps(1)} />
+                        label="Danh sách đơn đặt chờ duyệt" {...a11yProps(1)} /> */}
                     <Tab style={{ padding: 20 }}
                         className={classes.wrapper}
                         icon={<ReceiptLongIcon />}
-                        label="Danh sách đơn đặt đã hoàn thành" {...a11yProps(2)} />
+                        label="Danh sách đơn đặt đã hoàn thành" {...a11yProps(1)} />
                 </Tabs>
             </Box>
             <SwipeableViews
@@ -96,11 +97,11 @@ export default function FullWidthTabs() {
                 <TabPanel value={value} index={0} dir={theme.direction}>
                     <ListBooking />
                 </TabPanel>
+                {/* <TabPanel value={value} index={1} dir={theme.direction}>
+                    
+                </TabPanel> */}
                 <TabPanel value={value} index={1} dir={theme.direction}>
-                    Item Two
-                </TabPanel>
-                <TabPanel value={value} index={2} dir={theme.direction}>
-                    Item Three
+                    <BookingFinish />
                 </TabPanel>
             </SwipeableViews>
         </Box>

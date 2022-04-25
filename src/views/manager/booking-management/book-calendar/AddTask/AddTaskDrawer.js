@@ -1,10 +1,15 @@
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, Button, Drawer, IconButton, Step, StepButton, StepLabel, Stepper, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import AddTaskForm from "./AddTaskForm";
 import * as React from 'react';
 import CustomerInfo from './components/customerInfo';
 import ReservationInfo from './components/reservationInfo';
+import ServiceInfo from './components/serviceInfo';
+import moment from "moment";
+import { useDispatch, useSelector } from 'react-redux';
+import * as actionCustomer from 'actions/customer.action';
+import * as actionBillDetail from 'actions/bill-detail.action';
+import * as actionBill from 'actions/bill.action';
 
 const useStyles = makeStyles((theme) => ({
   drawerWrapper: {
@@ -16,6 +21,7 @@ const steps = ['Thông tin khách hàng', 'Thông tin đặt phòng', 'Thông ti
 
 function AddTaskDrawer(props) {
   const classes = useStyles();
+  const dispatch = useDispatch();
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -78,17 +84,63 @@ function AddTaskDrawer(props) {
     setCompleted({});
   };
 
+  // ===================================================================
+
+  const [customer, setCustomer] = React.useState({
+    ho: '',
+    ten: '',
+    cmnd: '',
+    diaChi: '',
+    dienThoai: '',
+    email: '',
+    quocTich: 'Việt Nam',
+    soHoChieu: '',
+    trangThai: 1,
+    password: ''
+  })
+
+  const handleCustomer = (title, value) => {
+    setCustomer({ ...customer, [title]: value });
+  }
+
+  const account = useSelector((state) => state.account.userAuth);
+
+  const [reservation, setReservation] = React.useState({
+    nhanVienid: JSON.parse(account).user_id,
+    ngayLap: moment(new Date()).format('YYYY-MM-DDTHH:mm:ss'),
+    ngayVao: moment(new Date()).format('YYYY-MM-DDTHH:mm:ss'),
+    ngayRa: moment(new Date()).format('YYYY-MM-DDTHH:mm:ss'),
+    tienCoc: '',
+    trangThai: 1,
+    yeuCau: '',
+    khachHangid: null
+  })
+
+  const handleReservation = (title, value) => {
+    setReservation({ ...reservation, [title]: value })
+  }
+
+  let params = location.href.split('/');
+  let token = params[params.length - 1];
+
+  const submit = () => {
+    actionCustomer.addCustomer(customer).then((response) => {
+      reservation.khachHangid = response.data.id;
+      actionBill.addBill(reservation).then((resonpe) => {
+        const billDetail = {
+          phieuThueid: response.data.id,
+          phongId: token
+        }
+        dispatch(actionBillDetail.addBillDetail(billDetail));
+      })
+    }).then();
+
+    toggleDrawer(false)
+    window.alert("Đặt phòng thành công")
+  }
+
+
   const list = (anchor) => (
-    // <Box
-    //   sx={{ width: 700, padding: '20px 30px 30px 30px' }}
-    //   role="presentation"
-    // >
-    //   {/* <IconButton style={{ float: 'right', marginBottom: '20px', cursor: 'pointer' }}
-    //     onClick={toggleDrawer(false)}>
-    //     <CloseIcon />
-    //   </IconButton> */}
-    //   <AddTaskForm handleStateForm={props.handleStateForm} dateChoice={props.dateChoice} />
-    // </Box>
     <Box sx={{ width: 700, padding: '20px 30px 30px 30px' }}>
       <Stepper nonLinear activeStep={activeStep}>
         {steps.map((label, index) => (
@@ -102,9 +154,10 @@ function AddTaskDrawer(props) {
       <div>
         {allStepsCompleted() ? (
           <React.Fragment>
-            <Typography sx={{ mt: 2, mb: 1 }}>
+            {/* <Typography sx={{ mt: 2, mb: 1 }}>
               All steps completed - you're finished
-            </Typography>
+            </Typography> */}
+            <Button variant="contained" fullWidth sx={{ mt: 20 }} onClick={submit}>ADD</Button>
             <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
               <Box sx={{ flex: '1 1 auto' }} />
               <Button onClick={handleReset}>Đặt lại</Button>
@@ -114,25 +167,26 @@ function AddTaskDrawer(props) {
           <React.Fragment>
             <div>
               {activeStep === 0 ?
-                <CustomerInfo /> :
+                <CustomerInfo customer={customer} handleCustomer={handleCustomer} /> :
                 activeStep === 1 ?
-                  <ReservationInfo /> :
-                  <></>
+                  <ReservationInfo reservation={reservation} handleReservation={handleReservation} /> :
+                  <ServiceInfo token={token} />
               }
             </div>
-            <div style={{ position: 'fixed', bottom: 100 }}>
+            <div style={{ position: 'fixed', top: 650 }}>
               <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                 <Button
                   color="inherit"
                   disabled={activeStep === 0}
                   onClick={handleBack}
                   sx={{ mr: 1 }}
+                  variant="outlined"
                 >
-                  Back
+                  Quay lại
                 </Button>
-                <Box sx={{ flex: '1 1 auto', ml: 40 }} />
-                <Button onClick={handleNext} sx={{ mr: 1 }}>
-                  Next
+                <Box sx={{ flex: '1 1 auto', ml: 35 }} />
+                <Button onClick={handleNext} sx={{ mr: 1 }} variant="outlined">
+                  Tiếp theo
                 </Button>
                 {activeStep !== steps.length &&
                   (completed[activeStep] ? (
@@ -140,10 +194,10 @@ function AddTaskDrawer(props) {
                       Bước {activeStep + 1} đã hoàn thành
                     </Typography>
                   ) : (
-                    <Button onClick={handleComplete}>
+                    <Button onClick={handleComplete} variant="outlined">
                       {completedSteps() === totalSteps() - 1
                         ? 'Kết Thúc'
-                        : 'Hoàn Thành Bước'}
+                        : 'Hoàn Thành Bước ' + (activeStep + 1)}
                     </Button>
                   ))}
               </Box>

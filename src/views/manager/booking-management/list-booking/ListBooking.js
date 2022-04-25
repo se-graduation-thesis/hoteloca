@@ -7,35 +7,40 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip, Typography } from '@mui/material';
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import Edit from '@mui/icons-material/Edit';
-
+import Payment from '@mui/icons-material/Payment';
 import InsertBrandDialog from './InsertBrandDialog'
 import UpdateBrand from './UpdateBrand'
 
 import { useState, useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import * as actions from "actions/bill-detail.action"
+import * as actions from "actions/bill.action"
+import { Link, useNavigate } from 'react-router-dom';
 import { address } from 'assets/address';
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
-    { id: 'ten', label: 'Tên khách sạn', minWidth: 100 },
-    { id: 'soDienThoai', label: 'Số điện thoại', minWidth: 100 },
-    { id: 'diaChi', label: 'Địa chỉ', minWidth: 100 },
-    { id: 'trangThai', label: 'Trạng thái', minWidth: 100 },
+    { id: 'khachhang', label: 'Thông tin khách hàng', minWidth: 100 },
+    { id: 'ngayVao', label: 'Ngày đến', minWidth: 100 },
+    { id: 'ngayRa', label: 'Ngày đi', minWidth: 100 },
+    // { id: 'loaiphong', label: 'Loại Phòng', minWidth: 100 },
+    { id: 'soluongphong', label: 'Số Lượng Phòng', minWidth: 100 },
+    { id: 'tenPhong', label: 'Tên Phòng', minWidth: 100 },
+    { id: 'trangThai', label: 'Ghi chú', minWidth: 100 },
 ];
 
-export default function BrandManager() {
+export default function ListBooking() {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [page, setPage] = useState(0);
     const rows = []
-    const [rowsPerPage, setRowsPerPage] = useState(10);
-    const listBillByStatus = useSelector((state) => state.bill_detail.listBillByStatus);
-    const [listBillByStatusShow, setListBillByStatusBrand] = useState([])
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const listBillByStatus = useSelector((state) => state.bill.listBillByStatusAccept);
+    const [listBillByStatusShow, setListBillByStatusShow] = useState([])
 
     const [open, setOpen] = useState(false);
     const [openUpdate, setOpenUpdate] = useState(false);
@@ -66,28 +71,29 @@ export default function BrandManager() {
     };
 
     useEffect(() => {
-        dispatch(actions.fetchBillDetaiByStatus(1))
+        dispatch(actions.fetchBillByStatusAccept())
     }, [])
-    console.log(listBillByStatus)
-    // useEffect(() => {
-    //     if (listBrand.length > 0 && listBrand !== undefined) {
-    //         listBrand.forEach((e, i) => {
-    //             if (e.diaChi !== null) {
-    //                 try {
-    //                     var diachi = JSON.parse(e.diaChi)
-    //                     e.stt = i + 1
-    //                     e.diaChi = "Số nhà / Đường " + diachi.no + ", " + diachi.ward + ", Quận / Huyện " + diachi.district + ", Tỉnh / Thành " + diachi.city
+    useEffect(() => {
+        if (listBillByStatus.length > 0 && listBillByStatus !== undefined) {
+            listBillByStatus.forEach((e, i) => {
+                e.stt = i;
+                e.ngayVao = e.ngayVao
+                e.khachhang = e.khachHangid.ho + " " + e.khachHangid.ten
+                if (e.chiTietPhieuThueList.length > 0) {
 
-    //                 } catch (e) {
-    //                     console.log("a")
-    //                 }
+                    e.soluongphong = e.chiTietPhieuThueList.length;
+                    let tenphong = "";
+                    e.chiTietPhieuThueList.forEach((e1) => {
+                        tenphong += e1.phongId.ten + " "
+                        // listBillByStatus.loaiphong
+                    });
+                    e.tenPhong = tenphong
+                }
 
-    //             }
-
-    //         })
-    //         setListBrand(listBrand)
-    //     }
-    // }, [listBrand])
+            })
+            setListBillByStatusShow(listBillByStatus)
+        }
+    }, [listBillByStatus])
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }}>
             <Grid container spacing={1} style={{ padding: 10 }}>
@@ -95,8 +101,8 @@ export default function BrandManager() {
                     <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN CÁC ĐƠN ĐẶT HÀNG HIỆN CÓ</h3>
                 </Grid>
                 <Grid item xs={6}>
-                    <Button onClick={handleClickOpen} variant="contained" color="secondary">Thêm chi nhánh</Button>
-                    <InsertBrandDialog open={open} isShowForm={handleClose} />
+                    {/* <Button onClick={handleClickOpen} variant="contained" color="secondary">Thêm chi nhánh</Button>
+                    <InsertBrandDialog open={open} isShowForm={handleClose} /> */}
                 </Grid>
 
                 <Grid item xs={6} style={{ padding: 10, textAlign: "right" }}>
@@ -152,19 +158,30 @@ export default function BrandManager() {
                                             );
                                         })}
                                         <TableCell key={row.stt}>
-                                            <IconButton key={row.stt} onClick={() => handleClickOpenUpdate(row.id)} aria-label="delete" color="primary">
-                                                <Edit />
-                                            </IconButton>
+                                            <Tooltip title="Thanh toán">
+                                                <IconButton key={row.stt} onClick={() => navigate(`/admin/booking-payment/${row.id}`)} aria-label="delete" color="primary">
+                                                    <Payment />
+                                                </IconButton>
+                                            </Tooltip>
                                         </TableCell>
                                     </TableRow>
                                 );
                             })}
                     </TableBody>
                 </Table>
+                {
+                    listBillByStatusShow.length ?
+                        <div></div>
+                        :
+                        <div style={{ textAlign: "center" }}>
+                            <Typography style={{ padding: 30, fontSize: 16 }}>Không có đơn nào đã thanh toán </Typography>
+                        </div>
+                }
             </TableContainer>
 
             <TablePagination
-                rowsPerPageOptions={[10, 25, 100]}
+                labelRowsPerPage='Số hàng'
+                rowsPerPageOptions={[5, 10, 25, 100]}
                 component="div"
                 count={rows.length}
                 rowsPerPage={rowsPerPage}

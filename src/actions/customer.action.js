@@ -3,6 +3,7 @@ import apiService from "../service/api.service";
 export const ACTION_TYPES = {
     FETCH_ALL_CUSTOMER: "FETCH_ALL_CUSTOMER",
     ADD_CUSTOMER: "ADD_CUSTOMER",
+    GET_CUSTOMER_BY_ID: "GET_CUSTOMER_BY_ID",
 };
 
 export const fetchAllCustomer = () => (dispatch) => {
@@ -18,15 +19,22 @@ export const fetchAllCustomer = () => (dispatch) => {
         .catch((err) => console.log(err));
 };
 
-export const addCustomer = (customer) => (dispatch) => {
+export const getCustomerById = (id) => (dispatch) => {
     apiService
         .customer()
-        .add_customer(customer)
+        .getCustomerById(id)
         .then((response) => {
             dispatch({
-                type: ACTION_TYPES.ADD_CUSTOMER,
+                type: ACTION_TYPES.GET_CUSTOMER_BY_ID,
                 payload: response.data,
             });
         })
         .catch((err) => console.log(err));
+};
+
+export const addCustomer = (customer) => {
+    return apiService
+        .customer()
+        .add_customer(customer)
+
 };

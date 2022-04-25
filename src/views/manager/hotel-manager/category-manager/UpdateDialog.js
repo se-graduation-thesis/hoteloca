@@ -63,16 +63,6 @@ export default function UpdateBrand(props) {
         setAlertOpen(false);
     };
 
-    useEffect(() => {
-        dispatch(brandActions.fetchAllBrand())
-    }, [])
-    useEffect(() => {
-        setListBrand(listBrand)
-    }, [listBrand])
-
-    useEffect(() => {
-        dispatch(actions.fetchAllCategoryByBrand(JSON.parse(account).khachsan_id))
-    }, [account])
 
     useEffect(() => {
         if (listCategory) {
@@ -135,8 +125,6 @@ export default function UpdateBrand(props) {
                 setValues({
                     id: res.data.id,
                     ten: res.data.ten,
-                    trangThai: res.data.trangThai,
-                    khachSanid: res.data.khachSanid.id,
                 }),
                     setTenLp(res.data.ten)
             })

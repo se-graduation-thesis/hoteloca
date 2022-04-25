@@ -33,12 +33,6 @@ export default function InsertBrandDialog(props) {
     const listCategory = useSelector((state) => state.category.listCategoryByBrand);
     const [listCategoryShow, setListCategory] = useState([])
     const account = useSelector((state) => state.account.userAuth);
-    useEffect(() => {
-        dispatch(brandActions.fetchAllBrand())
-    }, [])
-    useEffect(() => {
-        setListBrand(listBrand)
-    }, [listBrand])
     const [alertOpen, setAlertOpen] = useState(false);
 
     const handleClose = (event, reason) => {
@@ -47,13 +41,6 @@ export default function InsertBrandDialog(props) {
         }
         setAlertOpen(false);
     };
-
-    useEffect(() => {
-        if (account) {
-            dispatch(actions.fetchAllCategoryByBrand(JSON.parse(account).khachsan_id))
-        }
-
-    }, [account])
 
     useEffect(() => {
         if (listCategory) {

@@ -10,9 +10,13 @@ import { customerReducer } from '../reducers/customer.reducer';
 
 import { brandReducer } from 'reducers/brand.reducer';
 import { categoryReducer } from 'reducers/category.reducer';
+import { phongTNReducer } from 'reducers/phongTN.reducer';
 import taskReducer from 'reducers/booking.reducer';
 
-import { billDetailReducer } from 'reducers/bill-reducer.action';
+import { billDetailReducer } from 'reducers/bill-detail.reducer';
+
+import { billReducer } from 'reducers/bill.reducer';
+import { paymentReducer } from 'reducers/payment.reducer';
 // ==============================|| COMBINE REDUCER ||============================== //
 
 const reducer = combineReducers({
@@ -24,8 +28,11 @@ const reducer = combineReducers({
     brand: brandReducer,
     category: categoryReducer,
     customer: customerReducer,
+    phongTN: phongTNReducer,
     task: taskReducer,
-    bill_detail: billDetailReducer
+    bill_detail: billDetailReducer,
+    bill: billReducer,
+    payment: paymentReducer
 });
 
 export default reducer;

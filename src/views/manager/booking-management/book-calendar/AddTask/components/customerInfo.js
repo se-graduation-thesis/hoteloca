@@ -1,21 +1,37 @@
 import { FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { address } from 'assets/address';
 import { useState } from "react";
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
-export default function CustomerInfo() {
 
-    const [customer, setCustomer] = useState({
-        ho: '',
-        ten: '',
-        cmnd: '',
-        diaChi: '',
-        dienThoai: '',
-        email: '',
-        quocTich: 'Việt Nam',
-        soHoChieu: '',
-        trangThai: 1,
-        password: ''
-    })
+export default function CustomerInfo({ customer, handleCustomer }) {
+
+    const [error, setError] = useState({
+        ho: null,
+        ten: null,
+        cmnd: null,
+        diaChi: null,
+        dienThoai: null,
+        email: null,
+        quocTich: null,
+        soHoChieu: null
+    });
+
+    const reNum = new RegExp(/\d+$/);
+    const reCMND = new RegExp(/\d{9,12}$/);
+    const reString = new RegExp(/\w+/);
+
+    const handleCheckValidation = (type, name, tam) => {
+
+        let value = null;
+
+        if (!type.test(name)) {
+            value = tam + ' là chuỗi ký tự';
+        }
+
+        setError({ ...error, [tam]: value })
+
+    }
 
     const [district, setDistrict] = useState([])
     const [wards, setWards] = useState([])
@@ -40,7 +56,7 @@ export default function CustomerInfo() {
                 </Grid>
 
                 {/* HỌ - Tên */}
-                <Grid item xs={6}>
+                <Grid item xs={6} sx={{ marginTop: 2 }}>
                     <TextField
                         value={customer.ho}
                         id="outlined-basic"
@@ -48,10 +64,12 @@ export default function CustomerInfo() {
                         variant="outlined"
                         fullWidth
 
-                        onChange={(e) => setCustomer({ ...customer, ho: e.target.value })}
+                        onChange={(e) => handleCustomer('ho', e.target.value)}
+                        onBlur={() => handleCheckValidation(reString, customer.ho, 'ho')}
                     />
+                    {error.ho && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.ho}</span></>}
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={6} sx={{ marginTop: 2 }}>
                     <TextField
                         value={customer.ten}
                         id="outlined-basic"
@@ -59,8 +77,11 @@ export default function CustomerInfo() {
                         variant="outlined"
                         fullWidth
 
-                        onChange={(e) => setCustomer({ ...customer, ten: e.target.value })}
+                        onChange={(e) => handleCustomer('ten', e.target.value)}
+                        onBlur={() => handleCheckValidation(reString, customer.ten, 'ten')}
                     />
+                    {error.ten && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.ten}</span></>}
+
                 </Grid>
 
                 {/* CMND - Quốc tịch */}
@@ -73,8 +94,10 @@ export default function CustomerInfo() {
                         variant="outlined"
                         fullWidth
 
-                        onChange={(e) => setCustomer({ ...customer, cmnd: e.target.value })}
+                        onChange={(e) => handleCustomer('cmnd', e.target.value)}
+                        onBlur={() => handleCheckValidation(reCMND, customer.cmnd, 'cmnd')}
                     />
+                    {error.cmnd && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.cmnd}</span></>}
                 </Grid>
                 <Grid item xs={6} sx={{ marginTop: 2 }}>
                     <TextField
@@ -84,8 +107,10 @@ export default function CustomerInfo() {
                         variant="outlined"
                         fullWidth
 
-                        onChange={(e) => setCustomer({ ...customer, quocTich: e.target.value })}
+                        onChange={(e) => handleCustomer('quocTich', e.target.value)}
+                        onBlur={() => handleCheckValidation(reString, customer.quocTich, 'quocTich')}
                     />
+                    {error.quocTich && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.quocTich}</span></>}
                 </Grid>
                 {
                     customer.quocTich !== "Việt Nam" ?
@@ -97,12 +122,13 @@ export default function CustomerInfo() {
                                 variant="outlined"
                                 fullWidth
 
-                                onChange={(e) => setCustomer({ ...customer, soHoChieu: e.target.value })}
+                                onChange={(e) => handleCustomer('soHoChieu', e.target.value)}
+                                onBlur={() => handleCheckValidation(reNum, customer.soHoChieu, 'soHoChieu')}
                             />
                         </Grid> : <></>
                 }
 
-                {/* CMND - Quốc tịch */}
+                {/* Dien Thoai - Email */}
                 <Grid item xs={6} sx={{ marginTop: 2 }}>
                     <TextField
                         value={customer.dienThoai}
@@ -111,8 +137,10 @@ export default function CustomerInfo() {
                         variant="outlined"
                         fullWidth
 
-                        onChange={(e) => setCustomer({ ...customer, dienThoai: e.target.value })}
+                        onChange={(e) => handleCustomer('dienThoai', e.target.value)}
+                        onBlur={() => handleCheckValidation(reNum, customer.dienThoai, 'dienThoai')}
                     />
+                    {error.dienThoai && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.dienThoai}</span></>}
                 </Grid>
                 <Grid item xs={6} sx={{ marginTop: 2 }}>
                     <TextField
@@ -122,8 +150,9 @@ export default function CustomerInfo() {
                         variant="outlined"
                         fullWidth
 
-                        onChange={(e) => setCustomer({ ...customer, email: e.target.value })}
+                        onChange={(e) => handleCustomer('email', e.target.value)}
                     />
+                    {error.email && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.email}</span></>}
                 </Grid>
 
                 {/* Địa Chỉ */}
@@ -189,8 +218,9 @@ export default function CustomerInfo() {
                         variant="outlined"
                         fullWidth
 
-                        onChange={(e) => setCustomer({ ...customer, diaChi: e.target.value })}
+                        onChange={(e) => handleCustomer('diaChi', e.target.value)}
                     />
+                    {error.diaChi && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.diaChi}</span></>}
                 </Grid>
             </Grid>
         </>
