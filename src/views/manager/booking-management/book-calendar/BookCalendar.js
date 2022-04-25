@@ -23,7 +23,7 @@ import {
   TodayButton,
   ViewSwitcher,
 } from '@devexpress/dx-react-scheduler-material-ui';
-import { owners } from './task';
+import { owners } from './Task';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 

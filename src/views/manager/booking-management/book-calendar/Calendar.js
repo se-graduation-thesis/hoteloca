@@ -19,7 +19,7 @@ import Task from "./Task/index";
 // import useWindowScrollPositions from "../HOC/useWindowScrollPositions";
 import withScrollHook from "../withScrollHook";
 import AddTaskDrawer from "./AddTask/AddTaskDrawer";
-import { owners } from "./task";
+// import { owners } from "./task";
 
 
 const PREFIX = "Demo";
