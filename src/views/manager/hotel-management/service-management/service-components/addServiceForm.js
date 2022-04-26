@@ -10,7 +10,7 @@ const width = 500;
 
 const initialService = {
     ten: '',
-    donGia: '',
+    donGia: '0',
     trangThai: 1,
     moTa: ''
 };
@@ -101,6 +101,13 @@ export default function AddServiceForm(props) {
 
     }
 
+    const formatCash = (str) => {
+        if (str === '') return '';
+        return str.split('').reverse().reduce((prev, next, index) => {
+            return ((index % 3) ? next : (next + ',')) + prev
+        })
+    }
+
     return (
         <>
             <Dialog open={props.open} onClose={handleClose}>
@@ -128,14 +135,13 @@ export default function AddServiceForm(props) {
                         {/* Đơn Giá */}
                         <Grid item xs={12}>
                             <TextField
-                                value={service.donGia}
+                                value={formatCash(service.donGia)}
                                 inputProps={{ readOnly: props.isView, }}
-                                id="outlined-basic"
+                                // id="outlined-basic"
                                 label="Đơn Giá"
                                 variant="outlined"
                                 fullWidth
-
-                                onChange={(e) => setService({ ...service, donGia: e.target.value })}
+                                onChange={(e) => setService({ ...service, donGia: e.target.value.replaceAll(',', '') })}
                             />
                             {error.donGia && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.donGia}</span></>}
                         </Grid>

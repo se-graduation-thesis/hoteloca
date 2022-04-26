@@ -7,10 +7,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { Button, Chip, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import IconButton from "@mui/material/IconButton";
-import InputAdornment from "@mui/material/InputAdornment";
-import SearchIcon from "@mui/icons-material/Search";
+// import InputAdornment from "@mui/material/InputAdornment";
+// import SearchIcon from "@mui/icons-material/Search";
 import Visibility from '@mui/icons-material/Visibility';
 import { useDispatch, useSelector } from 'react-redux';
 import * as actions from "actions/room.action";
@@ -22,13 +22,13 @@ import EditRoomForm from './room-components/editRoomForm';
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
     { id: 'ten', label: 'Tên Phòng', minWidth: 100 },
-    { id: 'loaiPhongid', label: 'Loại Phòng', minWidth: 100 },
+    { id: 'loaiPhong', label: 'Loại Phòng', minWidth: 100 },
     { id: 'soNguoi', label: 'Số Người', minWidth: 100 },
     { id: 'soGiuong', label: 'Số Giường', minWidth: 100 },
     { id: 'donGia', label: 'Đơn Giá', minWidth: 100 },
     { id: 'trangThai', label: 'Trạng Thái', minWidth: 100 },
-    { id: 'dienTich', label: 'KichThuoc', minWidth: 100 },
-    { id: 'anh', label: 'Ảnh', minWidth: 100 },
+    { id: 'dienTich', label: 'Diện Tích', minWidth: 100 },
+    { id: 'hinhAnh', label: 'Ảnh', minWidth: 100 },
     { id: 'moTa', label: 'Mô Tả', minWidth: 100 },
 ];
 
@@ -36,7 +36,7 @@ export default function Room() {
     const dispatch = useDispatch();
 
     const user = JSON.parse(localStorage.getItem("user_authenticated"));
-    // const listaccinrow = [];
+
     const [page, setPage] = React.useState(0);
     const [loaiPhong, setLoaiPhong] = React.useState(0);
     const [stateRoom, setStateRoom] = React.useState("full");
@@ -49,7 +49,7 @@ export default function Room() {
     const [isView, setIsView] = React.useState(false);
     const [searchContent, setSearchContent] = React.useState("");
 
-    const categories = useSelector(state => state.category.listCategoryByBrand);
+    const categories = useSelector(state => state.category.listCategory);
 
     const handleIsView = (value) => setIsView(value);
 
@@ -72,19 +72,24 @@ export default function Room() {
     const rows = []
 
     React.useEffect(() => {
-        dispatch(actionCategory.fetchAllCategoryByBrand(user.khachsan_id));
+        dispatch(actionCategory.fetchAllCategory());
     }, [])
 
     React.useEffect(() => {
-        dispatch(actions.fetchAllRoomByCategory(loaiPhong, user.khachsan_id))
+        dispatch(actions.fetchAllRoomByCategory(loaiPhong))
     }, [loaiPhong])
 
 
     React.useEffect(() => {
         if (rooms) {
             rooms.forEach((e, i) => {
-                e.stt = i + 1
-                // e.loaiPhongid = e.loaiPhongid.tenLoaiPhong
+                const loaiPhong = e.loaiPhongid;
+                e.stt = i + 1;
+                e.loaiPhong = loaiPhong.ten;
+                e.soNguoi = loaiPhong.soNguoi;
+                e.soGiuong = loaiPhong.soGiuong;
+                e.donGia = loaiPhong.donGia;
+                e.dienTich = loaiPhong.dienTich;
                 e.trangThai === 1 ?
                     e.trangThai = "Hoạt động" :
                     e.trangThai = "Ngừng hoạt động"
@@ -200,10 +205,13 @@ export default function Room() {
                                                 const value = row[column.id];
                                                 return (
                                                     <TableCell key={column.id} align={column.align}>
-                                                        {column.format && typeof value === 'number'
-                                                            ? column.format(value)
-                                                            : column.id === 'loaiPhongid' ? value.ten
-                                                                : value
+                                                        {column.id === 'hinhAnh' ?
+                                                            <img src={value} style={{ width: 70 }} /> :
+                                                            column.id === "trangThai" ?
+                                                                <Chip label={value} color={value === "Hoạt động" ? "primary" : "warning"} /> :
+                                                                column.id === "donGia" ?
+                                                                    new Intl.NumberFormat('en-Vn').format(value) :
+                                                                    value
                                                         }
                                                     </TableCell>
                                                 );

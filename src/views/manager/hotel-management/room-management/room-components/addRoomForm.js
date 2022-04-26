@@ -12,10 +12,6 @@ const width = 500;
 const initialPhong = {
     ten: '',
     loaiPhongid: 1,
-    soGiuong: '',
-    soNguoi: '',
-    donGia: '',
-    dienTich: '',
     trangThai: 1,
     moTa: '',
     hinhAnh: ''
@@ -26,7 +22,7 @@ export default function AddRoomForm(props) {
     const dispatch = useDispatch();
 
 
-    const categories = useSelector(state => state.category.listCategoryByBrand);
+    const categories = useSelector(state => state.category.listCategory);
     const account = useSelector((state) => state.account.userAuth);
     useEffect(() => {
         if (account)
@@ -40,10 +36,6 @@ export default function AddRoomForm(props) {
     const [phong, setPhong] = useState({
         ten: '',
         loaiPhongid: 1,
-        soGiuong: '',
-        soNguoi: '',
-        donGia: '',
-        dienTich: '',
         trangThai: 1,
         moTa: '',
         hinhAnh: ''
@@ -51,10 +43,6 @@ export default function AddRoomForm(props) {
 
     const [error, setError] = useState({
         ten: null,
-        soGiuong: null,
-        soNguoi: null,
-        donGia: null,
-        dienTich: null
     });
 
     const reset = () => {
@@ -80,48 +68,18 @@ export default function AddRoomForm(props) {
     }
 
     const handleCheckValidation = () => {
-        const reNum = new RegExp(/\d+$/);
         const reString = new RegExp(/\w+/);
-
-        let soNguoi = null;
-        let soGiuong = null;
-        let donGia = null;
         let ten = null;
-        let dienTich = null;
 
         let kt = false;
-
-        if (!reNum.test(phong.soNguoi)) {
-            soNguoi = 'Số người phải là một con số.';
-            kt = true;
-        }
-
-        if (!reNum.test(phong.soGiuong)) {
-            soGiuong = 'Số Giường phải là một con số.';
-            kt = true;
-        }
-
-        if (!reNum.test(phong.donGia)) {
-            donGia = 'Đơn giá phải là một con số.';
-            kt = true;
-        }
 
         if (!reString.test(phong.ten)) {
             ten = 'Tên không được để trống.';
             kt = true;
         }
 
-        if (!reString.test(phong.dienTich)) {
-            dienTich = 'Diện tích không được để trống.';
-            kt = true;
-        }
-
         setError({
-            ten,
-            soGiuong,
-            soNguoi,
-            donGia,
-            dienTich
+            ten
         })
         return !kt;
 
@@ -182,64 +140,6 @@ export default function AddRoomForm(props) {
                                     {categories.map((item) => <MenuItem key={item.id} value={item.id}>{item.ten}</MenuItem>)}
                                 </Select>
                             </FormControl>
-                        </Grid>
-
-                        {/* Số Giường - Số Người */}
-                        <Grid item xs={6}>
-                            <TextField
-                                value={phong.soGiuong}
-                                inputProps={{ readOnly: props.isView, }}
-                                id="outlined-basic"
-                                label="Số Giường"
-                                variant="outlined"
-                                fullWidth
-
-                                onChange={(e) => setPhong({ ...phong, soGiuong: e.target.value })}
-                            />
-                            {error.soGiuong && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.soGiuong}</span></>}
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                value={phong.soNguoi}
-                                inputProps={{ readOnly: props.isView, }}
-                                id="outlined-basic"
-                                label="Số Người"
-                                variant="outlined"
-                                fullWidth
-
-                                onChange={(e) => setPhong({ ...phong, soNguoi: e.target.value })}
-                            />
-
-                            {error.soNguoi && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.soNguoi}</span></>}
-
-                        </Grid>
-
-                        {/* Đơn Giá - Diện Tích */}
-                        <Grid item xs={6}>
-                            <TextField
-                                value={phong.donGia}
-                                inputProps={{ readOnly: props.isView, }}
-                                id="outlined-basic"
-                                label="Đơn Giá"
-                                variant="outlined"
-                                fullWidth
-
-                                onChange={(e) => setPhong({ ...phong, donGia: e.target.value })}
-                            />
-                            {error.donGia && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.donGia}</span></>}
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                value={phong.dienTich}
-                                inputProps={{ readOnly: props.isView, }}
-                                id="outlined-basic"
-                                label="Diện Tích"
-                                variant="outlined"
-                                fullWidth
-
-                                onChange={(e) => setPhong({ ...phong, dienTich: e.target.value })}
-                            />
-                            {error.dienTich && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.dienTich}</span></>}
                         </Grid>
 
                         {/* File */}

@@ -7,7 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Button, Grid, TextField } from '@mui/material';
+import { Button, Chip, Grid, TextField } from '@mui/material';
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
@@ -133,9 +133,11 @@ export default function Service() {
                                                 const value = row[column.id];
                                                 return (
                                                     <TableCell key={column.id} align={column.align}>
-                                                        {column.format && typeof value === 'number'
-                                                            ? column.format(value)
-                                                            : value
+                                                        {column.id === 'donGia' ?
+                                                            new Intl.NumberFormat('en-Vn').format(value) :
+                                                            column.id === 'trangThai' ? 
+                                                            <Chip label={value} color={value === "Hoạt động" ? "primary" : "warning"} /> :
+                                                            value
                                                         }
                                                     </TableCell>
                                                 );

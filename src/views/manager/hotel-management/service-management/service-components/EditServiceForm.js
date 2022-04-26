@@ -98,6 +98,13 @@ export default function EditServiceForm(props) {
         }, 3000);
     }
 
+    const formatCash = (str) => {
+        if (str === '') return '';
+        return String(str).split('').reverse().reduce((prev, next, index) => {
+            return ((index % 3) ? next : (next + ',')) + prev
+        })
+    }
+
     return (
         <>
             <Dialog open={props.open} onClose={handleClose}>
@@ -137,14 +144,14 @@ export default function EditServiceForm(props) {
                         {/* Đơn Giá - Trạng Thái */}
                         <Grid item xs={6}>
                             <TextField
-                                value={service.donGia}
+                                value={formatCash(service.donGia)}
                                 inputProps={{ readOnly: props.isView, }}
                                 id="outlined-basic"
                                 label="Đơn Giá"
                                 variant="outlined"
                                 fullWidth
 
-                                onChange={(e) => setService({ ...service, donGia: e.target.value })}
+                                onChange={(e) => setService({ ...service, donGia: e.target.value.replaceAll(',', '') })}
                             />
                             {error.donGia && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.donGia}</span></>}
                         </Grid>
