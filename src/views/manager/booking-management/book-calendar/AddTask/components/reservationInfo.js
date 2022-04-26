@@ -30,6 +30,13 @@ export default function ReservationInfo({ reservation, handleReservation }) {
     const nhanVien = listAccount.filter(e => e.id === reservation.nhanVienid)[0];
     const [isOpen, setIsOpen] = useState(false);
 
+    const formatCash = (str) => {
+        if (str === '') return '';
+        return String(str).split('').reverse().reduce((prev, next, index) => {
+            return ((index % 3) ? next : (next + ',')) + prev
+        })
+    }
+
     return (
         <>
             <Grid container spacing={2}>
@@ -96,13 +103,13 @@ export default function ReservationInfo({ reservation, handleReservation }) {
                 {/* Tiền cọc */}
                 <Grid item xs={12} sx={{ marginTop: 2 }}>
                     <TextField
-                        value={reservation.tienCoc}
+                        value={formatCash(reservation.tienCoc)}
                         id="outlined-basic"
                         label="Tiền Cọc"
                         variant="outlined"
                         fullWidth
 
-                        onChange={(e) => handleReservation('tienCoc', e.target.value)}
+                        onChange={(e) => handleReservation('tienCoc', e.target.value.replaceAll(',', ''))}
                     />
                 </Grid>
 

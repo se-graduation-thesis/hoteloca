@@ -19,7 +19,7 @@ export default {
     },
     room(url = baseApi + 'room/') {
         return {
-            fetchAllRoomByCategory: (id, kid) => axios.get(url + 'getRoomBycategoryID/' + id + '&' + kid),
+            fetchAllRoomByCategory: (id) => axios.get(url + 'getRoomBycategoryID/' + id),
             add_room: (room) => axios.post(url, room),
             get_all_room_by_brand: (id) => axios.get(url + "get-all-room-by-brand/" + id),
             get_room_by_name: (name) => axios.get(url + "getRoomByName/" + name),

@@ -105,6 +105,7 @@ function AddTaskDrawer(props) {
 
   const account = useSelector((state) => state.account.userAuth);
 
+  console.log(account)
   const [reservation, setReservation] = React.useState({
     nhanVienid: JSON.parse(account).user_id,
     ngayLap: moment(new Date()).format('YYYY-MM-DDTHH:mm:ss'),
