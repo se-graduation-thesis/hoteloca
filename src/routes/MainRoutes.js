@@ -27,6 +27,8 @@ const Calendar = Loadable(lazy(() => import('views/manager/booking-management/bo
 const BookingCalendar = Loadable(lazy(() => import('views/manager/booking-management/book-calendar/BookCalendar')));
 const TabBooking = Loadable(lazy(() => import('views/manager/booking-management/list-booking/TabBooking')));
 const Payment = Loadable(lazy(() => import('views/manager/booking-management/payment/Payment')));
+const PrintPdf = Loadable(lazy(() => import('views/manager/booking-management/payment/PrintPdf')));
+
 
 const BrandManager = Loadable(lazy(() => import('views/manager/hotel-manager/brand-manager/BrandManager')));
 const CategoryManager = Loadable(lazy(() => import('views/manager/hotel-manager/category-manager/CategoryManager')));
@@ -77,6 +79,10 @@ const MainRoutes = {
         {
             path: '/admin/list-booking',
             element: <TabBooking />
+        },
+        {
+            path: '/admin/export-pdf',
+            element: <PrintPdf />
         },
         {
             path: '/default',
