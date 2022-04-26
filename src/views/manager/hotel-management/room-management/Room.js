@@ -83,16 +83,22 @@ export default function Room() {
     React.useEffect(() => {
         if (rooms) {
             rooms.forEach((e, i) => {
+
                 const loaiPhong = e.loaiPhongid;
                 e.stt = i + 1;
                 e.loaiPhong = loaiPhong.ten;
                 e.soNguoi = loaiPhong.soNguoi;
                 e.soGiuong = loaiPhong.soGiuong;
                 e.donGia = loaiPhong.donGia;
-                e.dienTich = loaiPhong.dienTich;
                 e.trangThai === 1 ?
                     e.trangThai = "Hoạt động" :
-                    e.trangThai = "Ngừng hoạt động"
+                    e.trangThai = "Ngừng hoạt động";
+                try {
+                    let dienTich = JSON.parse(loaiPhong.dienTich)
+                    e.dienTich = dienTich.chieudai + " x " + dienTich.chieurong
+                } catch {
+                    console.log("err")
+                }
             })
             setListRoom(rooms)
         }
@@ -188,6 +194,7 @@ export default function Room() {
                                 ))}
                                 <TableCell
                                     key={"action"}
+                                    minWidth={250}
                                 >
                                     {"Hành động"}
                                 </TableCell>

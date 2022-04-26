@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Alert, AlertTitle, Button, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, Snackbar, TextField } from '@mui/material';
+import { Alert, AlertTitle, Button, FormControl, Grid, IconButton, InputAdornment, MenuItem, Select, Snackbar, TextField } from '@mui/material';
 
 import Formsy from "formsy-react";
 //Dialog
@@ -9,7 +9,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import useForm from './useForm';
-
+import NumberFormat from 'react-number-format';
 import { useState, useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,15 +20,17 @@ import { Edit } from '@mui/icons-material';
 import * as brandActions from "actions/brand.action"
 const initialFieldValues = {
     ten: "",
-    diaChi: "",
-    trangthai: "",
-    soDienThoai: ""
+    trangThai: 0,
+    soNguoi: "",
+    soGiuong: "",
+    chieuDai: "",
+    chieuRong: "",
+    donGia: "",
+    moTa: "",
+    hinhAnh: "",
 };
 export default function UpdateBrand(props) {
     const dispatch = useDispatch();
-    const listBrand = useSelector((state) => state.brand.listBrand);
-    const [listBrandShow, setListBrand] = useState([])
-
     let vertical = 'top';
     let horizontal = 'right';
 
@@ -37,7 +39,7 @@ export default function UpdateBrand(props) {
     const [displayButton, setDisplayButton] = useState('none')
     const [alertOpen, setAlertOpen] = useState(false);
     const [tenLp, setTenLp] = useState('');
-    const listCategory = useSelector((state) => state.category.listCategoryByBrand);
+    const listCategory = useSelector((state) => state.category.listCategory);
     const [listCategoryShow, setListCategory] = useState([])
     const account = useSelector((state) => state.account.userAuth);
 
@@ -102,6 +104,31 @@ export default function UpdateBrand(props) {
                         : "Tên khách sạn không chứa chữ số hoặc kí tự đặc biệt";
             }
         }
+        if ("soNguoi" in fieldValues) {
+            if (fieldValues.soNguoi === "") {
+                temp.soNguoi = fieldValues.soNguoi ? "" : "Số người không được để trống";
+            }
+        }
+        if ("soGiuong" in fieldValues) {
+            if (fieldValues.soGiuong === "") {
+                temp.soGiuong = fieldValues.soGiuong ? "" : "Số giường không được để trống";
+            }
+        }
+        if ("chieuDai" in fieldValues) {
+            if (fieldValues.chieuDai === "") {
+                temp.chieuDai = fieldValues.chieuDai ? "" : "Chiều dài không được để trống";
+            }
+        }
+        if ("chieuRong" in fieldValues) {
+            if (fieldValues.chieuRong === "") {
+                temp.chieuRong = fieldValues.chieuRong ? "" : "Chiều rộng không được để trống";
+            }
+        }
+        if ("donGia" in fieldValues) {
+            if (fieldValues.donGia === "") {
+                temp.donGia = fieldValues.donGia ? "" : "Giá loại phòng không được để trống";
+            }
+        }
         setErrors({
             ...temp,
         });
@@ -114,6 +141,16 @@ export default function UpdateBrand(props) {
 
     const handleSubmit = (e) => {
         if (validate()) {
+            let dientich = {
+                chieudai: values.chieuDai,
+                chieurong: values.chieuRong
+            }
+
+            values.dienTich = JSON.stringify(dientich)
+            if (typeof values.donGia !== "number") {
+                values.donGia = Number(values.donGia.replaceAll(',', ''))
+            }
+            values.hinhAnh = "abc"
             dispatch(actions.insertCategory(values))
             setAlertOpen(true)
         };
@@ -122,9 +159,21 @@ export default function UpdateBrand(props) {
     useEffect(() => {
         if (props.id) {
             actions.findById(props.id).then((res) => {
+                let dienTich = {}
+                try {
+                    dienTich = JSON.parse(res.data.dienTich)
+                } catch {
+                    console.log("err")
+                }
                 setValues({
                     id: res.data.id,
                     ten: res.data.ten,
+                    soNguoi: res.data.soNguoi,
+                    soGiuong: res.data.soGiuong,
+                    donGia: res.data.donGia,
+                    chieuDai: dienTich.chieudai,
+                    chieuRong: dienTich.chieurong,
+                    moTa: res.data.moTa
                 }),
                     setTenLp(res.data.ten)
             })
@@ -148,40 +197,140 @@ export default function UpdateBrand(props) {
                 </DialogTitle>
                 <DialogContent style={{ padding: 30 }}>
                     <Formsy onSubmit={handleSubmit} >
-                        <TextField
-                            id="ten"
-                            label="Tên Loại Phòng"
-                            variant="outlined"
-                            helperText=" "
-                            name="ten"
-                            type="text"
-                            fullWidth
-                            value={values.ten || ''}
-                            onChange={handleInputChange}
-                            inputProps={{ readOnly: disabled }}
-                            {...(errors.ten && { error: true, helperText: errors.ten })}
-                        />
+
                         <Grid container spacing={1}>
                             <Grid item xs={12}>
-                                <div><br></br></div>
-                                <FormControl fullWidth>
-                                    <InputLabel id="demo-simple-select-label">Trạng thái</InputLabel>
-                                    <Select
-                                        labelId="demo-simple-select-label"
-                                        name="trangThai"
-                                        label="Trạng thái"
-                                        defaultValue=""
-                                        onChange={handleInputChange}
-                                        value={values.trangThai || ''}
-                                        inputProps={{ readOnly: disabled }}
-                                    >
-                                        <MenuItem value={1} >{'Đang hoạt động'} </MenuItem>
-                                        <MenuItem value={2} >{'Tạm ngưng'} </MenuItem>
-                                    </Select>
-                                </FormControl>
+                                <TextField
+                                    id="ten"
+                                    label="Tên Loại Phòng"
+                                    variant="outlined"
+                                    helperText=" "
+                                    name="ten"
+                                    type="text"
+                                    fullWidth
+                                    value={values.ten || ''}
+                                    onChange={handleInputChange}
+                                    inputProps={{ readOnly: disabled }}
+                                    {...(errors.ten && { error: true, helperText: errors.ten })}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    id="soNguoi"
+                                    label="Số người *"
+                                    variant="outlined"
+                                    helperText=" "
+                                    name="soNguoi"
+                                    type="number"
+                                    autoComplete='off'
+                                    InputProps={{ inputProps: { min: 0, max: 20 }, readOnly: disabled }}
+                                    fullWidth
+                                    value={values.soNguoi || ''}
+                                    onChange={handleInputChange}
+                                    {...(errors.soNguoi && { error: true, helperText: errors.soNguoi })}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    id="soGiuong"
+                                    label="Số Phòng *"
+                                    variant="outlined"
+                                    autoComplete='off'
+                                    helperText=" "
+                                    name="soGiuong"
+                                    type="number"
+                                    fullWidth
+                                    InputProps={{ inputProps: { min: 0, max: 20, readOnly: disabled } }}
+                                    value={values.soGiuong || ''}
+                                    onChange={handleInputChange}
+                                    {...(errors.soGiuong && { error: true, helperText: errors.soGiuong })}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    id="chieuDai"
+                                    label="Chiều dài phòng (m) *"
+                                    variant="outlined"
+                                    autoComplete='off'
+                                    helperText=" "
+                                    name="chieuDai"
+                                    type="number"
+                                    fullWidth
+                                    InputProps={{
+                                        endAdornment: <InputAdornment position="end">Mét</InputAdornment>,
+                                        inputProps: { min: 0, max: 100 }, readOnly: disabled
+                                    }}
+                                    value={values.chieuDai || ''}
+                                    onChange={handleInputChange}
+                                    {...(errors.chieuDai && { error: true, helperText: errors.chieuDai })}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    id="chieuRong"
+                                    label="Chiều rộng phòng (m) *"
+                                    variant="outlined"
+                                    autoComplete='off'
+                                    helperText=" "
+                                    name="chieuRong"
+                                    type="number"
+                                    fullWidth
+                                    value={values.chieuRong || ''}
+                                    InputProps={{
+                                        endAdornment: <InputAdornment position="end">Mét</InputAdornment>,
+                                        inputProps: { min: 0, max: 100 },
+                                        readOnly: disabled
+                                    }}
+                                    onChange={handleInputChange}
+                                    {...(errors.chieuRong && { error: true, helperText: errors.chieuRong })}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <NumberFormat customInput={TextField}
+                                    thousandSeparator={true}
+                                    id="donGia"
+                                    label="Giá phòng *"
+                                    variant="outlined"
+                                    helperText=" "
+                                    autoComplete='off'
+                                    name="donGia"
+                                    type="t"
+                                    InputProps={{
+                                        endAdornment: <InputAdornment position="end">VND</InputAdornment>,
+                                        readOnly: disabled
+                                    }}
+                                    inputProps={{
+                                        maxLength: 15,
+                                    }}
+                                    fullWidth
+                                    value={values.donGia || ''}
+                                    onChange={handleInputChange}
+                                    {...(errors.donGia && { error: true, helperText: errors.donGia })} />
+                                {/* <TextField
+                                   
+                                /> */}
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    id="ten"
+                                    label="Mô tả"
+                                    variant="outlined"
+                                    helperText=" "
+                                    multiline
+                                    name="moTa"
+                                    autoComplete='off'
+                                    rows={4}
+                                    type="text"
+                                    fullWidth
+                                    value={values.moTa || ''}
+                                    InputProps={{
+                                        readOnly: disabled
+                                    }}
+                                    onChange={handleInputChange}
+                                    {...(errors.moTa && { error: true, helperText: errors.moTa })}
+                                />
                             </Grid>
                         </Grid>
-                        <div><br></br></div>
                         <Button
                             fullWidth
                             size="large"

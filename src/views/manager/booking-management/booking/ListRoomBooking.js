@@ -102,9 +102,9 @@ export default function BrandManager() {
                                         </Typography>
                                         <br></br>
                                         <Chip
-                                            icon={e.trangThai === 1 && e.loaiPhongid.trangThai === 1 && e.loaiPhongid.khachSanid.trangThai === 1 ? < CheckCircleOutlinedIcon /> : <CancelOutlinedIcon />}
-                                            label={e.trangThai === 1 && e.loaiPhongid.trangThai === 1 && e.loaiPhongid.khachSanid.trangThai === 1 ? "Đang hoạt động" : "Tạm ngưng"}
-                                            color={e.trangThai === 1 && e.loaiPhongid.trangThai === 1 && e.loaiPhongid.khachSanid.trangThai === 1 ? "info" : "warning"}
+                                            icon={e.trangThai === 0 ? < CheckCircleOutlinedIcon /> : <CancelOutlinedIcon />}
+                                            label={e.trangThai === 0 ? "Đang hoạt động" : "Tạm ngưng"}
+                                            color={e.trangThai === 0 ? "info" : "warning"}
                                         />
                                     </CardContent>
                                     <CardActions disableSpacing>
