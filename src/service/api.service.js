@@ -73,5 +73,11 @@ export default {
         return {
             getByPhongId: (id) => axios.get(url + 'get-by-phong/' + id),
         }
+    },
+    bill_service_detail(url = baseApi + 'bill-service-detail/') {
+        return {
+            add_bill_service_detail: (add_bill) => axios.post(url, add_bill),
+            fetchAllBillDetailById: (id) => axios.get(url + 'get-all-by-bill-id/' + id),
+        }
     }
 }

@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as actions from "actions/bill.action";
 import { useParams } from "react-router-dom";
 import * as pay_actions from "actions/payment.action";
+import * as ser_bill_action from "actions/bill-service-detail.action"
 import { useNavigate } from 'react-router';
 import moment from "moment";
 
@@ -17,13 +18,20 @@ export default function Payment() {
     const navigate = useNavigate();
     const { bill } = useParams();
     const billDetail = useSelector((state) => state.bill.bill_by_id);
-    const [billShow, setBillShow] = useState({
-        tenKhachHang: ''
-    })
+
+    const billServiceDetail = useSelector((state) => state.bill_service_detail.list_service_detail);
+
+    console.log(billServiceDetail)
+    const [billShow, setBillShow] = useState({})
     const [hoanTien, setHoanTien] = useState(0)
     useEffect(() => {
         if (bill) {
             dispatch(actions.fetchById(bill))
+        }
+    }, [])
+    useEffect(() => {
+        if (bill) {
+            dispatch(ser_bill_action.fetchAllBillDetailById(bill))
         }
     }, [])
 
@@ -62,7 +70,6 @@ export default function Payment() {
                 setHoanTien(0)
             }
         }
-
     }
     const onSubmit = () => {
         if (billDetail !== null) {
