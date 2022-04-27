@@ -19,6 +19,7 @@ import Task from "./Task/index";
 // import useWindowScrollPositions from "../HOC/useWindowScrollPositions";
 import withScrollHook from "../withScrollHook";
 import AddTaskDrawer from "./AddTask/AddTaskDrawer";
+import { startOfMonth } from "date-fns";
 // import { owners } from "./task";
 
 
@@ -74,7 +75,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${classes.cell}`]: {
     // color: "#78909C!important",
     color: "#000 !important",
-    backgroundColor: "#fff !important",
+    // backgroundColor: "#fff !important",
     position: "relative",
     userSelect: "none",
     verticalAlign: "top",
@@ -91,7 +92,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
       borderBottom: "none",
     },
     "&:hover": {
-      backgroundColor: "white",
+      backgroundColor: "rgba(33, 150, 243, 0.6)",
     },
     "&:focus": {
       backgroundColor: alpha(theme.palette.primary.main, 0.15),
@@ -110,6 +111,11 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${classes.opacity}`]: {
     opacity: "0.5",
   },
+  [`&.${classes.disabled}`]: {
+    PointerEvent: 'none',
+    opacity: 0.4,
+    userSelect: 'none'
+  },
 }));
 
 // #FOLD_BLOCK
@@ -121,7 +127,7 @@ const StyledDivText = styled("div")(() => ({
       maxHeight: 60,
       overflowY: "auto",
       "&::-webkit-scrollbar": {
-        // display: "none",
+        display: "none",
         width: "6px",
         backgroundColor: "#F5F5F5"
       },
@@ -129,8 +135,11 @@ const StyledDivText = styled("div")(() => ({
   },
   [`&.${classes.todayText}`]: {
     "& > span": {
-      color: "blue",
+      color: "white",
       fontWeight: "600",
+      backgroundColor: 'black',
+      padding: 5,
+      borderRadius: '50%'
     },
   },
 }));
@@ -207,20 +216,27 @@ const CellBase = React.memo(
     handleDateChoice,
     // #FOLD_BLOCK
   }) => {
+    const newDate = new Date();
+
     const iconId = Math.abs(Math.floor(Math.sin(startDate.getDate()) * 10) % 3);
     const isFirstMonthDay = startDate.getDate() === 1;
     const formatOptions = isFirstMonthDay
       ? { day: "numeric", month: "long" }
       : { day: "numeric" };
 
-    const tasksOfDay = useSelector(selectTaskByTime(startDate));
+    newDate.setDate(newDate.getDate() - 1);
 
+    const tasksOfDay = useSelector(selectTaskByTime(startDate));
     React.useEffect(() => {
     });
 
+    const checkDate = startDate < newDate;
+
     const handleOpenDrawer = () => {
-      handleStateForm(true)
-      handleDateChoice(startDate);
+      if (!checkDate) {
+        handleStateForm(true)
+        handleDateChoice(startDate);
+      }
       // alert(startDate)
     }
 
@@ -230,11 +246,9 @@ const CellBase = React.memo(
         tabIndex={0}
         className={classNames({
           [classes.cell]: true,
-          [classes.rainBack]: iconId === 0,
-          [classes.sunBack]: iconId === 1,
-          [classes.cloudBack]: iconId === 2,
-          [classes.opacity]: otherMonth,
-        })}
+          [classes.disabled]: checkDate,
+        })
+        }
       >
         <StyledDivText
           className={classNames({
@@ -291,7 +305,7 @@ const CellBase = React.memo(
 
           {/* </div> */}
         </StyledDivText>
-      </StyledTableCell>
+      </StyledTableCell >
     );
   }
 );

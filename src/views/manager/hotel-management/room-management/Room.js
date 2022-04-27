@@ -194,7 +194,7 @@ export default function Room() {
                                 ))}
                                 <TableCell
                                     key={"action"}
-                                    minWidth={250}
+                                    minwidth={250}
                                 >
                                     {"Hành động"}
                                 </TableCell>
