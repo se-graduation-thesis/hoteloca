@@ -218,7 +218,6 @@ const CellBase = React.memo(
     // #FOLD_BLOCK
   }) => {
     const newDate = new Date();
-    const dispatch = useDispatch();
 
     const iconId = Math.abs(Math.floor(Math.sin(startDate.getDate()) * 10) % 3);
     const isFirstMonthDay = startDate.getDate() === 1;
@@ -229,9 +228,7 @@ const CellBase = React.memo(
     newDate.setDate(newDate.getDate() - 1);
 
     const listBillByStatus = useSelector((state) => state.bill.listBillByStatusAccept);
-    React.useEffect(() => {
-      dispatch(actions.fetchBillByStatusAccept())
-    }, [listBillByStatus])
+
     const tasksOfDay = listBillByStatus.filter(
       (task) =>
         moment(task.ngayVao).format('YYYY-MM-DD') === moment(startDate).format("YYYY-MM-DD")
@@ -491,7 +488,7 @@ const mapStateToProps = (state) => ({
   // count: state.counter.value
 });
 
-const mapDispatchToProps = { editDateOfTask, setTasks };
+const mapDispatchToProps = { editDateOfTask, setTasks, actions };
 
 export default connect(
   mapStateToProps,

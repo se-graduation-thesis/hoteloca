@@ -102,7 +102,7 @@ export default function ReservationInfo({ reservation, handleReservation }) {
 
                 {/* Tiền cọc */}
                 <Grid item xs={12} sx={{ marginTop: 2 }}>
-                    {/* <TextField
+                    <TextField
                         value={formatCash(reservation.tienCoc)}
                         id="outlined-basic"
                         label="Tiền Cọc"
@@ -110,8 +110,8 @@ export default function ReservationInfo({ reservation, handleReservation }) {
                         fullWidth
 
                         onChange={(e) => handleReservation('tienCoc', e.target.value.replaceAll(',', ''))}
-                    /> */}
-                    <NumberFormat customInput={TextField}
+                    />
+                    {/* <NumberFormat customInput={TextField}
                         thousandSeparator={true}
                         id="tienCoc"
                         label="Tiền Cọc *"
@@ -128,7 +128,7 @@ export default function ReservationInfo({ reservation, handleReservation }) {
                         }}
                         fullWidth
                         value={reservation.tienCoc}
-                        onChange={(e) => handleReservation('tienCoc', e.target.value)} />
+                        onChange={(e) => handleReservation('tienCoc', e.target.value)} /> */}
                 </Grid>
 
                 {/* Yêu Cầu */}
