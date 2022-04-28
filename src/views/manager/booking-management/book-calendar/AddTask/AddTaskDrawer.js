@@ -120,6 +120,10 @@ function AddTaskDrawer(props) {
     khachHangid: null
   })
 
+  React.useEffect(() => {
+    setReservation({ ...reservation, ngayVao: moment(props.dateChoice).format('YYYY-MM-DDTHH:mm:ss'), ngayRa: moment(props.dateChoice).format('YYYY-MM-DDTHH:mm:ss') })
+  }, [props.dateChoice])
+
   const handleReservation = (title, value) => {
     setReservation({ ...reservation, [title]: value })
   }
@@ -137,6 +141,7 @@ function AddTaskDrawer(props) {
   const submit = () => {
     actionCustomer.addCustomer(customer).then((response) => {
       reservation.khachHangid = response.data.id;
+      console.log(reservation)
       actionBill.addBill(reservation).then((response) => {
         const phieuThueid = response.data.id;
         const billDetail = {
