@@ -10,6 +10,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as actionCustomer from 'actions/customer.action';
 import * as actionBillDetail from 'actions/bill-detail.action';
 import * as actionBill from 'actions/bill.action';
+import * as actionBillService from 'actions/bill-service.action';
+import * as actionBillDetailService from 'actions/bill-service-detail.action';
 
 const useStyles = makeStyles((theme) => ({
   drawerWrapper: {
@@ -24,6 +26,7 @@ function AddTaskDrawer(props) {
   const dispatch = useDispatch();
 
   const toggleDrawer = (open) => (event) => {
+    props.handleStateForm(open);
     if (
       event.type === "keydown" &&
       (event.key === "Tab" || event.key === "Shift")
@@ -32,7 +35,6 @@ function AddTaskDrawer(props) {
     }
 
     // console.log(">>>", props.stateForm);
-    props.handleStateForm(open);
   };
 
   const [activeStep, setActiveStep] = React.useState(0);
@@ -105,7 +107,6 @@ function AddTaskDrawer(props) {
 
   const account = useSelector((state) => state.account.userAuth);
 
-  console.log(account)
   const [reservation, setReservation] = React.useState({
     nhanVienid: JSON.parse(account).user_id,
     ngayLap: moment(new Date()).format('YYYY-MM-DDTHH:mm:ss'),
@@ -121,23 +122,44 @@ function AddTaskDrawer(props) {
     setReservation({ ...reservation, [title]: value })
   }
 
+  const [serviceSelect, setServiceSelect] = React.useState([]);
+
+  const handleService = (services) => setServiceSelect(services);
+
   let params = location.href.split('/');
   let token = params[params.length - 1];
 
   const submit = () => {
     actionCustomer.addCustomer(customer).then((response) => {
       reservation.khachHangid = response.data.id;
-      actionBill.addBill(reservation).then((resonpe) => {
+      actionBill.addBill(reservation).then((response) => {
+        const phieuThueid = response.data.id;
         const billDetail = {
-          phieuThueid: response.data.id,
+          phieuThueid: phieuThueid,
           phongId: token
         }
         dispatch(actionBillDetail.addBillDetail(billDetail));
+
+        if (serviceSelect.length) {
+          const billService = {
+            ngayLap: moment(new Date()).format('YYYY-MM-DDTHH:mm:ss'),
+            tongTien: 0,
+            ghiChu: "",
+            phieuThueid: phieuThueid
+          }
+          console.log(billService)
+          actionBillService.add_bill_service(billService).then((response) => {
+            serviceSelect.map((item) => {
+              dispatch(actionBillDetailService.add_bill_service_detail({
+                dichVuid: item.id,
+                hoaDonDichVuid: response.data.id
+              }))
+            })
+          })
+        }
       })
     }).then();
-
     toggleDrawer(false)
-    window.alert("Đặt phòng thành công")
   }
 
 
@@ -171,7 +193,7 @@ function AddTaskDrawer(props) {
                 <CustomerInfo customer={customer} handleCustomer={handleCustomer} /> :
                 activeStep === 1 ?
                   <ReservationInfo reservation={reservation} handleReservation={handleReservation} /> :
-                  <ServiceInfo token={token} />
+                  <ServiceInfo token={token} updateService={handleService} />
               }
             </div>
             <div style={{ position: 'fixed', top: 650 }}>

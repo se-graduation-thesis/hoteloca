@@ -92,7 +92,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
       borderBottom: "none",
     },
     "&:hover": {
-      backgroundColor: "rgba(33, 150, 243, 0.6)",
+      backgroundColor: "rgba(72, 138, 138, 0.6);",
     },
     "&:focus": {
       backgroundColor: alpha(theme.palette.primary.main, 0.15),
