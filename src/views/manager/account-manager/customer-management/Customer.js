@@ -20,11 +20,12 @@ import AddCustomerForm from './customer-components/addCustomerForm';
 
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
-    { id: 'hoNguoidung', label: 'Họ', minWidth: 100 },
-    { id: 'tenNguoidung', label: 'Tên', minWidth: 100 },
+    { id: 'hoten', label: 'Họ Tên', minWidth: 100 },
     { id: 'trangThai', label: 'Trạng Thái', minWidth: 100 },
     { id: 'diaChi', label: 'Địa Chỉ', minWidth: 100 },
-    { id: 'taiKhoanid', label: 'Tài Khoản', minWidth: 100 },
+    { id: 'dienThoai', label: 'Số điện thoại', minWidth: 100 },
+
+    // { id: 'taiKhoanid', label: 'Tài Khoản', minWidth: 100 },
 ];
 
 export default function Customer() {
@@ -66,7 +67,7 @@ export default function Customer() {
         if (customers) {
             customers.forEach((e, i) => {
                 e.stt = i + 1
-                // e.loaiPhongid = e.loaiPhongid.tenLoaiPhong
+                e.hoten = e.ho + " " + e.ten
                 e.trangThai === 1 ?
                     e.trangThai = "Hoạt động" :
                     e.trangThai = "Ngừng hoạt động"
@@ -80,12 +81,12 @@ export default function Customer() {
             <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%', pl: 5, pr: 5 }}>
                 <Grid container spacing={1} style={{ marginTop: 10, padding: 20 }}>
                     <Grid item xs={12}>
-                        <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN PHÒNG</h3>
+                        <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN KHÁCH HÀNG</h3>
                     </Grid>
                     <Grid item xs={6}>
                         <Button variant="contained" color="secondary"
                             onClick={() => isShowAddForm(true)}
-                        >Thêm phòng</Button>
+                        >Thêm khách hàng</Button>
                     </Grid>
                     <Grid item xs={6} style={{ padding: 10, textAlign: "right" }}>
                         <TextField
@@ -145,9 +146,9 @@ export default function Customer() {
                                                 <IconButton aria-label="show" color="success" onClick={() => { handleEditCustomer(row); isShowAddForm(true); handleIsView(true) }}>
                                                     <Visibility />
                                                 </IconButton>
-                                                <IconButton aria-label="edit" color="primary" onClick={() => { handleEditCustomer(row); isShowAddForm(true); }}>
+                                                {/* <IconButton aria-label="edit" color="primary" onClick={() => { handleEditCustomer(row); isShowAddForm(true); }}>
                                                     <EditIcon />
-                                                </IconButton>
+                                                </IconButton> */}
                                             </TableCell>
                                         </TableRow>
                                     );

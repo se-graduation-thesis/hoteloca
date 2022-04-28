@@ -28,6 +28,8 @@ const BookingCalendar = Loadable(lazy(() => import('views/manager/booking-manage
 const TabBooking = Loadable(lazy(() => import('views/manager/booking-management/list-booking/TabBooking')));
 const Payment = Loadable(lazy(() => import('views/manager/booking-management/payment/Payment')));
 const PrintPdf = Loadable(lazy(() => import('views/manager/booking-management/payment/PrintPdf')));
+const ReceiptManagerment = Loadable(lazy(() => import('views/manager/receipt-managerment/ReceiptManagerment')));
+
 
 
 const BrandManager = Loadable(lazy(() => import('views/manager/hotel-manager/brand-manager/BrandManager')));
@@ -83,6 +85,10 @@ const MainRoutes = {
         {
             path: '/admin/export-pdf',
             element: <PrintPdf />
+        },
+        {
+            path: '/admin/receipt-managerment',
+            element: <ReceiptManagerment />
         },
         {
             path: '/default',

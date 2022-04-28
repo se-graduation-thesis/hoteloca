@@ -229,9 +229,11 @@ const CellBase = React.memo(
     newDate.setDate(newDate.getDate() - 1);
 
     const listBillByStatus = useSelector((state) => state.bill.listBillByStatusAccept);
-    React.useEffect(() => {
-      dispatch(actions.fetchBillByStatusAccept())
-    }, [listBillByStatus])
+
+    // React.useEffect(() => {
+    //   dispatch(actions.fetchBillByStatusAccept())
+    // })
+
     const tasksOfDay = listBillByStatus.filter(
       (task) =>
         moment(task.ngayVao).format('YYYY-MM-DD') === moment(startDate).format("YYYY-MM-DD")
@@ -413,15 +415,17 @@ class Calendar extends React.PureComponent {
       <div>
         <DragDropContext onDragEnd={this.onDragEnd}>
           <Paper>
-            <Scheduler>
+            <Scheduler
+              locale={{
+                allDay: 'Ganztägig',
+              }}
+            >
               {/* <EditingState onCommitChanges={this.commitChanges} /> */}
               <ViewState defaultCurrentDate={moment().format("YYYY-MM-DD")} />
 
               {/* <DragDropContext> */}
               <MonthView
-                messages={{
-                  allDay: 'Ganztägig',
-                }}
+                displayName={"Tháng"}
                 timeTableCellComponent={(props) =>
                   <CellBase
                     handleStateForm={this.handleStateForm}
@@ -481,7 +485,7 @@ class Calendar extends React.PureComponent {
           stateForm={this.state.stateForm}
           handleStateForm={this.handleStateForm}
           dateChoice={this.state.dateChoice} />
-      </div>
+      </div >
     );
   }
 }

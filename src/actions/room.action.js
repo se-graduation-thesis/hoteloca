@@ -5,7 +5,8 @@ export const ACTION_TYPES = {
     ADD_ROOM: "ADD_ROOM",
     GET_ALL_ROOM_BY_BRAND: "GET_ALL_ROOM_BY_BRAND",
     GET_ROOM_BY_NAME: "GET_ROOM_BY_NAME",
-    GET_ALL_ROOM: "GET_ALL_ROOM"
+    GET_ALL_ROOM: "GET_ALL_ROOM",
+    GET_ROOM_EMPTY: "GET_ROOM_EMPTY"
 };
 
 export const fetchAllRoom = () => (dispatch) => {
@@ -54,6 +55,19 @@ export const get_room_by_name = (name) => (dispatch) => {
         .then((response) => {
             dispatch({
                 type: ACTION_TYPES.GET_ROOM_BY_NAME,
+                payload: response.data,
+            });
+        })
+        .catch((err) => console.log(err));
+};
+
+export const get_empty_room = (room) => (dispatch) => {
+    apiService
+        .room()
+        .get_empty_room(room)
+        .then((response) => {
+            dispatch({
+                type: ACTION_TYPES.GET_ROOM_EMPTY,
                 payload: response.data,
             });
         })

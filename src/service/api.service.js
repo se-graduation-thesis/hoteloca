@@ -23,7 +23,8 @@ export default {
             add_room: (room) => axios.post(url, room),
             get_all_room_by_brand: (id) => axios.get(url + "get-all-room-by-brand/" + id),
             get_room_by_name: (name) => axios.get(url + "getRoomByName/" + name),
-            get_all_roomm: () => axios.get(url + "get-all-room")
+            get_all_roomm: () => axios.get(url + "get-all-room"),
+            get_empty_room: (phong) => axios.post(url + "get-all-empty-room", phong)
         }
     },
     service(url = baseApi + 'service/') {
@@ -83,6 +84,15 @@ export default {
     bill_service(url = baseApi + 'service-bill/') {
         return {
             add_bill_service: (billService) => axios.post(url, billService),
+        }
+    },
+    payment(url = baseApi + 'payment/') {
+        return {
+            add_payment: (payment) => axios.post(url, payment),
+            get_all: () => axios.get(url + "get-all"),
+            get_all_day: (day, month, year) => axios.get(url + "get-all-day/" + day + "&&" + month + "&&" + year),
+            get_all_month: (month, year) => axios.get(url + "get-all-month/" + month + "&&" + year),
+            get_all_year: (year) => axios.get(url + "get-all-year/" + year),
         }
     }
 }

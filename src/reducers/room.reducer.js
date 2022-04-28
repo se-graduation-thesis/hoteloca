@@ -4,7 +4,8 @@ const initialState = {
     rooms: [],
     room_by_brand: [],
     room_by_name: {},
-    list_room: []
+    list_room: [],
+    empty_room: []
 };
 
 export const roomReducer = (state = initialState, action) => {
@@ -31,6 +32,10 @@ export const roomReducer = (state = initialState, action) => {
         case ACTION_TYPES.GET_ALL_ROOM:
             return {
                 list_room: action.payload
+            }
+        case ACTION_TYPES.GET_ROOM_EMPTY:
+            return {
+                empty_room: [...action.payload]
             }
         default:
             return state;
