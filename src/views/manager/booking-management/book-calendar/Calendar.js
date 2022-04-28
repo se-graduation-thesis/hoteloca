@@ -11,7 +11,7 @@ import classNames from "clsx";
 import moment from "moment";
 import * as React from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { connect, useSelector } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { v4 as uuid } from "uuid";
 import { loadFromLocalStorage, updateDateForTaskToLocalStorage } from "actions/localStorage";
 import { editDateOfTask, selectTaskByTime, setTasks } from "reducers/booking.reducer";
@@ -20,6 +20,7 @@ import Task from "./Task/index";
 import withScrollHook from "../withScrollHook";
 import AddTaskDrawer from "./AddTask/AddTaskDrawer";
 import { startOfMonth } from "date-fns";
+import * as actions from "actions/bill.action"
 // import { owners } from "./task";
 
 
@@ -217,6 +218,7 @@ const CellBase = React.memo(
     // #FOLD_BLOCK
   }) => {
     const newDate = new Date();
+    const dispatch = useDispatch();
 
     const iconId = Math.abs(Math.floor(Math.sin(startDate.getDate()) * 10) % 3);
     const isFirstMonthDay = startDate.getDate() === 1;
@@ -226,7 +228,15 @@ const CellBase = React.memo(
 
     newDate.setDate(newDate.getDate() - 1);
 
-    const tasksOfDay = useSelector(selectTaskByTime(startDate));
+    const listBillByStatus = useSelector((state) => state.bill.listBillByStatusAccept);
+    React.useEffect(() => {
+      dispatch(actions.fetchBillByStatusAccept())
+    }, [listBillByStatus])
+    const tasksOfDay = listBillByStatus.filter(
+      (task) =>
+        moment(task.ngayVao).format('YYYY-MM-DD') === moment(startDate).format("YYYY-MM-DD")
+    ).sort((a, b) => a.ngayVao - b.ngayVao);
+    // const tasksOfDay = useSelector(selectTaskByTime(startDate));
     React.useEffect(() => {
     });
 
@@ -284,7 +294,7 @@ const CellBase = React.memo(
                   </Draggable>
                 )}
                 {tasksOfDay.map((task, index) => (
-                  <Draggable key={task.id} draggableId={task.id} index={index}>
+                  <Draggable key={task.id} draggableId={task.id + '0000'} index={index}>
                     {(provided) => (
                       <div
                         // key={task.id}
@@ -366,6 +376,7 @@ class Calendar extends React.PureComponent {
   //     return { data };
   //   });
   // }
+
 
   onDragEnd = (result) => {
     const { destination, source, draggableId, type } = result;

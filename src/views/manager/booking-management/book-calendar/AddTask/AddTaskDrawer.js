@@ -12,6 +12,7 @@ import * as actionBillDetail from 'actions/bill-detail.action';
 import * as actionBill from 'actions/bill.action';
 import * as actionBillService from 'actions/bill-service.action';
 import * as actionBillDetailService from 'actions/bill-service-detail.action';
+import FinalView from './components/finalView';
 
 const useStyles = makeStyles((theme) => ({
   drawerWrapper: {
@@ -180,7 +181,8 @@ function AddTaskDrawer(props) {
             {/* <Typography sx={{ mt: 2, mb: 1 }}>
               All steps completed - you're finished
             </Typography> */}
-            <Button variant="contained" fullWidth sx={{ mt: 20 }} onClick={submit}>ADD</Button>
+            <FinalView customer={customer} reservation={reservation} token={token} serviceSelect={serviceSelect} />
+            <Button variant="contained" sx={{ ml: 2, width: 610 }} onClick={submit}>LẬP PHIẾU THUÊ</Button>
             <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
               <Box sx={{ flex: '1 1 auto' }} />
               <Button onClick={handleReset}>Đặt lại</Button>
