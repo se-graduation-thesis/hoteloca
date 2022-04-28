@@ -20,7 +20,7 @@ import Task from "./Task/index";
 import withScrollHook from "../withScrollHook";
 import AddTaskDrawer from "./AddTask/AddTaskDrawer";
 import { startOfMonth } from "date-fns";
-import * as actions from "actions/bill.action"
+import { fetchBillByStatusAccept } from "actions/bill.action"
 // import { owners } from "./task";
 
 
@@ -397,8 +397,11 @@ class Calendar extends React.PureComponent {
   componentDidMount() {
     // load tasks from the local storage and save to Redux
     const data = loadFromLocalStorage();
+    this.props.fetchBillByStatusAccept()
     this.props.setTasks(data);
   }
+
+
 
   handleStateForm = (state) => {
     this.setState({ stateForm: state });
@@ -495,7 +498,7 @@ const mapStateToProps = (state) => ({
   // count: state.counter.value
 });
 
-const mapDispatchToProps = { editDateOfTask, setTasks };
+const mapDispatchToProps = { editDateOfTask, setTasks, fetchBillByStatusAccept };
 
 export default connect(
   mapStateToProps,
