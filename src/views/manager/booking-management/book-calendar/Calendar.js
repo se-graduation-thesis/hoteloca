@@ -20,7 +20,7 @@ import Task from "./Task/index";
 import withScrollHook from "../withScrollHook";
 import AddTaskDrawer from "./AddTask/AddTaskDrawer";
 import { startOfMonth } from "date-fns";
-import * as actions from "actions/bill.action"
+import { fetchBillByStatusAccept } from "actions/bill.action"
 // import { owners } from "./task";
 
 
@@ -228,10 +228,12 @@ const CellBase = React.memo(
     newDate.setDate(newDate.getDate() - 1);
 
     const listBillByStatus = useSelector((state) => state.bill.listBillByStatusAccept);
+    let params = location.href.split('/');
+    let token = params[params.length - 1];
 
     const tasksOfDay = listBillByStatus.filter(
       (task) =>
-        moment(task.ngayVao).format('YYYY-MM-DD') === moment(startDate).format("YYYY-MM-DD")
+        moment(task.ngayVao).format('YYYY-MM-DD') === moment(startDate).format("YYYY-MM-DD") && task.chiTietPhieuThueList[0].phongId.id == token
     ).sort((a, b) => a.ngayVao - b.ngayVao);
     // const tasksOfDay = useSelector(selectTaskByTime(startDate));
     React.useEffect(() => {
@@ -392,8 +394,11 @@ class Calendar extends React.PureComponent {
   componentDidMount() {
     // load tasks from the local storage and save to Redux
     const data = loadFromLocalStorage();
+    this.props.fetchBillByStatusAccept()
     this.props.setTasks(data);
   }
+
+
 
   handleStateForm = (state) => {
     this.setState({ stateForm: state });
@@ -410,15 +415,17 @@ class Calendar extends React.PureComponent {
       <div>
         <DragDropContext onDragEnd={this.onDragEnd}>
           <Paper>
-            <Scheduler>
+            <Scheduler
+              locale={{
+                allDay: 'Ganztägig',
+              }}
+            >
               {/* <EditingState onCommitChanges={this.commitChanges} /> */}
               <ViewState defaultCurrentDate={moment().format("YYYY-MM-DD")} />
 
               {/* <DragDropContext> */}
               <MonthView
-                messages={{
-                  allDay: 'Ganztägig',
-                }}
+                displayName={"Tháng"}
                 timeTableCellComponent={(props) =>
                   <CellBase
                     handleStateForm={this.handleStateForm}
@@ -478,7 +485,7 @@ class Calendar extends React.PureComponent {
           stateForm={this.state.stateForm}
           handleStateForm={this.handleStateForm}
           dateChoice={this.state.dateChoice} />
-      </div>
+      </div >
     );
   }
 }
@@ -488,7 +495,7 @@ const mapStateToProps = (state) => ({
   // count: state.counter.value
 });
 
-const mapDispatchToProps = { editDateOfTask, setTasks, actions };
+const mapDispatchToProps = { editDateOfTask, setTasks, fetchBillByStatusAccept };
 
 export default connect(
   mapStateToProps,

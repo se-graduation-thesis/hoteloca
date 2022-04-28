@@ -13,6 +13,7 @@ import * as actionBill from 'actions/bill.action';
 import * as actionBillService from 'actions/bill-service.action';
 import * as actionBillDetailService from 'actions/bill-service-detail.action';
 import FinalView from './components/finalView';
+import PositionedSnackbar from 'views/manager/hotel-management/components/PositionedSnackbar';
 
 const useStyles = makeStyles((theme) => ({
   drawerWrapper: {
@@ -130,6 +131,9 @@ function AddTaskDrawer(props) {
   let params = location.href.split('/');
   let token = params[params.length - 1];
 
+  const [snackbarState, setSnackbarState] = React.useState(false);
+
+
   const submit = () => {
     actionCustomer.addCustomer(customer).then((response) => {
       reservation.khachHangid = response.data.id;
@@ -160,6 +164,10 @@ function AddTaskDrawer(props) {
         }
       })
     }).then();
+    setSnackbarState(true);
+    setTimeout(function () {
+      setSnackbarState(false);
+    }, 3000);
     toggleDrawer(false)
   }
 
@@ -239,6 +247,10 @@ function AddTaskDrawer(props) {
       <Drawer anchor="left" open={props.stateForm} onClose={toggleDrawer(false)}>
         {list("left")}
       </Drawer>
+
+      <div>
+        <PositionedSnackbar open={snackbarState} message={"Thêm Thành Công."} />
+      </div>
     </>
   );
 }

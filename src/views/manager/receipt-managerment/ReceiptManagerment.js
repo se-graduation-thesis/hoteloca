@@ -7,41 +7,41 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip, Typography } from '@mui/material';
+import { Button, Chip, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip } from '@mui/material';
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import Edit from '@mui/icons-material/Edit';
-import Payment from '@mui/icons-material/Payment';
-import InsertBrandDialog from './InsertBrandDialog'
-import UpdateBrand from './UpdateBrand'
+import moment from "moment";
+// import InsertBrandDialog from './InsertDialog'
+// import UpdateBrand from './UpdateDialog'
 
 import { useState, useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import * as actions from "actions/bill.action"
+import * as actions from "actions/payment.action"
+import CardDay from "./CardDay"
+import CardWeek from "./CardWeek"
+import CardYear from "./CardYear"
+import { ReceiptLong } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
-import { address } from 'assets/address';
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
-    { id: 'khachhang', label: 'Thông tin khách hàng', minWidth: 100 },
-    { id: 'ngayVao', label: 'Ngày đến', minWidth: 100 },
-    { id: 'ngayRa', label: 'Ngày đi', minWidth: 100 },
-    // { id: 'loaiphong', label: 'Loại Phòng', minWidth: 100 },
-    { id: 'soluongphong', label: 'Số Lượng Phòng', minWidth: 100 },
-    { id: 'tenPhong', label: 'Tên Phòng', minWidth: 100 },
-    { id: 'trangThai', label: 'Ghi chú', minWidth: 100 },
+    { id: 'ten', label: 'Họ Tên Khách Hàng', minWidth: 100 },
+    { id: 'ngayThue', label: 'Ngày Thuê', minWidth: 100 },
+    { id: 'ngayThanhToan', label: 'Ngày Thanh Toán', minWidth: 100 },
+    { id: 'tienThu', label: 'Tiền thu', minWidth: 100 },
 ];
 
-export default function ListBooking() {
+export default function PaymentManager() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [page, setPage] = useState(0);
     const rows = []
-    const [rowsPerPage, setRowsPerPage] = useState(5);
-    const listBillByStatus = useSelector((state) => state.bill.listBillByStatusAccept);
-    const [listBillByStatusShow, setListBillByStatusShow] = useState([])
-
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const listPayment = useSelector((state) => state.payment.all_payment);
+    const [listPaymentShow, setListPayment] = useState([])
+    const account = useSelector((state) => state.account.userAuth);
     const [open, setOpen] = useState(false);
     const [openUpdate, setOpenUpdate] = useState(false);
 
@@ -69,56 +69,42 @@ export default function ListBooking() {
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
-
     useEffect(() => {
-        dispatch(actions.fetchBillByStatusAccept())
+        dispatch(actions.get_all())
     }, [])
+
     useEffect(() => {
-        if (listBillByStatus.length > 0 && listBillByStatus !== undefined) {
-            listBillByStatus.forEach((e, i) => {
-                e.stt = i + 1;
-                e.ngayVao = e.ngayVao
-                e.khachhang = e.khachHangid.ho + " " + e.khachHangid.ten
-                if (e.chiTietPhieuThueList.length > 0) {
-
-                    e.soluongphong = e.chiTietPhieuThueList.length;
-                    let tenphong = "";
-                    e.chiTietPhieuThueList.forEach((e1) => {
-                        tenphong += e1.phongId.ten + " "
-                        // listBillByStatus.loaiphong
-                    });
-                    e.tenPhong = tenphong
-                }
-
+        if (listPayment) {
+            listPayment.forEach((e, i) => {
+                e.stt = i + 1
+                e.ten = e.phieuThueid.khachHangid.ho + " " + e.phieuThueid.khachHangid.ten
+                e.ngayThanhToan = moment(e.ngayThanhToan).format('DD-MM-YYYY HH:mm:ss')
+                e.ngayThue = moment(e.phieuThueid.ngayVao).format('DD-MM-YYYY HH:mm:ss')
+                e.tienThu = new Intl.NumberFormat('en-Vn').format(e.tongTienThanhToan) + " VND"
             })
-            setListBillByStatusShow(listBillByStatus)
+            setListPayment(listPayment)
         }
-    }, [listBillByStatus])
+    }, [listPayment])
+    console.log(listPayment)
     return (
-        <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }}>
-            <Grid container spacing={1} style={{ padding: 10 }}>
+        <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }} style={{ padding: 20 }}>
+            <Grid container spacing={1} style={{ marginTop: 10, padding: 10 }}>
                 <Grid item xs={12}>
-                    <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN CÁC ĐƠN ĐẶT HÀNG HIỆN CÓ</h3>
+                    <h2 style={{ marginTop: 8 }}>QUẢN LÝ HÓA ĐƠN</h2>
                 </Grid>
-                <Grid item xs={6}>
-                    {/* <Button onClick={handleClickOpen} variant="contained" color="secondary">Thêm chi nhánh</Button>
-                    <InsertBrandDialog open={open} isShowForm={handleClose} /> */}
+                <Grid item xs={4}>
+                    <CardDay />
                 </Grid>
-
-                <Grid item xs={6} style={{ padding: 10, textAlign: "right" }}>
-                    <TextField
-                        label="Nhập nội dung tìm kiếm"
-                        size="small"
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="start">
-                                    <IconButton>
-                                        <SearchIcon />
-                                    </IconButton>
-                                </InputAdornment>
-                            )
-                        }}
-                    />
+                <Grid item xs={4}>
+                    <CardWeek />
+                </Grid>
+                <Grid item xs={4}>
+                    <CardYear />
+                </Grid>
+            </Grid>
+            <Grid container spacing={1} style={{ marginTop: 10, padding: 10 }}>
+                <Grid item xs={4}>
+                    <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN CÁC HÓA ĐƠN ĐÃ THANH TOÁN</h3>
                 </Grid>
             </Grid>
             <TableContainer sx={{ height: '70%' }}>
@@ -142,11 +128,11 @@ export default function ListBooking() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {listBillByStatusShow
+                        {listPaymentShow
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row, i) => {
+                            .map((row) => {
                                 return (
-                                    <TableRow hover role="checkbox" tabIndex={-1} key={i}>
+                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.stt}>
                                         {columns.map((column) => {
                                             const value = row[column.id];
                                             return (
@@ -158,9 +144,9 @@ export default function ListBooking() {
                                             );
                                         })}
                                         <TableCell key={row.stt}>
-                                            <Tooltip title="Thanh toán">
-                                                <IconButton key={row.stt} onClick={() => navigate(`/admin/booking-payment/${row.id}`)} aria-label="delete" color="primary">
-                                                    <Payment />
+                                            <Tooltip title="Xem chi tiết hóa đơn">
+                                                <IconButton key={row.stt} onClick={() => navigate(`/admin/booking-payment/${row.phieuThueid.id}`)} aria-label="delete" color="primary">
+                                                    <ReceiptLong />
                                                 </IconButton>
                                             </Tooltip>
                                         </TableCell>
@@ -169,19 +155,10 @@ export default function ListBooking() {
                             })}
                     </TableBody>
                 </Table>
-                {
-                    listBillByStatusShow.length ?
-                        <div></div>
-                        :
-                        <div style={{ textAlign: "center" }}>
-                            <Typography style={{ padding: 30, fontSize: 16 }}>Không có đơn nào đã thanh toán </Typography>
-                        </div>
-                }
             </TableContainer>
 
             <TablePagination
-                labelRowsPerPage='Số hàng'
-                rowsPerPageOptions={[5, 10, 25, 100]}
+                rowsPerPageOptions={[10, 25, 100]}
                 component="div"
                 count={rows.length}
                 rowsPerPage={rowsPerPage}
@@ -189,7 +166,8 @@ export default function ListBooking() {
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
-            <UpdateBrand open={openUpdate} id={id_brand} isShowForm={handleCloseUpdate} />
+            {/* <UpdateBrand open={openUpdate} id={id_brand} isShowForm={handleCloseUpdate} /> */}
         </Paper >
+
     );
 }

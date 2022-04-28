@@ -75,7 +75,7 @@ export default function BookingPendingApprove() {
     useEffect(() => {
         if (listBillByStatus.length > 0 && listBillByStatus !== undefined) {
             listBillByStatus.forEach((e, i) => {
-                e.stt = i;
+                e.stt = i + 1;
                 e.ngayVao = e.ngayVao
                 e.khachhang = e.khachHangid.ho + " " + e.khachHangid.ten
                 if (e.chiTietPhieuThueList.length > 0) {
