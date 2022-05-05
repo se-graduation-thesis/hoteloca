@@ -13,6 +13,7 @@ import * as React from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { v4 as uuid } from "uuid";
+import { Chip, Grid } from "@mui/material";
 import { loadFromLocalStorage, updateDateForTaskToLocalStorage } from "actions/localStorage";
 import { editDateOfTask, selectTaskByTime, setTasks } from "reducers/booking.reducer";
 import Task from "./Task/index";
@@ -21,6 +22,7 @@ import withScrollHook from "../withScrollHook";
 import AddTaskDrawer from "./AddTask/AddTaskDrawer";
 import { startOfMonth } from "date-fns";
 import { fetchBillByStatusAccept } from "actions/bill.action"
+import { get_by_id } from "actions/room.action"
 // import { owners } from "./task";
 
 
@@ -339,7 +341,9 @@ const FlexibleSpace = ({ ...restProps }) => (
   </StyledToolbarFlexibleSpace>
 );
 
+
 class Calendar extends React.PureComponent {
+
   // #FOLD_BLOCK
   constructor(props) {
     super(props);
@@ -348,6 +352,7 @@ class Calendar extends React.PureComponent {
       // data: appointments,
       stateForm: false,
       dateChoice: null,
+
     };
 
     // this.commitChanges = this.commitChanges.bind(this);
@@ -392,9 +397,13 @@ class Calendar extends React.PureComponent {
   };
 
   componentDidMount() {
+    let params = location.href.split('/');
+    let token = params[params.length - 1];
+
     // load tasks from the local storage and save to Redux
     const data = loadFromLocalStorage();
     this.props.fetchBillByStatusAccept()
+    this.props.get_by_id(token)
     this.props.setTasks(data);
   }
 
@@ -410,11 +419,24 @@ class Calendar extends React.PureComponent {
 
   render() {
     // const { data } = this.state;
-
+    console.log(this.props.room_id)
     return (
       <div>
+        <Paper style={{ padding: 20, marginBottom: 10 }}>
+          <Grid container>
+            <Grid item xs={1}>
+              <h3>Phòng 1.1</h3>
+              {/* <h3>{this.props.room_id !== null ? this.props.room_id.ten : ""}</h3> */}
+            </Grid>
+            <Grid item xs={2}>
+              <Chip style={{ marginTop: 10 }} color="warning" label="Phòng thường" />
+              {/* <Chip style={{ marginTop: 10 }} label={this.props.room_id !== null ? this.props.room_id.loaiPhongid.ten : ""} color="warning" /> */}
+            </Grid>
+          </Grid>
+        </Paper>
         <DragDropContext onDragEnd={this.onDragEnd}>
-          <Paper>
+
+          <Paper style={{ padding: 20 }}>
             <Scheduler
               locale={{
                 allDay: 'Ganztägig',
@@ -492,10 +514,10 @@ class Calendar extends React.PureComponent {
 
 // export default Calendar;
 const mapStateToProps = (state) => ({
-  // count: state.counter.value
+  room_id: state.room.room_id
 });
 
-const mapDispatchToProps = { editDateOfTask, setTasks, fetchBillByStatusAccept };
+const mapDispatchToProps = { editDateOfTask, setTasks, fetchBillByStatusAccept, get_by_id };
 
 export default connect(
   mapStateToProps,

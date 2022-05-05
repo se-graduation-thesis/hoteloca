@@ -6,7 +6,8 @@ export const ACTION_TYPES = {
     GET_ALL_ROOM_BY_BRAND: "GET_ALL_ROOM_BY_BRAND",
     GET_ROOM_BY_NAME: "GET_ROOM_BY_NAME",
     GET_ALL_ROOM: "GET_ALL_ROOM",
-    GET_ROOM_EMPTY: "GET_ROOM_EMPTY"
+    GET_ROOM_EMPTY: "GET_ROOM_EMPTY",
+    GET_BY_ID: "GET_BY_ID"
 };
 
 export const fetchAllRoom = () => (dispatch) => {
@@ -68,6 +69,18 @@ export const get_empty_room = (room) => (dispatch) => {
         .then((response) => {
             dispatch({
                 type: ACTION_TYPES.GET_ROOM_EMPTY,
+                payload: response.data,
+            });
+        })
+        .catch((err) => console.log(err));
+};
+export const get_by_id = (id) => (dispatch) => {
+    apiService
+        .room()
+        .get_by_id(id)
+        .then((response) => {
+            dispatch({
+                type: ACTION_TYPES.GET_BY_ID,
                 payload: response.data,
             });
         })

@@ -24,6 +24,7 @@ export default {
             get_all_room_by_brand: (id) => axios.get(url + "get-all-room-by-brand/" + id),
             get_room_by_name: (name) => axios.get(url + "getRoomByName/" + name),
             get_all_roomm: () => axios.get(url + "get-all-room"),
+            get_by_id: (id) => axios.get(url + id),
             get_empty_room: (phong) => axios.post(url + "get-all-empty-room", phong)
         }
     },

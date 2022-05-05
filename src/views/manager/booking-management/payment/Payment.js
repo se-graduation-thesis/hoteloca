@@ -98,7 +98,11 @@ export default function Payment() {
 
     function DaysBetween(start, end) {
         const oneDay = 1000 * 60 * 60 * 24;
-        return (treatAsUTC(end) - treatAsUTC(start)) / oneDay;
+        let day = (treatAsUTC(end) - treatAsUTC(start)) / oneDay
+        if (day == 0) {
+            day = 1
+        }
+        return day;
     }
     function treatAsUTC(date) {
         var result = new Date(date);
