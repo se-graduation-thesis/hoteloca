@@ -15,10 +15,9 @@ import CellWifiOutlinedIcon from '@mui/icons-material/CellWifiOutlined';
 import AcUnitOutlinedIcon from '@mui/icons-material/AcUnitOutlined';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-import { Button, Chip, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { Button, Chip, FormControl, Grid, InputLabel, Badge, Select, TextField } from '@mui/material';
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { useState, useEffect } from 'react';
-import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -28,16 +27,16 @@ import DialogTitle from '@mui/material/DialogTitle';
 import * as actions from 'actions/room.action'
 import { Link, useNavigate } from 'react-router-dom';
 import MapsHomeWorkOutlinedIcon from '@mui/icons-material/MapsHomeWorkOutlined';
-
+import moment from "moment-timezone";
 export default function BrandManager() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const account = useSelector((state) => state.account.userAuth);
     const [checkin, setCheckIn] = useState(new Date)
-    const [checkout, setCheckOut] = useState(new Date)
+    const [checkout, setCheckOut] = useState(new Date((new Date()).valueOf() + 1000 * 3600 * 24))
     const room = useSelector((state) => state.room.empty_room);
-    const [list_room_hotel, setListRoomHotel] = useState([])
-
+    const [list_room_hotel, setListRoomHotel] = useState([]);
+    const [textTitle, setTextTitle] = useState("Tất cả phòng");
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
@@ -50,55 +49,66 @@ export default function BrandManager() {
 
     useEffect(() => {
         let room_find = {
-            ngayVao: null,
-            ngayRa: null
+            trangThai: 0,
+            ngayVao: moment.tz(new Date(), "Asia/Ho_Chi_Minh").format(),
+            ngayRa: moment.tz(new Date((new Date()).valueOf() + 1000 * 3600 * 24), "Asia/Ho_Chi_Minh").format()
         }
         dispatch(actions.get_empty_room(room_find))
     }, [])
     useEffect(() => {
         if (room) {
             setListRoomHotel(room)
+            console.log(room)
         }
     }, [room])
     const onsubmit = () => {
         let room_find = {
-            ngayVao: checkin,
-            ngayRa: checkout
+            trangThai: 0,
+            ngayVao: moment.tz(checkin, "Asia/Ho_Chi_Minh").format(),
+            ngayRa: moment.tz(checkout, "Asia/Ho_Chi_Minh").format()
         }
         dispatch(actions.get_empty_room(room_find))
     }
+
+    // Phòng đang sử dụng
+    const onAllUse = () => {
+        let room_find = {
+            trangThai: 2,
+            ngayVao: moment.tz(new Date(), "Asia/Ho_Chi_Minh").format(),
+            ngayRa: moment.tz(new Date((new Date()).valueOf() + 1000 * 3600 * 24), "Asia/Ho_Chi_Minh").format()
+        }
+        setTextTitle("Phòng đang sử dụng")
+        dispatch(actions.get_empty_room(room_find))
+    }
+    //Phòng đang trống
+    const onAllEmpty = () => {
+        let room_find = {
+            trangThai: 1,
+            ngayVao: moment.tz(new Date(), "Asia/Ho_Chi_Minh").format(),
+            ngayRa: moment.tz(new Date((new Date()).valueOf() + 1000 * 3600 * 24), "Asia/Ho_Chi_Minh").format()
+        }
+        setTextTitle("Phòng đang trống")
+        dispatch(actions.get_empty_room(room_find))
+    }
+
     const onAllRoom = () => {
         let room_find = {
-            ngayVao: null,
-            ngayRa: null
+            ngayVao: moment.tz(new Date(), "Asia/Ho_Chi_Minh").format(),
+            ngayRa: moment.tz(new Date((new Date()).valueOf() + 1000 * 3600 * 24), "Asia/Ho_Chi_Minh").format()
         }
+        setTextTitle("Tất cả các phòng")
         dispatch(actions.get_empty_room(room_find))
     }
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }} style={{ padding: 20 }}>
             <Grid container spacing={1} style={{ marginTop: 10, padding: 10 }}>
                 <Grid item xs={12}>
-                    <h3 style={{ marginTop: 8 }}>DANH SÁCH PHÒNG</h3>
+                    <h3 style={{ marginTop: 8 }}>ĐẶT PHÒNG</h3>
                 </Grid>
-
-                {/* <Grid item xs={3}>
-                    <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label">Loại Phòng</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            // id="demo-simple-select"
-                            name="city"
-                            label="Chi nhánh"
-                        >
-
-                            <MenuItem value="123">123</MenuItem>
-
-                        </Select>
-                    </FormControl>
-                </Grid> */}
                 <Grid item xs={3}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DateTimePicker
+                            inputFormat="dd/MM/yyyy hh:mm a"
                             renderInput={(props) => <TextField {...props} fullWidth />}
                             label="Ngày Vào"
                             value={checkin}
@@ -109,6 +119,7 @@ export default function BrandManager() {
                 <Grid item xs={3}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DateTimePicker
+                            inputFormat="dd/MM/yyyy hh:mm a"
                             renderInput={(props) => <TextField {...props} fullWidth />}
                             label="Ngày Ra"
                             value={checkout}
@@ -117,36 +128,59 @@ export default function BrandManager() {
                     </LocalizationProvider>
                 </Grid>
                 <Grid item xs={6} style={{ padding: 10, textAlign: "right" }}>
+                    <Button style={{ marginRight: 10 }} color="success" variant="contained" onClick={onAllUse}>Phòng đang sử dụng</Button>
+                    <Button style={{ marginRight: 10 }} color="warning" variant="contained" onClick={onAllEmpty}>Phòng đang trống</Button>
                     <Button style={{ marginRight: 10 }} color="primary" variant="contained" onClick={onAllRoom}>Tất cả phòng</Button>
                     <Button color="secondary" variant="contained" onClick={onsubmit}>Tìm kiếm</Button>
                 </Grid>
             </Grid>
+            <div style={{ paddingLeft: 10, display: 'flex' }}>
+                <Grid container spacing={1}>
+                    <Grid item xs={3}>
+                        <Button style={{ marginRight: 10 }} color="primary" variant="contained" onClick={() => navigate(`/admin/add-booking`)}>Đặt phòng</Button>
+                    </Grid>
+                    <Grid item xs={9} style={{ display: "flex", alignItems: "right", justifyContent: "right" }}>
+                        <div style={{ width: 40, height: 30, backgroundColor: "#e3f2fd", border: '2px solid #e6e6e6' }}></div>
+                        <div style={{ margin: 10, fontWeight: "bold" }}>Đang hoạt động</div>
+                        <div style={{ width: 40, height: 30, backgroundColor: "#fceebb", border: '2px solid #e6e6e6' }}></div>
+                        <div style={{ margin: 10, fontWeight: "bold" }}>Đang bảo trì</div>
+                    </Grid>
+                </Grid>
 
+            </div>
+            <div style={{ paddingLeft: 10, display: 'flex' }}>
+            </div>
+            <div style={{ paddingLeft: 10, display: 'flex' }}>
+                <h3>Danh sách </h3>
+            </div>
             <>
-                <Grid container spacing={1} style={{ marginTop: 10, padding: 10 }}>
+                <Grid container spacing={1} style={{ padding: 10 }}>
                     {list_room_hotel.length !== 0 ?
                         list_room_hotel.map((e, i) => (
                             <Grid item xs={3} key={i}>
+
                                 {/* < Link to="/admin/booking-calendar/" style={{ textDecoration: 'none' }}> */}
-                                <Card style={{ backgroundColor: "#e3f2fd", border: '2px solid #e6e6e6' }}
+                                <Card style={e.trangThai === 1 ? { backgroundColor: "#e3f2fd", border: '2px solid #e6e6e6' } : { backgroundColor: "#fceebb", border: '2px solid #e6e6e6' }}
                                     onClick={e.trangThai === 1 ? () => navigate(`/admin/booking-calendar/${e.id}`) : () => handleClickOpen()}
                                     disabled={false}
                                 >
-                                    <CardContent>
+
+                                    <CardContent >
                                         <Typography variant="body2"
                                             style={{
                                                 color: "black",
                                                 textTransform: 'uppercase',
-                                                fontWeight: 'bold'
+                                                fontWeight: 'bold',
+                                                width: "100%"
                                             }}
                                         >
                                             PHÒNG: {e.ten}
                                         </Typography>
                                         <br></br>
                                         <Chip
-                                            icon={e.trangThai === 1 ? < CheckCircleOutlinedIcon /> : <CancelOutlinedIcon />}
-                                            label={e.trangThai === 1 ? "Đang hoạt động" : "Tạm ngưng"}
-                                            color={e.trangThai === 1 ? "info" : "warning"}
+                                            icon={e.trangThaiHomNay === 0 ? < CheckCircleOutlinedIcon /> : <CancelOutlinedIcon />}
+                                            label={e.trangThaiHomNay === 0 ? "Có người" : "Phòng trống"}
+                                            color={e.trangThaiHomNay === 0 ? "error" : "primary"}
                                         /><br></br>
                                         <div style={{ marginTop: 20 }}>
                                             <span style={{ fontWeight: "bold" }}>Loại phòng: </span> <span>{e.loaiPhongid.ten}</span>
@@ -158,6 +192,7 @@ export default function BrandManager() {
                                             <span style={{ fontWeight: "bold" }}>Số người: </span> <span>{e.loaiPhongid.soNguoi}</span>
                                         </div>
                                     </CardContent>
+
                                     <CardActions >
                                         <IconButton size="small" aria-label="add to favorites">
                                             <CellWifiOutlinedIcon style={{
