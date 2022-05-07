@@ -26,7 +26,7 @@ export default function AddRoomForm(props) {
     const account = useSelector((state) => state.account.userAuth);
     useEffect(() => {
         if (account)
-            dispatch(actionCategory.fetchAllCategoryByBrand(JSON.parse(account).khachsan_id));
+            dispatch(actionCategory.fetchAllCategory());
     }, [])
     const rooms = useSelector((state) => state.room.rooms);
 

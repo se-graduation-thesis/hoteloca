@@ -10,6 +10,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as actionCustomer from 'actions/customer.action';
 import * as actionBillDetail from 'actions/bill-detail.action';
 import * as actionBill from 'actions/bill.action';
+import * as actionBillService from 'actions/bill-service.action';
+import * as actionBillDetailService from 'actions/bill-service-detail.action';
+import FinalView from './components/finalView';
+import PositionedSnackbar from 'views/manager/hotel-management/components/PositionedSnackbar';
 
 const useStyles = makeStyles((theme) => ({
   drawerWrapper: {
@@ -24,6 +28,7 @@ function AddTaskDrawer(props) {
   const dispatch = useDispatch();
 
   const toggleDrawer = (open) => (event) => {
+    props.handleStateForm(open);
     if (
       event.type === "keydown" &&
       (event.key === "Tab" || event.key === "Shift")
@@ -32,7 +37,6 @@ function AddTaskDrawer(props) {
     }
 
     // console.log(">>>", props.stateForm);
-    props.handleStateForm(open);
   };
 
   const [activeStep, setActiveStep] = React.useState(0);
@@ -105,7 +109,6 @@ function AddTaskDrawer(props) {
 
   const account = useSelector((state) => state.account.userAuth);
 
-  console.log(account)
   const [reservation, setReservation] = React.useState({
     nhanVienid: JSON.parse(account).user_id,
     ngayLap: moment(new Date()).format('YYYY-MM-DDTHH:mm:ss'),
@@ -117,27 +120,60 @@ function AddTaskDrawer(props) {
     khachHangid: null
   })
 
+  React.useEffect(() => {
+    setReservation({ ...reservation, ngayVao: moment(props.dateChoice).format('YYYY-MM-DDTHH:mm:ss'), ngayRa: moment(props.dateChoice).format('YYYY-MM-DDTHH:mm:ss') })
+  }, [props.dateChoice])
+
   const handleReservation = (title, value) => {
     setReservation({ ...reservation, [title]: value })
   }
 
+  const [serviceSelect, setServiceSelect] = React.useState([]);
+
+  const handleService = (services) => setServiceSelect(services);
+
   let params = location.href.split('/');
   let token = params[params.length - 1];
+
+  const [snackbarState, setSnackbarState] = React.useState(false);
+
 
   const submit = () => {
     actionCustomer.addCustomer(customer).then((response) => {
       reservation.khachHangid = response.data.id;
-      actionBill.addBill(reservation).then((resonpe) => {
+      console.log(reservation)
+      actionBill.addBill(reservation).then((response) => {
+        const phieuThueid = response.data.id;
         const billDetail = {
-          phieuThueid: response.data.id,
+          phieuThueid: phieuThueid,
           phongId: token
         }
         dispatch(actionBillDetail.addBillDetail(billDetail));
+
+        if (serviceSelect.length) {
+          const billService = {
+            ngayLap: moment(new Date()).format('YYYY-MM-DDTHH:mm:ss'),
+            tongTien: 0,
+            ghiChu: "",
+            phieuThueid: phieuThueid
+          }
+          console.log(billService)
+          actionBillService.add_bill_service(billService).then((response) => {
+            serviceSelect.map((item) => {
+              dispatch(actionBillDetailService.add_bill_service_detail({
+                dichVuid: item.id,
+                hoaDonDichVuid: response.data.id
+              }))
+            })
+          })
+        }
       })
     }).then();
-
+    setSnackbarState(true);
+    setTimeout(function () {
+      setSnackbarState(false);
+    }, 3000);
     toggleDrawer(false)
-    window.alert("Đặt phòng thành công")
   }
 
 
@@ -158,7 +194,8 @@ function AddTaskDrawer(props) {
             {/* <Typography sx={{ mt: 2, mb: 1 }}>
               All steps completed - you're finished
             </Typography> */}
-            <Button variant="contained" fullWidth sx={{ mt: 20 }} onClick={submit}>ADD</Button>
+            <FinalView customer={customer} reservation={reservation} token={token} serviceSelect={serviceSelect} />
+            <Button variant="contained" sx={{ ml: 2, width: 610 }} onClick={submit}>LẬP PHIẾU THUÊ</Button>
             <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
               <Box sx={{ flex: '1 1 auto' }} />
               <Button onClick={handleReset}>Đặt lại</Button>
@@ -171,7 +208,7 @@ function AddTaskDrawer(props) {
                 <CustomerInfo customer={customer} handleCustomer={handleCustomer} /> :
                 activeStep === 1 ?
                   <ReservationInfo reservation={reservation} handleReservation={handleReservation} /> :
-                  <ServiceInfo token={token} />
+                  <ServiceInfo token={token} updateService={handleService} />
               }
             </div>
             <div style={{ position: 'fixed', top: 650 }}>
@@ -215,6 +252,10 @@ function AddTaskDrawer(props) {
       <Drawer anchor="left" open={props.stateForm} onClose={toggleDrawer(false)}>
         {list("left")}
       </Drawer>
+
+      <div>
+        <PositionedSnackbar open={snackbarState} message={"Thêm Thành Công."} />
+      </div>
     </>
   );
 }

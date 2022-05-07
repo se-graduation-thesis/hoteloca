@@ -7,7 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { Button, Chip, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip } from '@mui/material';
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
@@ -24,6 +24,12 @@ import { address } from 'assets/address';
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
     { id: 'ten', label: 'Tên loại phòng', minWidth: 100 },
+    { id: 'soNguoi', label: 'Số Người', minWidth: 100 },
+    { id: 'soGiuong', label: 'Số giường', minWidth: 100 },
+    { id: 'dienTich', label: 'Diện tích', minWidth: 100 },
+    { id: 'donGia', label: 'Đơn giá', minWidth: 100 },
+    { id: 'moTa', label: 'Mô tả', minWidth: 100 },
+    { id: 'hinhAnh', label: 'Ảnh mô tả', minWidth: 100 },
 ];
 
 export default function CategoryManager() {
@@ -72,10 +78,12 @@ export default function CategoryManager() {
         if (listCategory) {
             listCategory.forEach((e, i) => {
                 e.stt = i + 1
-                if (e.trangThai === 1) {
-                    e.trangThai = "Đang hoạt động"
-                } else if (e.trangThai === 2) {
-                    e.trangThai = "Tạm ngưng"
+                try {
+                    let dienTich = JSON.parse(e.dienTich)
+                    e.dienTich = dienTich.chieudai + " x " + dienTich.chieurong
+                    e.donGia = new Intl.NumberFormat('en-Vn').format(e.donGia) + " VND"
+                } catch {
+                    console.log("err")
                 }
             })
             setListCategory(listCategory)
@@ -85,12 +93,17 @@ export default function CategoryManager() {
         <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }} style={{ padding: 20 }}>
             <Grid container spacing={1} style={{ marginTop: 10, padding: 10 }}>
                 <Grid item xs={12}>
-                    <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN CÁC LOẠI PHÒNG</h3>
+                    <h2 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN CÁC LOẠI PHÒNG</h2>
+                </Grid>
+                <Grid item xs={12} style={{ marginBottom: 10, padding: 10 }}>
+                    <span style={{ paddingTop: 10, fontWeight: "bold", marginRight: 10 }}>SỐ LƯỢNG LOẠI PHÒNG HIỆN CÓ</span>
+                    <Chip label={listCategoryShow.length} color="primary" />
                 </Grid>
                 <Grid item xs={6}>
                     <Button onClick={handleClickOpen} variant="contained" color="secondary">Thêm loại phòng</Button>
                     <InsertBrandDialog open={open} isShowForm={handleClose} />
                 </Grid>
+
 
                 <Grid item xs={6} style={{ padding: 10, textAlign: "right" }}>
                     <TextField
@@ -145,9 +158,11 @@ export default function CategoryManager() {
                                             );
                                         })}
                                         <TableCell key={row.stt}>
-                                            <IconButton key={row.stt} onClick={() => handleClickOpenUpdate(row.id)} aria-label="delete" color="primary">
-                                                <Edit />
-                                            </IconButton>
+                                            <Tooltip title="Sửa loại phòng">
+                                                <IconButton key={row.stt} onClick={() => handleClickOpenUpdate(row.id)} aria-label="delete" color="primary">
+                                                    <Edit />
+                                                </IconButton>
+                                            </Tooltip>
                                         </TableCell>
                                     </TableRow>
                                 );

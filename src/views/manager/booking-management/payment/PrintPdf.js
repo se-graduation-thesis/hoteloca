@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as actions from "actions/bill.action";
 import { useParams } from "react-router-dom";
 import * as pay_actions from "actions/payment.action";
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import moment from "moment";
 import logo from 'assets/images/logo.png'
 
@@ -25,20 +25,18 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import "./printpdf.css"
 import Download from '@mui/icons-material/Download';
-function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
 export default function PrintPdf() {
-    const exportPdf = () => {
 
+    const { state } = useLocation()
+
+    const [show_export, setShowExport] = useState({})
+    useEffect(() => {
+        if (state) {
+            setShowExport(state)
+        }
+    }, [state])
+
+    const exportPdf = () => {
         html2canvas(document.querySelector("#topdf")).then(canvas => {
             const imgData = canvas.toDataURL('image/png');
             const pdf = new jsPDF('p', 'pt', 'a4', false)
@@ -47,6 +45,7 @@ export default function PrintPdf() {
         });
 
     }
+    console.log("state", show_export)
     return (
         <div>
             <div className="toolbar">
@@ -82,7 +81,7 @@ export default function PrintPdf() {
                                 <span >Tên khách hàng</span>
                             </Grid>
                             <Grid item xs={7}>
-                                <span style={{ fontWeight: 'bold' }}>Lê tuấn Khang</span>
+                                <span style={{ fontWeight: 'bold' }}>{show_export !== null ? show_export.tenKhachHang : ""}</span>
                             </Grid>
                             <Grid item xs={5}>
                                 <span>Địa chỉ</span>
@@ -94,19 +93,19 @@ export default function PrintPdf() {
                                 <span>Điện thoại</span>
                             </Grid>
                             <Grid item xs={7}>
-                                <span style={{ fontWeight: 'bold' }}>0302106626145</span>
+                                <span style={{ fontWeight: 'bold' }}>{show_export !== null && show_export.khachHang !== undefined ? show_export.khachHang.dienThoai : ""}</span>
                             </Grid>
                             <Grid item xs={5}>
                                 <span>Email</span>
                             </Grid>
                             <Grid item xs={7}>
-                                <span style={{ fontWeight: 'bold' }}>khang@gmail.com</span>
+                                <span style={{ fontWeight: 'bold' }}>{show_export !== null && show_export.khachHang ? show_export.khachHang.email : ""}</span>
                             </Grid>
                             <Grid item xs={5}>
                                 <span>Phòng</span>
                             </Grid>
                             <Grid item xs={7}>
-                                <span style={{ fontWeight: 'bold' }}>101 102</span>
+                                <span style={{ fontWeight: 'bold' }}>{show_export !== null ? show_export.phong : ""}</span>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -116,19 +115,19 @@ export default function PrintPdf() {
                                 <span>Ngày vào</span>
                             </Grid>
                             <Grid item xs={7}>
-                                <span style={{ fontWeight: 'bold' }}>Lê tuấn Khang</span>
+                                <span style={{ fontWeight: 'bold' }}>{show_export !== null ? show_export.ngayVao : ""}</span>
                             </Grid>
                             <Grid item xs={5}>
                                 <span>Ngày đi</span>
                             </Grid>
                             <Grid item xs={7}>
-                                <span style={{ fontWeight: 'bold' }}>123 Hồ chí minh </span>
+                                <span style={{ fontWeight: 'bold' }}>{show_export !== null ? show_export.ngayRa : ""} </span>
                             </Grid>
                             <Grid item xs={5}>
                                 <span>Tổng ngày ở</span>
                             </Grid>
                             <Grid item xs={7}>
-                                <span style={{ fontWeight: 'bold' }}>0302106626145</span>
+                                <span style={{ fontWeight: 'bold' }}>{show_export !== null ? show_export.countDay + " Ngày" : ""}</span>
                             </Grid>
                             <Grid item xs={5}>
                                 <span>Thu ngân</span>
@@ -140,40 +139,77 @@ export default function PrintPdf() {
                                 <span>Ngày thu</span>
                             </Grid>
                             <Grid item xs={7}>
-                                <span style={{ fontWeight: 'bold' }}>101 102</span>
+                                <span style={{ fontWeight: 'bold' }}>{show_export !== null ? show_export.ngayRa : ""} </span>
                             </Grid>
                         </Grid>
                     </Grid>
 
-                    <Grid item xs={12} style={{ borderTop: "1px solid black" }}>
+                    <Grid item xs={12} style={{ borderTop: "1px solid gray" }}>
                         <h3 style={{ marginTop: 20 }}>Các dịch vụ đã sử dụng</h3>
-                        <Table aria-label="simple table">
+                        <Table aria-label="simple table" style={{ marginBottom: 50 }}>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>Dessert (100g serving)</TableCell>
-                                    <TableCell align="right">Calories</TableCell>
-                                    <TableCell align="right">Fat&nbsp;(g)</TableCell>
+                                    <TableCell>Số thứ tự</TableCell>
+                                    <TableCell align="right">Tên dịch vụ</TableCell>
+                                    <TableCell align="right">Đơn giá (VND)</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {rows.map((row) => (
-                                    <TableRow
-                                        key={row.name}
-                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                    >
-                                        <TableCell component="th" scope="row">
-                                            {row.name}
-                                        </TableCell>
-                                        <TableCell align="right">{row.calories}</TableCell>
-                                        <TableCell align="right">{row.fat}</TableCell>
-
-                                    </TableRow>
-                                ))}
+                                {
+                                    show_export !== null && show_export.listDichvu ?
+                                        show_export.listDichvu.map((row, i) => (
+                                            <TableRow
+                                                key={row.name}
+                                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                            >
+                                                <TableCell>
+                                                    {i + 1}
+                                                </TableCell>
+                                                <TableCell align="right">{row.dichVuid.ten}</TableCell>
+                                                <TableCell align="right">{new Intl.NumberFormat('en-Vn').format(row.dichVuid.donGia)}</TableCell>
+                                            </TableRow>
+                                        ))
+                                        : <></>
+                                }
                             </TableBody>
                         </Table>
+                        <Grid container spacing={2}>
+                            <Grid item xs={7}>
+
+                            </Grid>
+                            <Grid item xs={2}>
+                                <span style={{ fontSize: 18 }}>Tiền phòng: </span>
+                            </Grid>
+                            <Grid item xs={3} style={{ textAlign: "right" }}>
+                                <span style={{ fontWeight: "bold" }}>{new Intl.NumberFormat('en-Vn').format(show_export !== null ? show_export.giaPhong : 0) + " VND"}</span>
+                            </Grid>
+                            <Grid item xs={7}>
+                            </Grid>
+                            <Grid item xs={2}>
+                                <span style={{ fontSize: 18 }}>Phí dịch vụ: </span>
+                            </Grid>
+                            <Grid item xs={3} style={{ textAlign: "right" }}>
+                                <span style={{ fontWeight: "bold" }}>{new Intl.NumberFormat('en-Vn').format(show_export !== null ? show_export.phiDv : 0) + " VND"}</span>
+                            </Grid>
+                            <Grid item xs={7}>
+                            </Grid>
+                            <Grid item xs={2}>
+                                <span style={{ fontSize: 18 }}>Đã trả trước: </span>
+                            </Grid>
+                            <Grid item xs={3} style={{ textAlign: "right" }}>
+                                <span style={{ fontWeight: "bold" }}>{new Intl.NumberFormat('en-Vn').format(show_export !== null ? show_export.tienCoc : 0) + " VND"}</span>
+                            </Grid>
+                            <Grid item xs={7}>
+
+                            </Grid>
+                            <Grid item xs={2}>
+                                <span style={{ fontSize: 18 }}>Tổng tiền: </span>
+                            </Grid>
+                            <Grid item xs={3} style={{ textAlign: "right" }}>
+                                <span style={{ fontSize: 18, fontWeight: "bold" }}>{new Intl.NumberFormat('en-Vn').format(show_export !== null ? show_export.tongChiPhi : 0) + " VND"}</span>
+                            </Grid>
+                        </Grid>
                         <div style={{ textAlign: 'right', padding: 10 }}>
-                            <span>Tổng tiền: </span>
-                            <span>1234543</span>
                         </div>
                     </Grid>
                     <Grid item xs={6} style={{ textAlign: 'center' }}>

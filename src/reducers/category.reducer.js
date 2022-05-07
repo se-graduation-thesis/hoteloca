@@ -3,7 +3,6 @@ import { ACTION_TYPES } from "../actions/category.action";
 const initialState = {
     listCategory: [],
     brand_by_id: null,
-    listCategoryByBrand: [],
 };
 
 export const categoryReducer = (state = initialState, action) => {
@@ -16,13 +15,8 @@ export const categoryReducer = (state = initialState, action) => {
         case ACTION_TYPES.INSERT_CATEGORY:
             return {
                 ...state,
-                listCategoryByBrand: [...action.payload],
+                listCategory: [...action.payload],
             };
-        case ACTION_TYPES.FETCH_ALL_CATEGORY_BY_BRAND:
-            return {
-                ...state,
-                listCategoryByBrand: [...action.payload]
-            }
         default:
             return state;
     }

@@ -90,7 +90,7 @@ export default function CustomerInfo({ customer, handleCustomer }) {
                         value={customer.cmnd}
                         autoFocus
                         id="outlined-basic"
-                        label="Chứng Minh Nhân Dân"
+                        label="CMND/CCCD"
                         variant="outlined"
                         fullWidth
 

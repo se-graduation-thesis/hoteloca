@@ -103,7 +103,7 @@ const TotalGrowthBarChart = ({ isLoading }) => {
                                             <Typography variant="subtitle2">Giá trị hàng tháng</Typography>
                                         </Grid>
                                         <Grid item>
-                                            <Typography variant="h3">$2,324.00</Typography>
+                                            <Typography variant="h3">2,324,000 VND</Typography>
                                         </Grid>
                                     </Grid>
                                 </Grid>

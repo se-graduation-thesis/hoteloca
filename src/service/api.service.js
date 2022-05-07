@@ -23,7 +23,9 @@ export default {
             add_room: (room) => axios.post(url, room),
             get_all_room_by_brand: (id) => axios.get(url + "get-all-room-by-brand/" + id),
             get_room_by_name: (name) => axios.get(url + "getRoomByName/" + name),
-            get_all_roomm: () => axios.get(url + "get-all-room")
+            get_all_roomm: () => axios.get(url + "get-all-room"),
+            get_by_id: (id) => axios.get(url + id),
+            get_empty_room: (phong) => axios.post(url + "get-all-empty-room", phong)
         }
     },
     service(url = baseApi + 'service/') {
@@ -42,7 +44,6 @@ export default {
     category(url = baseApi + 'category/') {
         return {
             fetchAllCategory: () => axios.get(url + 'get-all-category'),
-            fetchAllCategoryByBrand: (id) => axios.get(url + 'get-all-category-by-brand/' + id),
             insertCategory: (category) => axios.post(url + 'add-category', category),
             findById: (id) => axios.get(url + 'find-by-id/' + id),
         };
@@ -73,6 +74,26 @@ export default {
     phongTN(url = baseApi + 'phongTN/') {
         return {
             getByPhongId: (id) => axios.get(url + 'get-by-phong/' + id),
+        }
+    },
+    bill_service_detail(url = baseApi + 'bill-service-detail/') {
+        return {
+            add_bill_service_detail: (add_bill) => axios.post(url, add_bill),
+            fetchAllBillDetailById: (id) => axios.get(url + 'get-all-by-bill-id/' + id),
+        }
+    },
+    bill_service(url = baseApi + 'service-bill/') {
+        return {
+            add_bill_service: (billService) => axios.post(url, billService),
+        }
+    },
+    payment(url = baseApi + 'payment/') {
+        return {
+            add_payment: (payment) => axios.post(url, payment),
+            get_all: () => axios.get(url + "get-all"),
+            get_all_day: (day, month, year) => axios.get(url + "get-all-day/" + day + "&&" + month + "&&" + year),
+            get_all_month: (month, year) => axios.get(url + "get-all-month/" + month + "&&" + year),
+            get_all_year: (year) => axios.get(url + "get-all-year/" + year),
         }
     }
 }

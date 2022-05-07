@@ -1,4 +1,4 @@
-import { Checkbox, FormControlLabel, FormGroup, Grid, TextField, Typography } from "@mui/material";
+import { Checkbox, FormControlLabel, FormGroup, Grid, InputAdornment, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import * as actions from "actions/manager.action"
 import { useDispatch, useSelector } from "react-redux";
@@ -6,6 +6,7 @@ import moment from "moment";
 import { DateTimePicker, LocalizationProvider } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import imga from "assets/images/icons/room.png"
+import NumberFormat from 'react-number-format';
 
 export default function ReservationInfo({ reservation, handleReservation }) {
 
@@ -26,7 +27,6 @@ export default function ReservationInfo({ reservation, handleReservation }) {
     //     trangThai: 1,
     //     yeuCau: ''
     // })
-
     const nhanVien = listAccount.filter(e => e.id === reservation.nhanVienid)[0];
     const [isOpen, setIsOpen] = useState(false);
 
@@ -111,6 +111,24 @@ export default function ReservationInfo({ reservation, handleReservation }) {
 
                         onChange={(e) => handleReservation('tienCoc', e.target.value.replaceAll(',', ''))}
                     />
+                    {/* <NumberFormat customInput={TextField}
+                        thousandSeparator={true}
+                        id="tienCoc"
+                        label="Tiền Cọc *"
+                        variant="outlined"
+                        helperText=" "
+                        autoComplete='off'
+                        name="tienCoc"
+                        type="t"
+                        InputProps={{
+                            endAdornment: <InputAdornment position="end">VND</InputAdornment>,
+                        }}
+                        inputProps={{
+                            maxLength: 15,
+                        }}
+                        fullWidth
+                        value={reservation.tienCoc}
+                        onChange={(e) => handleReservation('tienCoc', e.target.value)} /> */}
                 </Grid>
 
                 {/* Yêu Cầu */}

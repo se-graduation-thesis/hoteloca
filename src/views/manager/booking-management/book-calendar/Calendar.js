@@ -11,14 +11,18 @@ import classNames from "clsx";
 import moment from "moment";
 import * as React from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { connect, useSelector } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { v4 as uuid } from "uuid";
+import { Chip, Grid } from "@mui/material";
 import { loadFromLocalStorage, updateDateForTaskToLocalStorage } from "actions/localStorage";
 import { editDateOfTask, selectTaskByTime, setTasks } from "reducers/booking.reducer";
 import Task from "./Task/index";
 // import useWindowScrollPositions from "../HOC/useWindowScrollPositions";
 import withScrollHook from "../withScrollHook";
 import AddTaskDrawer from "./AddTask/AddTaskDrawer";
+import { startOfMonth } from "date-fns";
+import { fetchBillByStatusAccept } from "actions/bill.action"
+import { get_by_id } from "actions/room.action"
 // import { owners } from "./task";
 
 
@@ -74,7 +78,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${classes.cell}`]: {
     // color: "#78909C!important",
     color: "#000 !important",
-    backgroundColor: "#fff !important",
+    // backgroundColor: "#fff !important",
     position: "relative",
     userSelect: "none",
     verticalAlign: "top",
@@ -91,7 +95,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
       borderBottom: "none",
     },
     "&:hover": {
-      backgroundColor: "white",
+      backgroundColor: "rgba(72, 138, 138, 0.6);",
     },
     "&:focus": {
       backgroundColor: alpha(theme.palette.primary.main, 0.15),
@@ -110,6 +114,11 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${classes.opacity}`]: {
     opacity: "0.5",
   },
+  [`&.${classes.disabled}`]: {
+    PointerEvent: 'none',
+    opacity: 0.4,
+    userSelect: 'none'
+  },
 }));
 
 // #FOLD_BLOCK
@@ -121,7 +130,7 @@ const StyledDivText = styled("div")(() => ({
       maxHeight: 60,
       overflowY: "auto",
       "&::-webkit-scrollbar": {
-        // display: "none",
+        display: "none",
         width: "6px",
         backgroundColor: "#F5F5F5"
       },
@@ -129,8 +138,11 @@ const StyledDivText = styled("div")(() => ({
   },
   [`&.${classes.todayText}`]: {
     "& > span": {
-      color: "blue",
+      color: "white",
       fontWeight: "600",
+      backgroundColor: 'black',
+      padding: 5,
+      borderRadius: '50%'
     },
   },
 }));
@@ -207,20 +219,35 @@ const CellBase = React.memo(
     handleDateChoice,
     // #FOLD_BLOCK
   }) => {
+    const newDate = new Date();
+
     const iconId = Math.abs(Math.floor(Math.sin(startDate.getDate()) * 10) % 3);
     const isFirstMonthDay = startDate.getDate() === 1;
     const formatOptions = isFirstMonthDay
       ? { day: "numeric", month: "long" }
       : { day: "numeric" };
 
-    const tasksOfDay = useSelector(selectTaskByTime(startDate));
+    newDate.setDate(newDate.getDate() - 1);
 
+    const listBillByStatus = useSelector((state) => state.bill.listBillByStatusAccept);
+    let params = location.href.split('/');
+    let token = params[params.length - 1];
+
+    const tasksOfDay = listBillByStatus.filter(
+      (task) =>
+        moment(task.ngayVao).format('YYYY-MM-DD') === moment(startDate).format("YYYY-MM-DD") && task.chiTietPhieuThueList[0].phongId.id == token
+    ).sort((a, b) => a.ngayVao - b.ngayVao);
+    // const tasksOfDay = useSelector(selectTaskByTime(startDate));
     React.useEffect(() => {
     });
 
+    const checkDate = startDate < newDate;
+
     const handleOpenDrawer = () => {
-      handleStateForm(true)
-      handleDateChoice(startDate);
+      if (!checkDate) {
+        handleStateForm(true)
+        handleDateChoice(startDate);
+      }
       // alert(startDate)
     }
 
@@ -230,11 +257,9 @@ const CellBase = React.memo(
         tabIndex={0}
         className={classNames({
           [classes.cell]: true,
-          [classes.rainBack]: iconId === 0,
-          [classes.sunBack]: iconId === 1,
-          [classes.cloudBack]: iconId === 2,
-          [classes.opacity]: otherMonth,
-        })}
+          [classes.disabled]: checkDate,
+        })
+        }
       >
         <StyledDivText
           className={classNames({
@@ -270,7 +295,7 @@ const CellBase = React.memo(
                   </Draggable>
                 )}
                 {tasksOfDay.map((task, index) => (
-                  <Draggable key={task.id} draggableId={task.id} index={index}>
+                  <Draggable key={task.id} draggableId={task.id + '0000'} index={index}>
                     {(provided) => (
                       <div
                         // key={task.id}
@@ -291,7 +316,7 @@ const CellBase = React.memo(
 
           {/* </div> */}
         </StyledDivText>
-      </StyledTableCell>
+      </StyledTableCell >
     );
   }
 );
@@ -316,7 +341,9 @@ const FlexibleSpace = ({ ...restProps }) => (
   </StyledToolbarFlexibleSpace>
 );
 
+
 class Calendar extends React.PureComponent {
+
   // #FOLD_BLOCK
   constructor(props) {
     super(props);
@@ -325,6 +352,7 @@ class Calendar extends React.PureComponent {
       // data: appointments,
       stateForm: false,
       dateChoice: null,
+
     };
 
     // this.commitChanges = this.commitChanges.bind(this);
@@ -353,6 +381,7 @@ class Calendar extends React.PureComponent {
   //   });
   // }
 
+
   onDragEnd = (result) => {
     const { destination, source, draggableId, type } = result;
 
@@ -368,10 +397,17 @@ class Calendar extends React.PureComponent {
   };
 
   componentDidMount() {
+    let params = location.href.split('/');
+    let token = params[params.length - 1];
+
     // load tasks from the local storage and save to Redux
     const data = loadFromLocalStorage();
+    this.props.fetchBillByStatusAccept()
+    this.props.get_by_id(token)
     this.props.setTasks(data);
   }
+
+
 
   handleStateForm = (state) => {
     this.setState({ stateForm: state });
@@ -383,20 +419,35 @@ class Calendar extends React.PureComponent {
 
   render() {
     // const { data } = this.state;
-
+    console.log(this.props.room_id)
     return (
       <div>
+        <Paper style={{ padding: 20, marginBottom: 10 }}>
+          <Grid container>
+            <Grid item xs={1}>
+              <h3>Phòng 1.1</h3>
+              {/* <h3>{this.props.room_id !== null ? this.props.room_id.ten : ""}</h3> */}
+            </Grid>
+            <Grid item xs={2}>
+              <Chip style={{ marginTop: 10 }} color="warning" label="Phòng thường" />
+              {/* <Chip style={{ marginTop: 10 }} label={this.props.room_id !== null ? this.props.room_id.loaiPhongid.ten : ""} color="warning" /> */}
+            </Grid>
+          </Grid>
+        </Paper>
         <DragDropContext onDragEnd={this.onDragEnd}>
-          <Paper>
-            <Scheduler>
+
+          <Paper style={{ padding: 20 }}>
+            <Scheduler
+              locale={{
+                allDay: 'Ganztägig',
+              }}
+            >
               {/* <EditingState onCommitChanges={this.commitChanges} /> */}
               <ViewState defaultCurrentDate={moment().format("YYYY-MM-DD")} />
 
               {/* <DragDropContext> */}
               <MonthView
-                messages={{
-                  allDay: 'Ganztägig',
-                }}
+                displayName={"Tháng"}
                 timeTableCellComponent={(props) =>
                   <CellBase
                     handleStateForm={this.handleStateForm}
@@ -456,17 +507,17 @@ class Calendar extends React.PureComponent {
           stateForm={this.state.stateForm}
           handleStateForm={this.handleStateForm}
           dateChoice={this.state.dateChoice} />
-      </div>
+      </div >
     );
   }
 }
 
 // export default Calendar;
 const mapStateToProps = (state) => ({
-  // count: state.counter.value
+  room_id: state.room.room_id
 });
 
-const mapDispatchToProps = { editDateOfTask, setTasks };
+const mapDispatchToProps = { editDateOfTask, setTasks, fetchBillByStatusAccept, get_by_id };
 
 export default connect(
   mapStateToProps,

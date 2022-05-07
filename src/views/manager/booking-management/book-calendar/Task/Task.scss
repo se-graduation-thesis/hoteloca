@@ -4,12 +4,14 @@
     margin: 6px 0px;
     padding: 0 2px;
     cursor: pointer;
+
     .icon {
         margin-right: 5px;
         font-size: 16px;
         position: relative;
         left: -2px;
     }
+
     .task-name {
         padding: 1px 4px;
         font-size: 12px;
@@ -17,41 +19,54 @@
         border-radius: 4px;
         border: 1px solid transparent;
     }
+
     .icon-done {
         color: green;
     }
+
     .task-name--done {
         background-color: rgb(202, 238, 215);
+
         &:hover {
             background-color: rgba(202, 238, 215, 0.5);
             border: 1px solid rgb(202, 238, 215);
         }
     }
+
     .icon-doing {
-        color:#E87e79;
+        color: red;
     }
+
     .task-name--doing {
-        background-color: rgb(254, 216, 214);
+        background-color: red;
+        color: white;
+
         &:hover {
             background-color: rgba(254, 216, 214, 0.5);
             border: 1px solid rgb(254, 216, 214);
         }
     }
+
     .icon-new {
         color: rgb(255, 225, 171)
     }
+
     .task-name--new {
         background-color: rgba(255, 225, 171, 1);
+
         &:hover {
             background-color: rgba(255, 225, 171, 0.5);
             border: 1px solid rgba(255, 225, 171, 1);
         }
     }
+
     .icon-closed {
         color: gray;
     }
+
     .task-name--closed {
         background-color: rgb(225, 228, 233);
+
         &:hover {
             background-color: rgba(225, 228, 233, 0.5);
             border: 1px solid rgb(225, 228, 233);
@@ -65,6 +80,7 @@
     display: flex;
     align-items: center;
     color: gray;
+
     // padding: 2px;
     // border-radius: 4px;
     span {
@@ -90,6 +106,7 @@
 .delete-icon {
     cursor: pointer;
     padding: 4px;
+
     &:hover {
         background-color: rgba(213, 218, 213, 0.5);
         border-radius: 50%;
@@ -99,6 +116,7 @@
 .close-icon {
     cursor: pointer;
     padding: 4px;
+
     &:hover {
         background-color: rgba(213, 218, 213, 0.5);
         border-radius: 50%;
@@ -110,12 +128,15 @@
     // margin-left: 20px;
     padding-left: 40px;
     padding-right: 40px;
+
     .status-slider--new {
         color: rgb(255, 225, 171);
     }
+
     .status-slider--doing {
         color: #E87e79;
     }
+
     .status-slider--done {
         color: green
     }

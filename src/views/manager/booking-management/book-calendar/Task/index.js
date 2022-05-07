@@ -44,36 +44,36 @@ const sliderMarks = [
   },
 ];
 
-function Icon({ status, fontSizeValue }) {
+function Icon({ trangThai, fontSizeValue }) {
   const className = classNames({
     icon: true,
-    "icon-done": status === 2,
-    "icon-doing": status === 1,
-    "icon-new": status === 0,
-    "icon-closed": status === 3,
+    "icon-done": trangThai === 2,
+    "icon-doing": trangThai === 1,
+    "icon-new": trangThai === 0,
+    "icon-closed": trangThai === 3,
   });
-  if (status === 2)
+  if (trangThai === 2)
     return (
       <CheckCircleIcon
         className={className}
         style={{ fontSize: fontSizeValue ? fontSizeValue : null }}
       />
     );
-  if (status === 1)
+  if (trangThai === 1)
     return (
       <TimelapseIcon
         className={className}
         style={{ fontSize: fontSizeValue ? fontSizeValue : null }}
       />
     );
-  if (status === 0)
+  if (trangThai === 0)
     return (
       <RadioButtonUncheckedIcon
         className={className}
         style={{ fontSize: fontSizeValue ? fontSizeValue : null }}
       />
     );
-  if (status === 3)
+  if (trangThai === 3)
     return (
       <BlockIcon
         className={className}
@@ -83,8 +83,8 @@ function Icon({ status, fontSizeValue }) {
 }
 
 function sliderLabel(value) {
-  const statusMapping = ["New", "Medium", "Low"];
-  return statusMapping[value];
+  const trangThaiMapping = ["New", "Medium", "Low"];
+  return trangThaiMapping[value];
 }
 
 function Task({ task }) {
@@ -134,7 +134,7 @@ function Task({ task }) {
     console.log('Slider >>>>>', newValue);
     const editedTask = {
       ...task,
-      status: newValue
+      trangThai: newValue
     }
     dispatch(editTask({ id: task.id, editedTask }));
     editTaskToLocalStorage(task.id, editedTask);
@@ -145,7 +145,7 @@ function Task({ task }) {
     const checked = event.target.checked;
     const editedTask = {
       ...task,
-      status: checked ? 3 : 0
+      trangThai: checked ? 3 : 0
     }
     dispatch(editTask({ id: task.id, editedTask }));
     editTaskToLocalStorage(task.id, editedTask);
@@ -161,18 +161,18 @@ function Task({ task }) {
 
   return (
     <div className="task">
-      <Icon status={task.status} />
+      <Icon trangThai={task.trangThai} />
       <div
         className={classNames({
           "task-name": true,
-          "task-name--done": task.status === 2,
-          "task-name--doing": task.status === 1,
-          "task-name--new": task.status === 0,
-          "task-name--closed": task.status === 3,
+          "task-name--done": task.trangThai === 2,
+          "task-name--doing": task.trangThai === 1,
+          "task-name--new": task.trangThai === 0,
+          "task-name--closed": task.trangThai === 3,
         })}
         onClick={handleClick}
       >
-        {task.taskName}
+        {task.khachHangid.ho} {task.khachHangid.ten}
       </div>
       <Popover
         // id={id}
@@ -221,7 +221,7 @@ function Task({ task }) {
               className="task"
             >
               <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Icon status={task.status} fontSizeValue="26px" />
+                <Icon trangThai={task.trangThai} fontSizeValue="26px" />
                 <Typography
                   sx={{
                     color: "gray",
@@ -230,21 +230,8 @@ function Task({ task }) {
                     marginLeft: "6px",
                   }}
                 >
-                  {task.taskName}
+                  {task.khachhang}
                 </Typography>
-              </Box>
-              <Box
-                className={classNames({
-                  "priority-tag": true,
-                  //   "priority-tag--high": task.priority === 0,
-                  //   "priority-tag--medium": task.priority === 1,
-                  //   "priority-tag--low": task.priority === 2,
-                })}
-              >
-                <span>Priority: </span>
-                {Array.from(new Array(3 - task.priority)).map((title, index) => (
-                  <StarIcon style={{ fontSize: "16px" }} key={index} />
-                ))}
               </Box>
             </Box>
 
@@ -265,12 +252,12 @@ function Task({ task }) {
               </Typography>
             </Box>
 
-            {task.status !== 3 && (
-              <Box component="div" className="status-slider">
+            {task.trangThai !== 3 && (
+              <Box component="div" className="trangThai-slider">
                 <Slider
                   // aria-label="Temperature"
                   size="small"
-                  defaultValue={task.status}
+                  defaultValue={task.trangThai}
                   marks={sliderMarks}
                   // getAriaValueText={sliderLabel}
                   // valueLabelDisplay="auto"
@@ -280,9 +267,9 @@ function Task({ task }) {
                   onChange={handleChangeSlider}
                   // color="secondary"
                   className={classNames({
-                    'status-slider--new': task.status === 0,
-                    'status-slider--doing': task.status === 1,
-                    'status-slider--done': task.status === 2,
+                    'trangThai-slider--new': task.trangThai === 0,
+                    'trangThai-slider--doing': task.trangThai === 1,
+                    'trangThai-slider--done': task.trangThai === 2,
                   })}
                 />
               </Box>
@@ -292,7 +279,7 @@ function Task({ task }) {
               <FormControlLabel
                 control={
                   <Switch
-                    checked={task.status === 3}
+                    checked={task.trangThai === 3}
                     onChange={handleChangeSwitch}
                     name="gilad"
                   />

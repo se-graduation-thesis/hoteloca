@@ -49,15 +49,14 @@ export default function StickyHeadTable() {
         if (listAccount) {
             listAccount.forEach((e, i) => {
                 e.stt = i + 1
-                e.khachSan = e.khachSanid.tenKhachSan
             })
             setListAccount(listAccount)
         }
     }, [listAccount])
     console.log(address)
     return (
-        <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }}>
-            <Grid container spacing={1} style={{ marginTop: 10, padding: 10 }}>
+        <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%', pl: 5, pr: 5 }}>
+            <Grid container spacing={1} style={{ marginTop: 10, padding: 20 }}>
                 <Grid item xs={12}>
                     <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN NHÂN VIÊN</h3>
                 </Grid>
@@ -120,9 +119,9 @@ export default function StickyHeadTable() {
                                             <IconButton aria-label="delete" color="success">
                                                 <Visibility />
                                             </IconButton>
-                                            <IconButton aria-label="delete" color="error">
+                                            {/* <IconButton aria-label="delete" color="error">
                                                 <DeleteIcon />
-                                            </IconButton>
+                                            </IconButton> */}
                                         </TableCell>
                                     </TableRow>
                                 );

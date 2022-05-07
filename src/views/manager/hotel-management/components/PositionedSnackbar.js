@@ -9,7 +9,7 @@ export default function PositionedSnackbar(props) {
         horizontal: 'right',
     });
 
-    const { vertical, horizontal, open } = state;
+    const { vertical, horizontal } = state;
 
     const handleClose = () => {
         setState({ ...state, open: false });

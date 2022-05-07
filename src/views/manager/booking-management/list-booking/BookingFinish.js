@@ -20,7 +20,7 @@ import { useState, useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import * as actions from "actions/bill.action"
-import { address } from 'assets/address';
+import moment from 'moment';
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
     { id: 'khachhang', label: 'Thông tin khách hàng', minWidth: 100 },
@@ -75,9 +75,11 @@ export default function BookingPendingApprove() {
     useEffect(() => {
         if (listBillByStatus.length > 0 && listBillByStatus !== undefined) {
             listBillByStatus.forEach((e, i) => {
-                e.stt = i;
+                e.stt = i + 1;
                 e.ngayVao = e.ngayVao
                 e.khachhang = e.khachHangid.ho + " " + e.khachHangid.ten
+                e.ngayVao = moment(e.ngayVao).format('DD-MM-YYYY HH:mm:ss')
+                e.ngayRa = moment(e.ngayRa).format('DD-MM-YYYY HH:mm:ss')
                 if (e.chiTietPhieuThueList.length > 0) {
 
                     e.soluongphong = e.chiTietPhieuThueList.length;

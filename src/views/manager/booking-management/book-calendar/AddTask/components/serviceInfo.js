@@ -8,7 +8,7 @@ import * as actionService from 'actions/service.action';
 
 const colors = ["primary", "secondary", "info", "error", "success"]
 
-export default function ServiceInfo({ token }) {
+export default function ServiceInfo({ token, updateService }) {
 
     const dispatch = useDispatch();
 
@@ -26,6 +26,9 @@ export default function ServiceInfo({ token }) {
 
     const [serviceSelect, setServiceSelect] = useState([]);
 
+    useEffect(() => {
+        updateService(serviceSelect);
+    }, [serviceSelect])
 
     const handleService = (e, checked) => {
         let i = null;

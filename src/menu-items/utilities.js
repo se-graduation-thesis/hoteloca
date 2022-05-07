@@ -100,7 +100,7 @@ const utilities = {
             id: 'hoadon',
             title: 'Quản lý hóa đơn',
             type: 'item',
-            url: '/utils/util-shadow',
+            url: '/admin/receipt-managerment',
             icon: icons.IconReceipt2,
             breadcrumbs: false
         },
