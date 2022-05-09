@@ -2,6 +2,7 @@ import { ACTION_TYPES } from "../actions/bill-service.action";
 
 const initialState = {
     bill_service: null,
+    bill_service_id: null
 };
 
 export const billServiceReducer = (state = initialState, action) => {
@@ -10,6 +11,11 @@ export const billServiceReducer = (state = initialState, action) => {
             return {
                 ...state,
                 bill_service: action.payload,
+            };
+        case ACTION_TYPES.FIND_BY_BILL_ID:
+            return {
+                ...state,
+                bill_service_id: action.payload,
             };
         default:
             return state;

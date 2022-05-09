@@ -24,6 +24,7 @@ const ServiceManagement = Loadable(lazy(() => import('views/manager/hotel-manage
 
 const ListRoomBooking = Loadable(lazy(() => import('views/manager/booking-management/booking/ListRoomBooking')));
 const AddBooking = Loadable(lazy(() => import('views/manager/booking-management/booking/AddBooking')));
+const UpdateBooking = Loadable(lazy(() => import('views/manager/booking-management/booking/UpdateBooking')));
 const BookingInfomation = Loadable(lazy(() => import('views/manager/booking-management/booking/BookingInfomation')));
 
 const Calendar = Loadable(lazy(() => import('views/manager/booking-management/book-calendar/Calendar')));
@@ -92,6 +93,10 @@ const MainRoutes = {
         {
             path: '/admin/booking-infomation',
             element: <BookingInfomation />
+        },
+        {
+            path: '/admin/update-booking/:booking',
+            element: <UpdateBooking />
         },
         {
             path: '/admin/export-pdf',

@@ -3,6 +3,7 @@ import { ACTION_TYPES } from "../actions/bill-service-detail.action";
 const initialState = {
     list_service_detail: [],
     bill_service_detail: null,
+    bill_update: null
 };
 
 export const billServiceDetailReducer = (state = initialState, action) => {
@@ -17,6 +18,11 @@ export const billServiceDetailReducer = (state = initialState, action) => {
             return {
                 ...state,
                 bill_service_detail: action.payload,
+            };
+        case ACTION_TYPES.UPDATE_SERVICE_BILL_DETAIL:
+            return {
+                ...state,
+                bill_update: action.payload,
             };
         default:
             return state;

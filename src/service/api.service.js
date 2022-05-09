@@ -32,6 +32,7 @@ export default {
         return {
             fetchAllService: () => axios.get(url + 'get-all-service'),
             add_service: (service) => axios.post(url, service),
+            serviceNotUse: (id) => axios.get(url + 'get-service-update/' + id),
         }
     },
     brand(url = baseApi + 'brand/') {
@@ -80,11 +81,13 @@ export default {
         return {
             add_bill_service_detail: (add_bill) => axios.post(url, add_bill),
             fetchAllBillDetailById: (id) => axios.get(url + 'get-all-by-bill-id/' + id),
+            updateQuantity: (bill_service_detail) => axios.put(url + 'edit', bill_service_detail)
         }
     },
     bill_service(url = baseApi + 'service-bill/') {
         return {
             add_bill_service: (billService) => axios.post(url, billService),
+            find_by_id_bill: (id) => axios.get(url + "find-by-id-bill/" + id)
         }
     },
     payment(url = baseApi + 'payment/') {
