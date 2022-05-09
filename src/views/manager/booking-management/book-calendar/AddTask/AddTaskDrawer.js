@@ -6,12 +6,14 @@ import CustomerInfo from './components/customerInfo';
 import ReservationInfo from './components/reservationInfo';
 import ServiceInfo from './components/serviceInfo';
 import moment from "moment";
+import moment_t from "moment-timezone";
 import { useDispatch, useSelector } from 'react-redux';
 import * as actionCustomer from 'actions/customer.action';
 import * as actionBillDetail from 'actions/bill-detail.action';
 import * as actionBill from 'actions/bill.action';
 import * as actionBillService from 'actions/bill-service.action';
 import * as actionBillDetailService from 'actions/bill-service-detail.action';
+import * as cus_actions from "actions/customer.action"
 import FinalView from './components/finalView';
 import PositionedSnackbar from 'views/manager/hotel-management/components/PositionedSnackbar';
 
@@ -76,12 +78,18 @@ function AddTaskDrawer(props) {
     setActiveStep(step);
   };
 
+  const [completeButton, setCompleteButton] = React.useState(false);
+
+  const handleCompleteButton = value => setCompleteButton(value);
+
+
   const handleComplete = () => {
     const newCompleted = completed;
     newCompleted[activeStep] = true;
     setCompleted(newCompleted);
     handleNext();
   };
+
 
   const handleReset = () => {
     setActiveStep(0);
@@ -90,6 +98,18 @@ function AddTaskDrawer(props) {
 
   // ===================================================================
 
+  const listCus = useSelector((state) => state.customer.customers);
+  React.useEffect(() => {
+    dispatch(cus_actions.fetchAllCustomer());
+  }, [])
+
+  const [listCusCompare, setListCuscompare] = React.useState([]);
+  React.useEffect(() => {
+    if (listCus) {
+      setListCuscompare(listCus)
+    }
+  }, [listCus])
+
   const [customer, setCustomer] = React.useState({
     ho: '',
     ten: '',
@@ -97,11 +117,30 @@ function AddTaskDrawer(props) {
     diaChi: '',
     dienThoai: '',
     email: '',
-    quocTich: 'Việt Nam',
+    quocTich: 'Viet Nam',
     soHoChieu: '',
     trangThai: 1,
     password: ''
   })
+
+  const cusInitial = {
+    ho: '',
+    ten: '',
+    cmnd: '',
+    diaChi: '',
+    dienThoai: '',
+    email: '',
+    quocTich: 'Viet Nam',
+    soHoChieu: '',
+    trangThai: 1,
+    password: ''
+  }
+
+  React.useEffect(() => {
+    const cus = listCusCompare.filter(e => e.cmnd === customer.cmnd);
+    if (cus.length)
+      setCustomer(...cus);
+  }, [customer.cmnd])
 
   const handleCustomer = (title, value) => {
     setCustomer({ ...customer, [title]: value });
@@ -111,9 +150,9 @@ function AddTaskDrawer(props) {
 
   const [reservation, setReservation] = React.useState({
     nhanVienid: JSON.parse(account).user_id,
-    ngayLap: moment(new Date()).format('YYYY-MM-DDTHH:mm:ss'),
-    ngayVao: moment(new Date()).format('YYYY-MM-DDTHH:mm:ss'),
-    ngayRa: moment(new Date()).format('YYYY-MM-DDTHH:mm:ss'),
+    ngayLap: moment_t.tz(new Date(), "Asia/Ho_Chi_Minh").format(),
+    ngayVao: moment_t.tz(props.dateChoice, "Asia/Ho_Chi_Minh").format(),
+    ngayRa: moment_t.tz(props.dateChoice, "Asia/Ho_Chi_Minh").format(),
     tienCoc: '',
     trangThai: 1,
     yeuCau: '',
@@ -121,7 +160,7 @@ function AddTaskDrawer(props) {
   })
 
   React.useEffect(() => {
-    setReservation({ ...reservation, ngayVao: moment(props.dateChoice).format('YYYY-MM-DDTHH:mm:ss'), ngayRa: moment(props.dateChoice).format('YYYY-MM-DDTHH:mm:ss') })
+    setReservation({ ...reservation, ngayVao: moment_t.tz(props.dateChoice, "Asia/Ho_Chi_Minh").format(), ngayRa: moment_t.tz(props.dateChoice, "Asia/Ho_Chi_Minh").format() })
   }, [props.dateChoice])
 
   const handleReservation = (title, value) => {
@@ -205,10 +244,23 @@ function AddTaskDrawer(props) {
           <React.Fragment>
             <div>
               {activeStep === 0 ?
-                <CustomerInfo customer={customer} handleCustomer={handleCustomer} /> :
+                <CustomerInfo customer={customer}
+                  handleCustomer={handleCustomer}
+                  complete={completeButton}
+                  handleCompleteButton={handleCompleteButton}
+                  handleComplete={handleComplete} /> :
                 activeStep === 1 ?
-                  <ReservationInfo reservation={reservation} handleReservation={handleReservation} /> :
-                  <ServiceInfo token={token} updateService={handleService} />
+                  <ReservationInfo reservation={reservation}
+                    handleReservation={handleReservation}
+                    token={token}
+                    complete={completeButton}
+                    handleCompleteButton={handleCompleteButton}
+                    handleComplete={handleComplete} /> :
+                  <ServiceInfo token={token}
+                    updateService={handleService}
+                    complete={completeButton}
+                    handleCompleteButton={handleCompleteButton}
+                    handleComplete={handleComplete} />
               }
             </div>
             <div style={{ position: 'fixed', top: 650 }}>
@@ -232,7 +284,7 @@ function AddTaskDrawer(props) {
                       Bước {activeStep + 1} đã hoàn thành
                     </Typography>
                   ) : (
-                    <Button onClick={handleComplete} variant="outlined">
+                    <Button onClick={() => handleCompleteButton(true)} variant="outlined">
                       {completedSteps() === totalSteps() - 1
                         ? 'Kết Thúc'
                         : 'Hoàn Thành Bước ' + (activeStep + 1)}

@@ -53,7 +53,6 @@ export default function StickyHeadTable() {
             setListAccount(listAccount)
         }
     }, [listAccount])
-    console.log(address)
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%', pl: 5, pr: 5 }}>
             <Grid container spacing={1} style={{ marginTop: 10, padding: 20 }}>

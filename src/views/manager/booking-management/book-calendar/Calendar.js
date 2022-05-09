@@ -232,10 +232,12 @@ const CellBase = React.memo(
     const listBillByStatus = useSelector((state) => state.bill.listBillByStatusAccept);
     let params = location.href.split('/');
     let token = params[params.length - 1];
-
+    // const tasksOfDay = listBillByStatus.filter(
+    //   (task) =>
+    //     moment(task.ngayVao).format('YYYY-MM-DD') === moment(startDate).format("YYYY-MM-DD") && task.chiTietPhieuThueList[0].phongId.id == token
+    // ).sort((a, b) => a.ngayVao - b.ngayVao);
     const tasksOfDay = listBillByStatus.filter(
-      (task) =>
-        moment(task.ngayVao).format('YYYY-MM-DD') === moment(startDate).format("YYYY-MM-DD") && task.chiTietPhieuThueList[0].phongId.id == token
+      (task) => new Date(task.ngayVao) <= startDate && startDate <= new Date(task.ngayRa) && task.chiTietPhieuThueList[0].phongId.id == token
     ).sort((a, b) => a.ngayVao - b.ngayVao);
     // const tasksOfDay = useSelector(selectTaskByTime(startDate));
     React.useEffect(() => {
@@ -419,7 +421,6 @@ class Calendar extends React.PureComponent {
 
   render() {
     // const { data } = this.state;
-    console.log(this.props.room_id)
     return (
       <div>
         <Paper style={{ padding: 20, marginBottom: 10 }}>

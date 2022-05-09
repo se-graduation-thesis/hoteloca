@@ -238,7 +238,8 @@ export default function Room() {
                     </Table>
                 </TableContainer>
                 <TablePagination
-                    rowsPerPageOptions={[10, 25, 100]}
+                    labelRowsPerPage='Số hàng'
+                    rowsPerPageOptions={[5, 10, 25, 100]}
                     component="div"
                     count={rows.length}
                     rowsPerPage={rowsPerPage}
