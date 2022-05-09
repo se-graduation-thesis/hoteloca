@@ -58,7 +58,6 @@ export default function BrandManager() {
     useEffect(() => {
         if (room) {
             setListRoomHotel(room)
-            console.log(room)
         }
     }, [room])
     const onsubmit = () => {
@@ -151,7 +150,7 @@ export default function BrandManager() {
             <div style={{ paddingLeft: 10, display: 'flex' }}>
             </div>
             <div style={{ paddingLeft: 10, display: 'flex' }}>
-                <h3>Danh sách </h3>
+                <h3>{textTitle} </h3>
             </div>
             <>
                 <Grid container spacing={1} style={{ padding: 10 }}>

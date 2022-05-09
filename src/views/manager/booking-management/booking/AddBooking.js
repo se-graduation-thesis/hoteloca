@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import Chip from '@mui/material/Chip';
-import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Alert, AlertTitle, FormControl, Snackbar, Grid, IconButton, InputLabel, MenuItem, Select, TextField, Typography, Checkbox } from '@mui/material';
+import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ButtonGroup, AlertTitle, FormControl, Snackbar, Grid, IconButton, InputLabel, MenuItem, Select, TextField, Typography, Checkbox } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { useState, useEffect } from 'react';
@@ -10,6 +10,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import * as actions from 'actions/room.action'
 import * as actionPhongTN from 'actions/phongTN.action';
+
+import * as actionCustomer from 'actions/customer.action';
 import * as actionService from 'actions/service.action';
 import moment from "moment-timezone";
 import { DateTimePicker, LocalizationProvider } from "@mui/lab";
@@ -20,6 +22,16 @@ import Formsy from 'formsy-react';
 import useForm from './useForm'
 import * as cus_actions from "actions/customer.action"
 import imga from "assets/images/icons/room.png"
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import Slide from '@mui/material/Slide';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
 const initialFieldValues = {
     ho: "",
     ten: "",
@@ -38,9 +50,11 @@ export default function Payment() {
     const dispatch = useDispatch()
     const navigate = useNavigate();
     const account = useSelector((state) => state.account.userAuth);
+    const tienNghiList = useSelector(state => state.phongTN.tienNghiList);
+    const services = useSelector(state => state.service.services);
+    const room = useSelector((state) => state.room.empty_room);
     const [checkin, setCheckIn] = useState(new Date)
     const [checkout, setCheckOut] = useState(new Date((new Date()).valueOf() + 1000 * 3600 * 24))
-    const room = useSelector((state) => state.room.empty_room);
     const [list_room_hotel, setListRoomHotel] = useState([]);
     const [disabled, setDisabled] = useState(false)
     const [idCustomer, setIdCustomer] = useState(0)
@@ -48,6 +62,17 @@ export default function Payment() {
     const [serviceSelect, setServiceSelect] = useState([]);
     const [roomSelect, setRoomSelect] = useState([]);
     const [deposit, setDeposit] = useState(0);
+    const [open, setOpen] = useState(false);
+    const [listService, setListService] = useState([])
+    const [open1, setOpen1] = React.useState(false);
+
+    const handleClickOpen = () => {
+        setOpen1(true);
+    };
+
+    const handleClose = () => {
+        setOpen1(false);
+    };
     useEffect(() => {
         let room_find = {
             trangThai: 0,
@@ -58,10 +83,15 @@ export default function Payment() {
     }, [])
     useEffect(() => {
         if (room) {
-            setListRoomHotel(room)
+            let set_list_room = []
+            room.forEach((e) => {
+                if (e.trangThaiHomNay === 1 && e.trangThai == 1) {
+                    set_list_room.push(e)
+                }
+            })
+            setListRoomHotel(set_list_room)
         }
     }, [room])
-
     const listCus = useSelector((state) => state.customer.customers);
     useEffect(() => {
         dispatch(cus_actions.fetchAllCustomer());
@@ -72,7 +102,6 @@ export default function Payment() {
             setListCuscompare(listCus)
         }
     }, [listCus])
-    // console.log(listCus)
     const validate = (fieldValues = values) => {
         let temp = { ...errors };
         if ("cmnd" in fieldValues) {
@@ -97,8 +126,8 @@ export default function Payment() {
                 values.dienThoai = ""
                 values.email = ""
                 setValues({ ...values })
-                setDisabled(false)
                 setIdCustomer(0)
+                setDisabled(false)
             }
 
             // let err = 0;
@@ -153,41 +182,55 @@ export default function Payment() {
             list_service: serviceSelect,
             nhanVienid: idNv,
             khachHangid: idCustomer,
-            khachHang: values,
+            bill: values,
+            tienCoc: deposit,
+            trangThai: 1,
             ngayLap: moment.tz(new Date, "Asia/Ho_Chi_Minh").format(),
             ngayVao: moment.tz(checkin, "Asia/Ho_Chi_Minh").format(),
             ngayRa: moment.tz(checkout, "Asia/Ho_Chi_Minh").format(),
             yeuCau: values.yeuCau
         }
         if (validate()) {
-            if (disabled === false) {
-
+            if (roomSelect.length === 0) {
+                handleClickOpen()
+                return
+            }
+            if (booking_info.khachHangid === 0) {
+                actionCustomer.addCustomer(booking_info.bill).then((res) => {
+                    booking_info.khachHangid = res.data.id
+                })
             }
             setTimeout(() => {
                 navigate("/admin/booking-infomation", { state: booking_info });
             }, 2000)
         };
-        console.log(booking_info)
     }
-    // const onAutoComplete = () => {
-    //     values.ho = "nânn"
 
-    // }
-
-    //Service
-    const [open, setOpen] = useState(false);
-
-    const tienNghiList = useSelector(state => state.phongTN.tienNghiList);
-
-    const services = useSelector(state => state.service.services);
     useEffect(() => {
         dispatch(actionService.fetchAllService())
     }, [])
 
+    useEffect(() => {
+        if (services) {
+            let list_tam = []
+            services.forEach((e) => {
+                let service_count = {
+                    donGia: e.donGia,
+                    id: e.id,
+                    moTa: e.moTa,
+                    ten: e.ten,
+                    trangThai: e.trangThai,
+                    soLuong: 1
+                }
+                list_tam.push(service_count)
+            })
+            setListService(list_tam)
+        }
+    }, [services])
 
     const handleService = (e, checked) => {
         let i = null;
-        let tam = services.filter(item => item.id === Number(e.target.value))[0];
+        let tam = listService.filter(item => item.id === Number(e.target.value))[0];
         let arr = null;
         if (checked === true) {
             setServiceSelect([...serviceSelect, tam]);
@@ -210,6 +253,84 @@ export default function Payment() {
             setRoomSelect(arr);
         }
     }
+    const handleIncrement = (id) => {
+        let list_tam = []
+        let list_select = []
+        listService.forEach((e) => {
+            if (e.id === id) {
+                let service_count = {
+                    donGia: e.donGia,
+                    id: e.id,
+                    moTa: e.moTa,
+                    ten: e.ten,
+                    trangThai: e.trangThai,
+                    soLuong: e.soLuong + 1
+                }
+                list_tam.push(service_count)
+            }
+            else {
+                list_tam.push(e)
+            }
+        })
+        serviceSelect.forEach((e) => {
+            if (e.id === id) {
+                let service_count = {
+                    donGia: e.donGia,
+                    id: e.id,
+                    moTa: e.moTa,
+                    ten: e.ten,
+                    trangThai: e.trangThai,
+                    soLuong: e.soLuong + 1
+                }
+                list_select.push(service_count)
+            }
+            else {
+                list_select.push(e)
+            }
+        })
+        setServiceSelect(list_select)
+        setListService(list_tam)
+        // setCounter(counter + 1);
+    };
+    const handleDecrement = (id) => {
+        let list_tam = []
+        let list_select = []
+        listService.forEach((e) => {
+            if (e.id === id) {
+                let service_count = {
+                    donGia: e.donGia,
+                    id: e.id,
+                    moTa: e.moTa,
+                    ten: e.ten,
+                    trangThai: e.trangThai,
+                    soLuong: e.soLuong === 1 ? 1 : e.soLuong - 1
+                }
+                list_tam.push(service_count)
+            }
+            else {
+                list_tam.push(e)
+            }
+        })
+        serviceSelect.forEach((e) => {
+            if (e.id === id) {
+                let service_count = {
+                    donGia: e.donGia,
+                    id: e.id,
+                    moTa: e.moTa,
+                    ten: e.ten,
+                    trangThai: e.trangThai,
+                    soLuong: e.soLuong === 1 ? 1 : e.soLuong - 1
+                }
+                list_select.push(service_count)
+            }
+            else {
+                list_select.push(e)
+            }
+        })
+        setServiceSelect(list_select)
+        setListService(list_tam)
+    };
+
     useEffect(() => {
         let depo = 0;
         if (roomSelect.length > 0) {
@@ -225,7 +346,6 @@ export default function Payment() {
             ngayVao: moment.tz(e, "Asia/Ho_Chi_Minh").format(),
             ngayRa: moment.tz(checkout, "Asia/Ho_Chi_Minh").format()
         }
-        console.log(room_find)
         dispatch(actions.get_empty_room(room_find))
     }
     const onChangeCheckOut = (e) => {
@@ -234,11 +354,8 @@ export default function Payment() {
             ngayVao: moment.tz(checkin, "Asia/Ho_Chi_Minh").format(),
             ngayRa: moment.tz(e, "Asia/Ho_Chi_Minh").format()
         }
-        console.log(room_find)
         dispatch(actions.get_empty_room(room_find))
     }
-
-    console.log(idCustomer)
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%', display: 'flex', alignItems: 'flex-start', justifyContent: 'center', backgroundColor: '#e3f2fd' }}>
             <Formsy style={{ width: "100%" }} onSubmit={handleSubmit} >
@@ -436,22 +553,23 @@ export default function Payment() {
                                 </Grid>
                                 <Grid item xs={12}>
                                     <Grid container spacing={8}>
-                                        {
+                                        {list_room_hotel.length > 0 ?
                                             list_room_hotel.map((e, i) => {
-                                                if (e.trangThaiHomNay === 1) {
-                                                    return (
-                                                        <Grid item xs={1} key={i}>
-                                                            <img src={imga} alt="bk" width={"100%"} />
-                                                            <p>{e.ten}</p>
-                                                            <Checkbox
-                                                                value={e.id} onChange={(el, checked) => handleRoom(el, checked)}
-                                                                inputProps={{ 'aria-label': 'controlled' }}
-                                                            />
-                                                        </Grid>
-                                                    )
-                                                }
+                                                return (
+                                                    <Grid item xs={1} key={i}>
+                                                        <img src={imga} alt="bk" width={"100%"} />
+                                                        <p>{e.ten}</p>
+                                                        <Checkbox
+                                                            value={e.id} onChange={(el, checked) => handleRoom(el, checked)}
+                                                            inputProps={{ 'aria-label': 'controlled' }}
+                                                        />
+                                                    </Grid>
+                                                )
                                             }
-                                            )
+                                            ) :
+                                            <Grid item xs={12}>
+                                                <p style={{ color: 'red', fontWeight: 'bold' }}>Hiện tại không có phòng nào trống trong khoảng thời gian này</p>
+                                            </Grid>
                                         }
                                     </Grid>
                                 </Grid>
@@ -478,7 +596,7 @@ export default function Payment() {
                                                 <div style={{ width: "100%" }}>
                                                     {
                                                         serviceSelect.map((e, index) => (
-                                                            <Chip style={{ margin: 5 }} key={e.id} color={colors[index]} label={e.ten} />
+                                                            <Chip style={{ margin: 5 }} key={e.id} color={colors[index]} label={e.ten + " x" + e.soLuong} />
                                                         ))
                                                     }
                                                 </div>
@@ -501,11 +619,12 @@ export default function Payment() {
                                                                 <TableCell>Tên</TableCell>
                                                                 <TableCell align="center">Đơn Giá</TableCell>
                                                                 <TableCell align="center">Mô Tả</TableCell>
+                                                                <TableCell align="center">Số lượng</TableCell>
                                                                 <TableCell align="center"></TableCell>
                                                             </TableRow>
                                                         </TableHead>
                                                         <TableBody>
-                                                            {services.map((row) => (
+                                                            {listService.map((row) => (
                                                                 <TableRow
                                                                     key={row.id}
                                                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -515,6 +634,13 @@ export default function Payment() {
                                                                     </TableCell>
                                                                     <TableCell align="center">{row.donGia}</TableCell>
                                                                     <TableCell align="center">{row.moTa}</TableCell>
+                                                                    <TableCell align="center">
+                                                                        <ButtonGroup size="small" aria-label="small outlined button group">
+                                                                            <Button onClick={() => handleDecrement(row.id)}>-</Button>
+                                                                            <Button disabled>{row.soLuong}</Button>
+                                                                            <Button onClick={() => handleIncrement(row.id)}>+</Button>
+                                                                        </ButtonGroup>
+                                                                    </TableCell>
                                                                     <TableCell align="center"><Checkbox value={row.id} onChange={(e, checked) => handleService(e, checked)} /></TableCell>
                                                                 </TableRow>
                                                             ))}
@@ -538,6 +664,22 @@ export default function Payment() {
                         Thông báo — <strong>Thanh toán thành công</strong></Alert>
                 </Snackbar> */}
             </Formsy>
+            <Dialog
+                open={open1}
+                maxWidth={'xs'}
+                fullWidth={true}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={handleClose}
+                aria-describedby="alert-dialog-slide-description"
+            >
+                <DialogContent style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <CancelOutlinedIcon color='error' sx={{ fontSize: 70 }} />
+                    <span style={{ fontSize: 15, fontWeight: 'bold' }}>Vui lòng chọn ít nhất 1 phòng để tiến hành đặt phòng</span>
+                </DialogContent>
+                <DialogActions>
+                </DialogActions>
+            </Dialog>
         </Paper >
     );
 }

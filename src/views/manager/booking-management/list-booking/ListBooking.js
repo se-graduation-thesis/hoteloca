@@ -15,7 +15,7 @@ import Edit from '@mui/icons-material/Edit';
 import Payment from '@mui/icons-material/Payment';
 import InsertBrandDialog from './InsertBrandDialog'
 import UpdateBrand from './UpdateBrand'
-
+import RoomServiceIcon from '@mui/icons-material/RoomService';
 import { useState, useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -161,6 +161,11 @@ export default function ListBooking() {
                                             );
                                         })}
                                         <TableCell key={row.stt}>
+                                            <Tooltip title="Thêm dịch vụ">
+                                                <IconButton key={row.stt} onClick={() => navigate(`/admin/booking-payment/${row.id}`)} aria-label="add-service" color="secondary">
+                                                    <RoomServiceIcon />
+                                                </IconButton>
+                                            </Tooltip>
                                             <Tooltip title="Thanh toán">
                                                 <IconButton key={row.stt} onClick={() => navigate(`/admin/booking-payment/${row.id}`)} aria-label="delete" color="primary">
                                                     <Payment />

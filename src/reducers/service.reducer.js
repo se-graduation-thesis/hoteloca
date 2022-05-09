@@ -2,6 +2,7 @@ import { ACTION_TYPES } from "../actions/service.action";
 
 const initialState = {
     services: [],
+    services_not_use: []
 };
 
 export const serviceReducer = (state = initialState, action) => {
@@ -15,6 +16,11 @@ export const serviceReducer = (state = initialState, action) => {
             return {
                 ...state,
                 services: [...action.payload],
+            }
+        case ACTION_TYPES.SERVICE_NOT_USE:
+            return {
+                ...state,
+                services_not_use: [...action.payload],
             }
         default:
             return state;
