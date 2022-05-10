@@ -68,11 +68,13 @@ export default function BookingInfomation() {
     const onSubmit = () => {
 
         actionBill.addBill(booking_info).then((response) => {
-            const phieuThueid = response.data.id;
+            const phieuThueid = response.data;
             booking_info.list_room_hotel.forEach((e) => {
                 const billDetail = {
-                    phieuThueid: phieuThueid,
-                    phongId: e.id
+                    phieuThueid: phieuThueid.id,
+                    phongId: e.id,
+                    ngayVao: phieuThueid.ngayVao,
+                    ngayRa: phieuThueid.ngayRa
                 }
                 dispatch(actionBillDetail.addBillDetail(billDetail));
             })

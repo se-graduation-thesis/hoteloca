@@ -182,10 +182,12 @@ function AddTaskDrawer(props) {
       reservation.khachHangid = response.data.id;
       console.log(reservation)
       actionBill.addBill(reservation).then((response) => {
-        const phieuThueid = response.data.id;
+        const phieuThueid = response.data;
         const billDetail = {
-          phieuThueid: phieuThueid,
-          phongId: token
+          phieuThueid: phieuThueid.id,
+          phongId: token,
+          ngayVao: phieuThueid.ngayVao,
+          ngayRa: phieuThueid.ngayRa
         }
         dispatch(actionBillDetail.addBillDetail(billDetail));
 

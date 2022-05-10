@@ -416,7 +416,9 @@ class Calendar extends React.PureComponent {
   }
 
   handleDateChoice = (date) => {
-    this.setState({ dateChoice: date });
+    const dateNow = new Date();
+    const data = new Date(date.getFullYear(), date.getMonth() + 1, date.getDate(), dateNow.getHours(), dateNow.getMinutes(), dateNow.getSeconds());
+    this.setState({ dateChoice: data });
   }
 
   render() {

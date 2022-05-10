@@ -60,6 +60,8 @@ export default {
         return {
             fetchAllBillDetailByStatus: (id) => axios.get(url + 'get-all-bill-detail-by-status/' + id),
             add_bill_detail: (billDetail) => axios.post(url, billDetail),
+            getBillDetailByBill: (id) => axios.get(url + 'get-all-bill-detail-by-bill/' + id),
+            updateBillDetail: (id) => axios.put(url + id),
         }
     },
 
