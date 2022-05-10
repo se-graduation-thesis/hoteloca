@@ -93,6 +93,13 @@ const utilities = {
                     type: 'item',
                     url: '/admin/list-booking',
                     breadcrumbs: false
+                },
+                {
+                    id: 'listCustomerRent',
+                    title: 'Danh sách Khách hàng đang thuê phòng',
+                    type: 'item',
+                    url: '/admin/list-customer-rent',
+                    breadcrumbs: false
                 }
             ]
         },

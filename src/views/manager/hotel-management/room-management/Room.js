@@ -40,7 +40,7 @@ export default function Room() {
     const [page, setPage] = React.useState(0);
     const [loaiPhong, setLoaiPhong] = React.useState(0);
     const [stateRoom, setStateRoom] = React.useState("full");
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const rooms = useSelector((state) => state.room.rooms);
     const roombyname = useSelector((state) => state.room.room_by_name);
     const [addForm, setAddForm] = React.useState(false);
@@ -128,7 +128,7 @@ export default function Room() {
                     <Grid item xs={4} style={{ padding: 10, textAlign: "right" }}>
                         <TextField
                             fullWidth
-                            label="Nhập nội dung tìm kiếm"
+                            label="Nhập tên Phòng cần tìm"
                             size="small"
                             value={searchContent}
                             onChange={(e) => setSearchContent(e.target.value)}
@@ -202,7 +202,7 @@ export default function Room() {
                         </TableHead>
                         <TableBody>
                             {listRoom
-                                .filter(item => item.ten.includes(searchContent))
+                                .filter(item => item.ten.toLowerCase().includes(searchContent.toLowerCase()))
                                 .filter(item => stateRoom === "full" ? item : item.trangThai === stateRoom)
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row) => {
@@ -241,7 +241,7 @@ export default function Room() {
                     labelRowsPerPage='Số hàng'
                     rowsPerPageOptions={[5, 10, 25, 100]}
                     component="div"
-                    count={rows.length}
+                    count={listRoom.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}

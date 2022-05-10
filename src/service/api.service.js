@@ -54,6 +54,7 @@ export default {
             fetchAllCustomer: () => axios.get(url + 'get-all-customer'),
             getCustomerById: (id) => axios.get(url + id),
             add_customer: (customer) => axios.post(url, customer),
+            listCustomerRent: () => axios.get(url + 'get-all-customer-rent'),
         }
     },
     bill_detail(url = baseApi + 'bill-detail/') {
@@ -61,6 +62,7 @@ export default {
             fetchAllBillDetailByStatus: (id) => axios.get(url + 'get-all-bill-detail-by-status/' + id),
             add_bill_detail: (billDetail) => axios.post(url, billDetail),
             getBillDetailByBill: (id) => axios.get(url + 'get-all-bill-detail-by-bill/' + id),
+            getBillDetailByRoom: (id) => axios.get(url + 'get-all-bill-detail-by-room/' + id),
             updateBillDetail: (id) => axios.put(url + id),
         }
     },

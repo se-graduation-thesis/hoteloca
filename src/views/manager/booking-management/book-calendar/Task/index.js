@@ -47,8 +47,8 @@ const sliderMarks = [
 function Icon({ trangThai, fontSizeValue }) {
   const className = classNames({
     icon: true,
-    "icon-done": trangThai === 2,
-    "icon-doing": trangThai === 1,
+    "icon-done": trangThai === 1,
+    "icon-doing": trangThai === 2,
     "icon-new": trangThai === 0,
     "icon-closed": trangThai === 3,
   });
@@ -165,14 +165,14 @@ function Task({ task }) {
       <div
         className={classNames({
           "task-name": true,
-          "task-name--done": task.trangThai === 2,
-          "task-name--doing": task.trangThai === 1,
+          "task-name--done": task.trangThai === 1,
+          "task-name--doing": task.trangThai === 2,
           "task-name--new": task.trangThai === 0,
           "task-name--closed": task.trangThai === 3,
         })}
         onClick={handleClick}
       >
-        {task.khachHangid.ho} {task.khachHangid.ten}
+        {task.phieuThueid.khachHangid.ho} {task.phieuThueid.khachHangid.ten}
       </div>
       <Popover
         // id={id}
@@ -230,7 +230,7 @@ function Task({ task }) {
                     marginLeft: "6px",
                   }}
                 >
-                  {task.khachhang}
+                  {task.phieuThueid.khachHangid.ho} {task.phieuThueid.khachHangid.ten}
                 </Typography>
               </Box>
             </Box>
@@ -268,8 +268,8 @@ function Task({ task }) {
                   // color="secondary"
                   className={classNames({
                     'trangThai-slider--new': task.trangThai === 0,
-                    'trangThai-slider--doing': task.trangThai === 1,
-                    'trangThai-slider--done': task.trangThai === 2,
+                    'trangThai-slider--doing': task.trangThai === 2,
+                    'trangThai-slider--done': task.trangThai === 1,
                   })}
                 />
               </Box>
