@@ -13,6 +13,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import Edit from '@mui/icons-material/Edit';
 import Payment from '@mui/icons-material/Payment';
+import AddTaskIcon from '@mui/icons-material/AddTask';
 import InsertBrandDialog from './InsertBrandDialog'
 import UpdateBrand from './UpdateBrand'
 import RoomServiceIcon from '@mui/icons-material/RoomService';
@@ -169,6 +170,11 @@ export default function ListBooking() {
                                             <Tooltip title="Thanh toán">
                                                 <IconButton key={row.stt} onClick={() => navigate(`/admin/booking-payment/${row.id}`)} aria-label="delete" color="primary">
                                                     <Payment />
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip title="Trả Phòng">
+                                                <IconButton key={row.stt} onClick={() => navigate(`/admin/booking-checkout/${row.id}`)} aria-label="delete" color="primary">
+                                                    <AddTaskIcon />
                                                 </IconButton>
                                             </Tooltip>
                                         </TableCell>

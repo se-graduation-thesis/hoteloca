@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import PaidIcon from '@mui/icons-material/Paid';
 import { useDispatch, useSelector } from 'react-redux';
 import * as actions from "actions/bill.action";
+import * as actionsBillDetail from "actions/bill-detail.action"
 import { useParams } from "react-router-dom";
 import * as pay_actions from "actions/payment.action";
 import * as ser_bill_action from "actions/bill-service-detail.action"
@@ -117,6 +118,11 @@ export default function Payment() {
             setHoanTien(0)
         }
     }
+    const billDetails = useSelector(state => state.bill_detail.billDetailByBill);
+    useEffect(() => {
+        dispatch(actionsBillDetail.getBillDetailByBill(bill))
+    }, [])
+
     const onSubmit = () => {
         if (billDetail !== null) {
             let payment = {
@@ -126,6 +132,11 @@ export default function Payment() {
                 phieuThueid: bill
             }
             dispatch(pay_actions.addPay(payment))
+            billDetails.forEach((e) => {
+                if (e.trangThai === 0)
+                    dispatch(actionsBillDetail.updateBillDetail(e.id));
+            });
+
         }
         setButton(true)
         setAlertOpen(true)
