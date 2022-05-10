@@ -5,6 +5,7 @@ export const ACTION_TYPES = {
     ADD_BILL_DETAIL: "ADD_BILL_DETAIL",
     GET_BILL_DETAIL_BY_BILL: "GET_BILL_DETAIL_BY_BILL",
     UPDATE_BILL_DETAIL: "UPDATE_BILL_DETAIL",
+    GET_BILL_DETAIL_BY_Room: "GET_BILL_DETAIL_BY_Room"
 };
 
 export const fetchBillDetaiByStatus = (status) => (dispatch) => {
@@ -40,6 +41,19 @@ export const getBillDetailByBill = (id) => (dispatch) => {
         .then((response) => {
             dispatch({
                 type: ACTION_TYPES.GET_BILL_DETAIL_BY_BILL,
+                payload: response.data,
+            });
+        })
+        .catch((err) => console.log(err));
+};
+
+export const getBillDetailByRoom = (id) => (dispatch) => {
+    apiService
+        .bill_detail()
+        .getBillDetailByRoom(id)
+        .then((response) => {
+            dispatch({
+                type: ACTION_TYPES.GET_BILL_DETAIL_BY_Room,
                 payload: response.data,
             });
         })

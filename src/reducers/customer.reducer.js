@@ -3,6 +3,7 @@ import { ACTION_TYPES } from "../actions/customer.action";
 const initialState = {
     customers: [],
     customer: {},
+    listCustomerRent: [],
 };
 
 export const customerReducer = (state = initialState, action) => {
@@ -21,6 +22,11 @@ export const customerReducer = (state = initialState, action) => {
             return {
                 ...state,
                 customers: [...action.payload],
+            }
+        case ACTION_TYPES.LIST_CUSTOMER_RENT:
+            return {
+                ...state,
+                listCustomerRent: [...action.payload],
             }
         default:
             return state;

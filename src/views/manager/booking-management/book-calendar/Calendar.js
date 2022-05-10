@@ -21,7 +21,7 @@ import Task from "./Task/index";
 import withScrollHook from "../withScrollHook";
 import AddTaskDrawer from "./AddTask/AddTaskDrawer";
 import { startOfMonth } from "date-fns";
-import { fetchBillByStatusAccept } from "actions/bill.action"
+import { getBillDetailByRoom } from "actions/bill-detail.action"
 import { get_by_id } from "actions/room.action"
 // import { owners } from "./task";
 
@@ -227,23 +227,31 @@ const CellBase = React.memo(
       ? { day: "numeric", month: "long" }
       : { day: "numeric" };
 
-    newDate.setDate(newDate.getDate() - 1);
+    const handleDate = (data) => {
 
-    const listBillByStatus = useSelector((state) => state.bill.listBillByStatusAccept);
+      const year = data.getFullYear();
+      const month = data.getMonth();
+      const date = data.getDate();
+      const day = new Date(year, month, date, 0, 0, 0);
+      return day;
+    }
+
+
+    const billDetailByRoom = useSelector((state) => state.bill_detail.billDetailByRoom);
     let params = location.href.split('/');
     let token = params[params.length - 1];
-    // const tasksOfDay = listBillByStatus.filter(
+    // const tasksOfDay = billDetailByRoom.filter(
     //   (task) =>
     //     moment(task.ngayVao).format('YYYY-MM-DD') === moment(startDate).format("YYYY-MM-DD") && task.chiTietPhieuThueList[0].phongId.id == token
     // ).sort((a, b) => a.ngayVao - b.ngayVao);
-    const tasksOfDay = listBillByStatus.filter(
-      (task) => new Date(task.ngayVao) <= startDate && startDate <= new Date(task.ngayRa) && task.chiTietPhieuThueList[0].phongId.id == token
+    const tasksOfDay = billDetailByRoom.filter(
+      (task) => handleDate(new Date(task.ngayVao)) <= startDate && startDate <= handleDate(new Date(task.ngayRa))
     ).sort((a, b) => a.ngayVao - b.ngayVao);
     // const tasksOfDay = useSelector(selectTaskByTime(startDate));
     React.useEffect(() => {
     });
 
-    const checkDate = startDate < newDate;
+    const checkDate = startDate < handleDate(newDate);
 
     const handleOpenDrawer = () => {
       if (!checkDate) {
@@ -404,7 +412,7 @@ class Calendar extends React.PureComponent {
 
     // load tasks from the local storage and save to Redux
     const data = loadFromLocalStorage();
-    this.props.fetchBillByStatusAccept()
+    this.props.getBillDetailByRoom(token)
     this.props.get_by_id(token)
     this.props.setTasks(data);
   }
@@ -417,7 +425,7 @@ class Calendar extends React.PureComponent {
 
   handleDateChoice = (date) => {
     const dateNow = new Date();
-    const data = new Date(date.getFullYear(), date.getMonth() + 1, date.getDate(), dateNow.getHours(), dateNow.getMinutes(), dateNow.getSeconds());
+    const data = new Date(date.getFullYear(), date.getMonth(), date.getDate(), dateNow.getHours(), dateNow.getMinutes(), dateNow.getSeconds());
     this.setState({ dateChoice: data });
   }
 
@@ -520,7 +528,7 @@ const mapStateToProps = (state) => ({
   room_id: state.room.room_id
 });
 
-const mapDispatchToProps = { editDateOfTask, setTasks, fetchBillByStatusAccept, get_by_id };
+const mapDispatchToProps = { editDateOfTask, setTasks, getBillDetailByRoom, get_by_id };
 
 export default connect(
   mapStateToProps,

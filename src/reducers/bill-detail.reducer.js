@@ -4,6 +4,7 @@ const initialState = {
     listBillByStatus: [],
     billDetail: null,
     billDetailByBill: [],
+    billDetailByRoom: [],
 };
 
 export const billDetailReducer = (state = initialState, action) => {
@@ -30,6 +31,12 @@ export const billDetailReducer = (state = initialState, action) => {
             return {
                 ...state,
                 billDetailByBill: [...action.payload],
+            };
+
+        case ACTION_TYPES.GET_BILL_DETAIL_BY_Room:
+            return {
+                ...state,
+                billDetailByRoom: [...action.payload],
             };
         default:
             return state;

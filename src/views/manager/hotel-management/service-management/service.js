@@ -37,6 +37,7 @@ export default function Service() {
     const [editForm, setEditForm] = React.useState(false);
     const [editService, setEditService] = React.useState(null);
     const [isView, setIsView] = React.useState(false);
+    const [searchContent, setSearchContent] = React.useState("");
 
     const handleIsView = (value) => setIsView(value);
 
@@ -89,17 +90,19 @@ export default function Service() {
                     </Grid>
                     <Grid item xs={6} style={{ padding: 10, textAlign: "right" }}>
                         <TextField
-                            label="Nhập nội dung tìm kiếm"
+                            label="Nhập tên Dịch vụ cần tìm"
                             size="small"
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="start">
-                                        <IconButton>
-                                            <SearchIcon />
-                                        </IconButton>
-                                    </InputAdornment>
-                                )
-                            }}
+                            value={searchContent}
+                            onChange={(e) => setSearchContent(e.target.value)}
+                        // InputProps={{
+                        //     endAdornment: (
+                        //         <InputAdornment position="start">
+                        //             <IconButton>
+                        //                 <SearchIcon />
+                        //             </IconButton>
+                        //         </InputAdornment>
+                        //     )
+                        // }}
                         />
                     </Grid>
                 </Grid>
@@ -125,6 +128,7 @@ export default function Service() {
                         </TableHead>
                         <TableBody>
                             {listService
+                                .filter(item => item.ten.toLowerCase().includes(searchContent.toLowerCase()))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row) => {
                                     return (
