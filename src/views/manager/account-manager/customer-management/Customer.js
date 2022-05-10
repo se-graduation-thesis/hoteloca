@@ -61,8 +61,6 @@ export default function Customer() {
         dispatch(actions.fetchAllCustomer())
     }, [])
 
-    console.log(customers);
-
     React.useEffect(() => {
         if (customers) {
             customers.forEach((e, i) => {

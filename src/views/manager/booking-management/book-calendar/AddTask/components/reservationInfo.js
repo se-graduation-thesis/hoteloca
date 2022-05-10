@@ -1,15 +1,17 @@
 import { Checkbox, FormControlLabel, FormGroup, Grid, InputAdornment, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
+import * as actionRoom from 'actions/room.action'
 import * as actions from "actions/manager.action"
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import moment_t from "moment-timezone";
 import { DateTimePicker, LocalizationProvider } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import imga from "assets/images/icons/room.png"
 import NumberFormat from 'react-number-format';
 
-export default function ReservationInfo({ reservation, handleReservation }) {
-
+export default function ReservationInfo({ reservation, handleReservation, token, complete, handleCompleteButton, handleComplete }) {
 
     const dispatch = useDispatch();
     // const account = useSelector((state) => state.account.userAuth);
@@ -18,17 +20,31 @@ export default function ReservationInfo({ reservation, handleReservation }) {
         dispatch(actions.fetchAllManager())
     }, [])
 
-    // const [reservation, setReservation] = useState({
-    //     nhanVienid: JSON.parse(account).user_id,
-    //     ngayLap: moment(new Date()).format('YYYY-MM-DDTHH:mm:ss'),
-    //     ngayVao: new Date(),
-    //     ngayRa: new Date(),
-    //     tienCoc: '',
-    //     trangThai: 1,
-    //     yeuCau: ''
-    // })
+    const [list_room_hotel, setListRoomHotel] = useState([]);
+    const room = useSelector((state) => state.room.empty_room);
+    useEffect(() => {
+        let room_find = {
+            trangThai: 0,
+            ngayVao: reservation.ngayVao,
+            ngayRa: reservation.ngayRa
+        }
+        dispatch(actionRoom.get_empty_room(room_find))
+    }, [reservation.ngayVao, reservation.ngayRa])
+    useEffect(() => {
+        if (room) {
+            setListRoomHotel(room)
+        }
+    }, [room])
+
+    const [stateRoom, setStateRoom] = useState(false);
+    useEffect(() => {
+        const temp = list_room_hotel.filter(e => e.id == token)[0];
+        temp?.trangThaiHomNay !== 0 ?
+            setStateRoom(true) :
+            setStateRoom(false)
+    }, [list_room_hotel])
+
     const nhanVien = listAccount.filter(e => e.id === reservation.nhanVienid)[0];
-    const [isOpen, setIsOpen] = useState(false);
 
     const formatCash = (str) => {
         if (str === '') return '';
@@ -36,6 +52,16 @@ export default function ReservationInfo({ reservation, handleReservation }) {
             return ((index % 3) ? next : (next + ',')) + prev
         })
     }
+
+    useEffect(() => {
+        if (complete === true) {
+            if (stateRoom && reservation.ngayVao <= reservation.ngayRa) {
+                handleComplete();
+            }
+            handleCompleteButton(false);
+
+        }
+    }, [complete === true])
 
     return (
         <>
@@ -57,7 +83,7 @@ export default function ReservationInfo({ reservation, handleReservation }) {
                 </Grid>
                 <Grid item xs={6} sx={{ marginTop: 2 }}>
                     <TextField
-                        value={moment(reservation.ngayLap).format('YYYY-MM-DD HH:mm:ss')}
+                        value={moment(reservation.ngayLap).format('DD/MM/YYYY HH:mm:ss')}
                         id="outlined-basic"
                         label="Ngày Lập"
                         variant="outlined"
@@ -71,10 +97,11 @@ export default function ReservationInfo({ reservation, handleReservation }) {
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DateTimePicker
                             renderInput={(props) => <TextField {...props} fullWidth />}
+                            inputFormat="dd/MM/yyyy hh:mm a"
                             label="Ngày Vào"
                             value={reservation.ngayVao}
                             onChange={(newValue) => {
-                                handleReservation('ngayVao', moment(newValue).format('YYYY-MM-DDTHH:mm:ss'));
+                                handleReservation('ngayVao', moment_t.tz(newValue, "Asia/Ho_Chi_Minh").format());
                             }}
                         />
                     </LocalizationProvider>
@@ -83,22 +110,23 @@ export default function ReservationInfo({ reservation, handleReservation }) {
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DateTimePicker
                             renderInput={(props) => <TextField {...props} fullWidth />}
+                            inputFormat="dd/MM/yyyy hh:mm a"
                             label="Ngày Ra"
                             value={reservation.ngayRa}
-                            minDateTime={reservation.ngayVao}
+                            minDateTime={new Date(reservation.ngayVao)}
                             onChange={(newValue) => {
-                                handleReservation('ngayRa', moment(newValue).format('YYYY-MM-DDTHH:mm:ss'));
+                                handleReservation('ngayRa', moment_t.tz(newValue, "Asia/Ho_Chi_Minh").format());
                             }}
                         />
                     </LocalizationProvider>
                 </Grid>
 
-                {/* Check box */}
-                <Grid item xs={12} sx={{ marginTop: 2 }}>
-                    <FormGroup>
-                        <FormControlLabel control={<Checkbox onChange={() => setIsOpen(!isOpen)} />} label="Nhiều phòng" />
-                    </FormGroup>
-                </Grid>
+                {
+                    !stateRoom ?
+                        <Grid item xs={12}>
+                            <WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /><span style={{ color: 'red', marginLeft: 10 }}>Thời gian không hợp lệ. Vui lòng chọn thời gian khác</span>
+                        </Grid> : <></>
+                }
 
                 {/* Tiền cọc */}
                 <Grid item xs={12} sx={{ marginTop: 2 }}>
@@ -147,44 +175,6 @@ export default function ReservationInfo({ reservation, handleReservation }) {
                     />
                 </Grid>
             </Grid>
-
-            <div style={{
-                backgroundColor: 'white',
-                position: "fixed",
-                zIndex: 1,
-                top: 0,
-                bottom: 0,
-                left: 700,
-                width: !isOpen ? "0px" : "500px",
-                transition: "width 1s",
-                display: "block",
-                visibility: !isOpen ? "hidden" : "visible",
-                padding: "50px 20px 10px 10px"
-            }}>
-                <Grid container spacing={5}>
-                    <Grid item xs={3}>
-                        <img src={imga} alt="bk" width={"100%"} />
-                        <p>Phòng 101</p>
-                        <Checkbox
-                            inputProps={{ 'aria-label': 'controlled' }}
-                        />
-                    </Grid>
-                    <Grid item xs={3}>
-                        <img src={imga} alt="bk" width={"100%"} />
-                    </Grid><Grid item xs={3}>
-                        <img src={imga} alt="bk" width={"100%"} />
-                    </Grid><Grid item xs={3}>
-                        <img src={imga} alt="bk" width={"100%"} />
-                    </Grid><Grid item xs={3}>
-                        <img src={imga} alt="bk" width={"100%"} />
-                    </Grid><Grid item xs={3}>
-                        <img src={imga} alt="bk" width={"100%"} />
-                    </Grid>
-                    <Grid item xs={3}>
-                        <img src={imga} alt="bk" width={"100%"} />
-                    </Grid>
-                </Grid>
-            </div>
         </>
     )
 }

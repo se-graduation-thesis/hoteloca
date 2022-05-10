@@ -8,7 +8,7 @@ import * as actionService from 'actions/service.action';
 
 const colors = ["primary", "secondary", "info", "error", "success"]
 
-export default function ServiceInfo({ token, updateService }) {
+export default function ServiceInfo({ token, updateService, complete, handleCompleteButton, handleComplete }) {
 
     const dispatch = useDispatch();
 
@@ -42,6 +42,14 @@ export default function ServiceInfo({ token, updateService }) {
             setServiceSelect(arr);
         }
     }
+
+    useEffect(() => {
+        if (complete === true) {
+            handleComplete();
+            handleCompleteButton(false);
+
+        }
+    }, [complete === true])
 
     return (
         <>

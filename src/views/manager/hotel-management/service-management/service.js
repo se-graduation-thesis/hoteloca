@@ -135,9 +135,9 @@ export default function Service() {
                                                     <TableCell key={column.id} align={column.align}>
                                                         {column.id === 'donGia' ?
                                                             new Intl.NumberFormat('en-Vn').format(value) :
-                                                            column.id === 'trangThai' ? 
-                                                            <Chip label={value} color={value === "Hoạt động" ? "primary" : "warning"} /> :
-                                                            value
+                                                            column.id === 'trangThai' ?
+                                                                <Chip label={value} color={value === "Hoạt động" ? "primary" : "warning"} /> :
+                                                                value
                                                         }
                                                     </TableCell>
                                                 );
@@ -157,6 +157,7 @@ export default function Service() {
                     </Table>
                 </TableContainer>
                 <TablePagination
+                    labelRowsPerPage='Số hàng'
                     rowsPerPageOptions={[10, 25, 100]}
                     component="div"
                     count={rows.length}
