@@ -7,172 +7,193 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Button, Grid, TextField } from '@mui/material';
+import { Button, Chip, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip } from '@mui/material';
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
-import Visibility from '@mui/icons-material/Visibility';
-import { useDispatch, useSelector } from 'react-redux';
-import * as actions from "actions/customer.action";
-// import * as actions from "actions/room.action";
-import EditIcon from '@mui/icons-material/Edit';
-import AddCustomerForm from './customer-components/addCustomerForm';
+import Edit from '@mui/icons-material/Edit';
 
+import InsertBrandDialog from './InsertDialog'
+import UpdateBrand from './UpdateDialog'
+
+import { useState, useEffect } from 'react';
+
+import { useDispatch, useSelector } from 'react-redux';
+import * as actions from "actions/customer.action"
+import { address } from 'assets/address';
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
-    { id: 'hoten', label: 'Họ Tên', minWidth: 100 },
-    { id: 'trangThai', label: 'Trạng Thái', minWidth: 100 },
+    { id: 'ho', label: 'Họ', minWidth: 100 },
+    { id: 'ten', label: 'Tên', minWidth: 100 },
     { id: 'diaChi', label: 'Địa Chỉ', minWidth: 100 },
     { id: 'dienThoai', label: 'Số điện thoại', minWidth: 100 },
-
-    // { id: 'taiKhoanid', label: 'Tài Khoản', minWidth: 100 },
 ];
 
 export default function Customer() {
     const dispatch = useDispatch();
-    // const listaccinrow = [];
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
-    const customers = useSelector((state) => state.customer.customers);
-    const [addForm, setAddForm] = React.useState(false);
-    const [editCustomer, setEditCustomer] = React.useState(null);
-    const [isView, setIsView] = React.useState(false);
+    const [page, setPage] = useState(0);
+    const rows = []
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const listCustomer = useSelector((state) => state.customer.customers);
+    const [listCustomerShow, setListCustomer] = useState([])
+    const account = useSelector((state) => state.account.userAuth);
+    const [open, setOpen] = useState(false);
+    const [openUpdate, setOpenUpdate] = useState(false);
 
-    const handleIsView = (value) => setIsView(value);
+    const [id_brand, setId] = useState(0);
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
 
-    const handleEditCustomer = (item) => setEditCustomer(item);
-
-    const isShowAddForm = (value) => setAddForm(value);
+    const handleClickOpenUpdate = (id) => {
+        setOpenUpdate(true);
+        setId(id)
+    };
+    const handleClose = () => {
+        setOpen(false);
+    };
+    const handleCloseUpdate = () => {
+        setOpenUpdate(false);
+    };
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
 
-    const [listCustomer, setListCustomer] = React.useState([])
-
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
-
-    const rows = []
-
-    React.useEffect(() => {
-        dispatch(actions.fetchAllCustomer())
-    }, [])
-
-    React.useEffect(() => {
-        if (customers) {
-            customers.forEach((e, i) => {
-                e.stt = i + 1
-                e.hoten = e.ho + " " + e.ten
-                e.trangThai === 1 ?
-                    e.trangThai = "Hoạt động" :
-                    e.trangThai = "Ngừng hoạt động"
-            })
-            setListCustomer(customers)
+    useEffect(() => {
+        if (account) {
+            dispatch(actions.fetchAllCustomer())
         }
-    }, [customers])
 
+    }, [account])
+
+    useEffect(() => {
+        if (listCustomer) {
+            listCustomer.forEach((e, i) => {
+                e.stt = i + 1
+                try {
+                    let diachi = JSON.parse(JSON.stringify(e.diaChi))
+                    e.diaChi = diachi.diaChi + ", " + diaChi.ward + diachi.district + ward.city
+                }
+                catch (e) {
+                }
+            })
+            setListCustomer(listCustomer)
+        }
+    }, [listCustomer])
+
+    const onFind = (e) => {
+        console.log(e)
+        if (listCustomer) {
+            let rl = listCustomer.filter((fb) =>
+                fb.ten.toLowerCase().includes(e.target.value.toLowerCase()) || fb.ho.toLowerCase().includes(e.target.value.toLowerCase())
+            )
+            rl.forEach((e, i) => {
+                e.stt = i + 1
+            })
+            setListCustomer(rl)
+        }
+    }
     return (
-        <div>
-            <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%', pl: 5, pr: 5 }}>
-                <Grid container spacing={1} style={{ marginTop: 10, padding: 20 }}>
-                    <Grid item xs={12}>
-                        <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN KHÁCH HÀNG</h3>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Button variant="contained" color="secondary"
-                            onClick={() => isShowAddForm(true)}
-                        >Thêm khách hàng</Button>
-                    </Grid>
-                    <Grid item xs={6} style={{ padding: 10, textAlign: "right" }}>
-                        <TextField
-                            label="Nhập nội dung tìm kiếm"
-                            size="small"
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="start">
-                                        <IconButton>
-                                            <SearchIcon />
-                                        </IconButton>
-                                    </InputAdornment>
-                                )
-                            }}
-                        />
-                    </Grid>
+        <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }} style={{ padding: 20 }}>
+            <Grid container spacing={1} style={{ marginTop: 10, padding: 10 }}>
+                <Grid item xs={12}>
+                    <h2 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN KHÁCH HÀNG</h2>
                 </Grid>
-                <TableContainer sx={{ height: '70%' }}>
-                    <Table stickyHeader aria-label="sticky table">
-                        <TableHead>
-                            <TableRow>
-                                {columns.map((column) => (
-                                    <TableCell
-                                        key={column.id}
-                                        align={column.align}
-                                        style={{ minWidth: column.minWidth }}
-                                    >
-                                        {column.label}
-                                    </TableCell>
-                                ))}
+                <Grid item xs={12} style={{ marginBottom: 10, padding: 10 }}>
+                    <span style={{ paddingTop: 10, fontWeight: "bold", marginRight: 10 }}>SỐ LƯỢNG KHÁCH HÀNG HIỆN CÓ</span>
+                    <Chip label={listCustomerShow.length} color="primary" />
+                </Grid>
+                <Grid item xs={6}>
+                    <Button onClick={handleClickOpen} variant="contained" color="secondary">Thêm khách hàng</Button>
+                    <InsertBrandDialog open={open} isShowForm={handleClose} />
+                </Grid>
+
+
+                <Grid item xs={6} style={{ padding: 10, textAlign: "right" }}>
+                    <TextField
+                        label="Nhập nội dung tìm kiếm"
+                        size="small"
+                        onChange={(e) => onFind(e)}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="start">
+                                    <IconButton>
+                                        <SearchIcon />
+                                    </IconButton>
+                                </InputAdornment>
+                            )
+                        }}
+                    />
+                </Grid>
+            </Grid>
+            <TableContainer sx={{ height: '60%' }}>
+                <Table stickyHeader aria-label="sticky table">
+                    <TableHead>
+                        <TableRow>
+                            {columns.map((column) => (
                                 <TableCell
-                                    key={"action"}
+                                    key={column.id}
+                                    align={column.align}
+                                    style={{ width: column.minWidth, whiteSpace: column.whiteSpace }}
                                 >
-                                    {"Hành động"}
+                                    {column.label}
                                 </TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {listCustomer
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((row) => {
-                                    return (
-                                        <TableRow hover role="checkbox" tabIndex={-1} key={row.stt}>
-                                            {columns.map((column) => {
-                                                const value = row[column.id];
-                                                return (
-                                                    <TableCell key={column.id} align={column.align}>
-                                                        {column.format && typeof value === 'number'
-                                                            ? column.format(value)
-                                                            : column.id === 'loaiPhongid' ? value.tenLoaiPhong
-                                                                : value
-                                                        }
-                                                    </TableCell>
-                                                );
-                                            })}
-                                            <TableCell key={"action"}>
-                                                <IconButton aria-label="show" color="success" onClick={() => { handleEditCustomer(row); isShowAddForm(true); handleIsView(true) }}>
-                                                    <Visibility />
+                            ))}
+                            {/* <TableCell
+                                style={{ width: "10%" }}
+                                key={"action"}
+                            >
+                                {"Hành động"}
+                            </TableCell> */}
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {listCustomerShow
+                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                            .map((row) => {
+                                return (
+                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.stt}>
+                                        {columns.map((column) => {
+                                            const value = row[column.id];
+                                            return (
+                                                <TableCell key={column.id} align={column.align}>
+                                                    {column.format && typeof value === 'number'
+                                                        ? column.format(value)
+                                                        : value}
+                                                </TableCell>
+                                            );
+                                        })}
+                                        {/* <TableCell key={row.stt}>
+                                            <Tooltip title="Sửa loại phòng">
+                                                <IconButton key={row.stt} onClick={() => handleClickOpenUpdate(row.id)} aria-label="delete" color="primary">
+                                                    <Edit />
                                                 </IconButton>
-                                                {/* <IconButton aria-label="edit" color="primary" onClick={() => { handleEditCustomer(row); isShowAddForm(true); }}>
-                                                    <EditIcon />
-                                                </IconButton> */}
-                                            </TableCell>
-                                        </TableRow>
-                                    );
-                                })}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <TablePagination
-                    rowsPerPageOptions={[10, 25, 100]}
-                    component="div"
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-            </Paper>
-            <div>
-                <AddCustomerForm open={addForm}
-                    isShowAddForm={isShowAddForm}
-                    item={editCustomer}
-                    handleEditCustomer={handleEditCustomer}
-                    isView={isView}
-                    handleIsView={handleIsView}
-                />
-            </div>
-        </div>
-    )
+                                            </Tooltip>
+                                        </TableCell> */}
+                                    </TableRow>
+                                );
+                            })}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+
+            <TablePagination
+                rowsPerPageOptions={[5, 10, 25, 100]}
+                component="div"
+                labelRowsPerPage='Số hàng'
+                count={listCustomerShow.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+            <UpdateBrand open={openUpdate} id={id_brand} isShowForm={handleCloseUpdate} />
+        </Paper >
+
+    );
 }

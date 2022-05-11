@@ -11,9 +11,9 @@ import SkeletonEarningCard from 'ui-component/cards/Skeleton/EarningCard';
 import moment from "moment-timezone";
 // assets
 import * as actions from 'actions/account.action'
-import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
+import MeetingRoomIcon from '@mui/icons-material/VerifiedUser';
 const CardWrapper = styled(MainCard)(({ theme }) => ({
-    backgroundColor: "#01343d",
+    backgroundColor: "#017354",
     color: '#fff',
     overflow: 'hidden',
     position: 'relative',

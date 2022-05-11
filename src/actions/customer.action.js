@@ -5,6 +5,7 @@ export const ACTION_TYPES = {
     ADD_CUSTOMER: "ADD_CUSTOMER",
     GET_CUSTOMER_BY_ID: "GET_CUSTOMER_BY_ID",
     LIST_CUSTOMER_RENT: "LIST_CUSTOMER_RENT",
+    SAVE_CUSTOMER: "SAVE_CUSTOMER"
 };
 
 export const fetchAllCustomer = () => (dispatch) => {
@@ -51,6 +52,20 @@ export const listCustomerRent = () => (dispatch) => {
         })
         .catch((err) => console.log(err));
 };
+
+export const save_customer = (cus) => (dispatch) => {
+    apiService
+        .customer()
+        .save_customer(cus)
+        .then((response) => {
+            dispatch({
+                type: ACTION_TYPES.SAVE_CUSTOMER,
+                payload: response.data,
+            });
+        })
+        .catch((err) => console.log(err));
+};
+
 export const register = (customer) => {
     return apiService
         .customer()

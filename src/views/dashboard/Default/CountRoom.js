@@ -10,10 +10,13 @@ import MainCard from 'ui-component/cards/MainCard';
 import SkeletonEarningCard from 'ui-component/cards/Skeleton/EarningCard';
 import moment from "moment-timezone";
 // assets
-import * as actions from 'actions/account.action'
+import EarningIcon from 'assets/images/icons/earning.svg';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import * as actions from 'actions/room.action'
 import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 const CardWrapper = styled(MainCard)(({ theme }) => ({
-    backgroundColor: "#01343d",
+    backgroundColor: "#000c75",
     color: '#fff',
     overflow: 'hidden',
     position: 'relative',
@@ -54,10 +57,15 @@ const EarningCard = ({ isLoading }) => {
     const theme = useTheme();
     const dispatch = useDispatch()
     const [anchorEl, setAnchorEl] = useState(null);
-    const room = useSelector((state) => state.account.listAccount);
+    const room = useSelector((state) => state.room.empty_room);
     const [list_room_hotel, setListRoomHotel] = useState([]);
     useEffect(() => {
-        dispatch(actions.fetchAllAccount())
+        let room_find = {
+            trangThai: 0,
+            ngayVao: moment.tz(new Date(), "Asia/Ho_Chi_Minh").format(),
+            ngayRa: moment.tz(new Date((new Date()).valueOf() + 1000 * 3600 * 24), "Asia/Ho_Chi_Minh").format()
+        }
+        dispatch(actions.get_empty_room(room_find))
     }, [])
     useEffect(() => {
         if (room) {
@@ -108,29 +116,29 @@ const EarningCard = ({ isLoading }) => {
                                 <Grid container alignItems="center">
                                     <Grid item xs={7} >
                                         <Typography sx={{ fontSize: '1rem', fontWeight: 500, mr: 1, mb: 0.75 }}>
-                                            Tổng số tài khoản
+                                            Tổng số phòng
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={5} >
-                                        <Chip color={'primary'} label={list_room_hotel.length} sx={{ fontSize: '1rem', fontWeight: 500, mr: 1, mb: 0.75 }} />
+                                        <Chip color={'primary'} label={list_room_hotel.length + " Phòng"} sx={{ fontSize: '1rem', fontWeight: 500, mr: 1, mb: 0.75 }} />
                                     </Grid>
                                     <Grid item xs={7} >
                                         <Typography sx={{ fontSize: '1rem', fontWeight: 500, mr: 1, mb: 0.75 }}>
-                                            Tài khoản nhân viên
+                                            Phòng đang sử dụng
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={5} >
                                         <Typography sx={{ fontSize: '1rem', fontWeight: 500, mr: 1 }}>
-                                            <Chip color={'success'} label={list_room_hotel.filter(({ quyen }) => quyen === 2).length} sx={{ fontSize: '1rem', fontWeight: 500, mr: 1, mb: 0.75 }} />
+                                            <Chip color={'success'} label={list_room_hotel.filter(({ trangThaiHomNay }) => trangThaiHomNay === 0).length + " Phòng"} sx={{ fontSize: '1rem', fontWeight: 500, mr: 1, mb: 0.75 }} />
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={7} >
                                         <Typography sx={{ fontSize: '1rem', fontWeight: 500, mr: 1, mb: 0.75 }}>
-                                            Tài khoản khách hàng
+                                            Phòng trống
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={5} >
-                                        <Chip color={'error'} label={list_room_hotel.filter(({ quyen }) => quyen === 1).length} sx={{ fontSize: '1rem', fontWeight: 500, mr: 1, mb: 0.75 }} />
+                                        <Chip color={'error'} label={list_room_hotel.filter(({ trangThaiHomNay }) => trangThaiHomNay === 1).length + " Phòng"} sx={{ fontSize: '1rem', fontWeight: 500, mr: 1, mb: 0.75 }} />
                                     </Grid>
                                 </Grid>
                             </Grid>

@@ -14,7 +14,16 @@ import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import { useDispatch, useSelector } from 'react-redux';
 import * as actions from "actions/manager.action"
 import * as accountActions from "actions/account.action"
+import LoadingButton from '@mui/lab/LoadingButton';
+import SaveIcon from '@mui/icons-material/Save';
 import moment from "moment-timezone";
+import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
+import Slide from '@mui/material/Slide';
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
+
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
     { id: 'ho', label: 'Họ người dùng', minWidth: 100 },
@@ -25,14 +34,34 @@ const columns = [
 ];
 export default function InsertBrandDialog(props) {
     const dispatch = useDispatch();
-    const listaccinrow = [];
+    const [open, setOpen] = React.useState(false);
+    const [open1, setOpen1] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
+    const handleClickOpen1 = () => {
+        setOpen1(true);
+    };
+
+    const handleClose1 = () => {
+        setOpen1(false);
+    };
+
+    const handleClickOpen = (e) => {
+        setTK(e)
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const listAccount = useSelector((state) => state.manager.listManagerNone);
+    const [tk, setTK] = React.useState(null)
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
     const [listacc, setListAccount] = React.useState([])
+    const [accountShow, setAccountShow] = React.useState(null)
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value);
         setPage(0);
@@ -64,27 +93,38 @@ export default function InsertBrandDialog(props) {
 
     }
 
-    const handleSubmit = (e) => {
-        const d = new Date();
-        let accountRegister = {
-            taiKhoan: "Nvhoteloca" + String(moment.tz(new Date((new Date()).valueOf() + 1000 * 3600 * 24), "Asia/Ho_Chi_Minh").format("DDMMYY")) + e.id,
-            matKhau: "123",
-            quyen: 2,
-            trangThai: 1
-        }
-        console.log(accountRegister)
-        // accountActions.register(accountRegister).then((res) => {
-        //     e.taiKhoanid=res.data.id
-        // }
-        // ).catch((err) => console.log(err));
+    const handleSubmit = () => {
+        if (tk) {
+            let accountRegister = {
+                taiKhoan: "Nvhoteloca" + String(moment.tz(new Date(), "Asia/Ho_Chi_Minh").format("DDMMYY")) + tk.id,
+                matKhau: "123",
+                quyen: 2,
+                trangThai: 1
+            }
+            console.log(tk)
+            accountActions.register(accountRegister).then((res) => {
+                tk.boPhanid = tk.boPhanid.id
+                tk.taiKhoanid = {
+                    id: res.data.id
+                }
+                dispatch(accountActions.addAccoutNv(tk))
+                setAccountShow({
+                    hoTen: tk.ho + " " + tk.ten,
+                    email: tk.email,
+                    taiKhoan: res.data.taiKhoan,
+                    matKhau: "123"
+                })
+            }
+            ).catch((err) => console.log(err));
 
-        // handleClick();
-        // setTimeout(() => {
-        //     setOpen(true)
-        // }, 3000)
-        // setTimeout(() => {
-        //     navigate("/pages/login");
-        // }, 6000)
+            setLoading(true)
+            setTimeout(() => {
+                setListAccount(listacc.filter(({ id }) => id !== tk.id))
+                setOpen(false)
+                setLoading(false)
+                setOpen1(true)
+            }, 3000)
+        }
     }
     return (
         <>
@@ -150,7 +190,7 @@ export default function InsertBrandDialog(props) {
                                                 })}
                                                 <TableCell key={"action"} align="center">
                                                     <Tooltip title="Tạo tài khoản">
-                                                        <IconButton onClick={() => handleSubmit(row)} aria-label="delete" color="primary">
+                                                        <IconButton onClick={() => handleClickOpen(row)} aria-label="delete" color="primary">
                                                             <PersonAddAltIcon />
                                                         </IconButton>
                                                     </Tooltip>
@@ -179,6 +219,64 @@ export default function InsertBrandDialog(props) {
                 <Alert severity="success"><AlertTitle>Thành công</AlertTitle>
                     Thông báo — <strong>Thêm chi nhánh thành công</strong></Alert>
             </Snackbar> */}
+
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Tạo tài khoản mới cho nhân viên?"}
+                </DialogTitle>
+                <DialogContent>
+                    Tạo tài khoản cho người này
+                </DialogContent>
+                <DialogActions>
+                    <LoadingButton
+                        loading={loading}
+                        loadingPosition="start"
+                        startIcon={<SaveIcon />}
+                        onClick={handleSubmit}
+                    >
+                        Tạo tài khoản
+                    </LoadingButton>
+                    <Button onClick={handleClose} autoFocus>
+                        Hủy
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog
+                open={open1}
+                TransitionComponent={Transition}
+                keepMounted
+                maxWidth={'xs'}
+                fullWidth={true}
+                onClose={handleClose}
+                aria-describedby="alert-dialog-slide-description"
+            >
+                <DialogContent>
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <CheckCircleTwoToneIcon color='success' sx={{ fontSize: 70 }} />
+                        <span style={{ fontSize: 18, fontWeight: 'bold' }}>Tạo tài khoản thành công</span>
+                    </div>
+
+                    <Grid container>
+                        <Grid item xs={4}><p><b>Họ tên nhân viên</b></p></Grid>
+                        <Grid item xs={8}><p>{accountShow?.hoTen}</p></Grid>
+                        <Grid item xs={4}><p><b>Email</b></p></Grid>
+                        <Grid item xs={8}><p>{accountShow?.email}</p></Grid>
+                        <Grid item xs={4}><p><b>Tài khoản</b></p></Grid>
+                        <Grid item xs={8}><p>{accountShow?.taiKhoan}</p></Grid>
+                        <Grid item xs={4}><p><b>Mật khẩu</b></p></Grid>
+                        <Grid item xs={8}><p>{accountShow?.matKhau}</p></Grid>
+                    </Grid>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose1}>Xác nhận</Button>
+                </DialogActions>
+            </Dialog>
         </>
 
     );

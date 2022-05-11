@@ -10,8 +10,8 @@ export default function ListRoom() {
     return (
         <div className="body-listRoom">
             <Container sx={{ color: '#303030', mt: 5 }}>
-                <h1 style={{ fontSize: 35, paddingLeft: 60 }}>Danh Sách Phòng</h1>
-                <Container maxWidth="md" sx={{ mt: 10 }}>
+                <h1 style={{ fontSize: 35, paddingLeft: 20 }}>Danh Sách Phòng</h1>
+                <Container maxWidth="lg" sx={{ mt: 10 }}>
                     <h2 style={{ color: "#707070" }}>Những Căn Phòng Của Chúng Tôi</h2>
 
                     <hr style={{ border: '1px solid Chocolate' }} />

@@ -5,67 +5,42 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import InputBase from '@mui/material/InputBase';
+import { useNavigate } from 'react-router';
 import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
+import Avatar from '@mui/material/Avatar';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
+import { useSelector } from "react-redux"
 import logo from '../../../assets/images/logo.png'
 import Button from '@mui/material/Button';
 import { Outlet } from 'react-router-dom';
+import LogoutIcon from '@mui/icons-material/Logout';
 import NavBarHomePage from './navbar/NavBarHomePage';
-const Search = styled('div')(({ theme }) => ({
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
-    '&:hover': {
-        backgroundColor: alpha(theme.palette.common.white, 0.25),
-    },
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-        marginLeft: theme.spacing(3),
-        width: 'auto',
-    },
-}));
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: 'inherit',
-    '& .MuiInputBase-input': {
-        padding: theme.spacing(1, 1, 1, 0),
-        // vertical padding + font size from searchIcon
-        paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-        transition: theme.transitions.create('width'),
-        width: '100%',
-        [theme.breakpoints.up('md')]: {
-            width: '20ch',
-        },
-    },
-}));
-
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
+import * as actions from "actions/account.action"
 export default function NavbarMainLayout() {
+    const navigate = useNavigate();
+
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-
+    const account = useSelector((state) => state.account.userAuth);
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+    const [accountShow, setAccountShow] = React.useState(null)
+    React.useEffect(() => {
+        if (account) {
+            try {
+                setAccountShow(JSON.parse(account))
+            } catch (e) {
 
+            }
+        }
+    }, [account])
+    console.log(accountShow)
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -156,21 +131,16 @@ export default function NavbarMainLayout() {
             </MenuItem>
         </Menu>
     );
-
+    const handleLogout = () => {
+        actions.userlogout()
+        localStorage.setItem("user_authenticated", "")
+        location.reload();
+    };
     return (
         <Box sx={{ flexGrow: 1 }}>
             <div style={{ position: 'fixed', top: 0, width: '100%', zIndex: 100000 }}>
                 <AppBar elevation={1} position="static" style={{ alignItems: "center", backgroundColor: 'white' }}>
-                    <Toolbar style={{ backgroundColor: 'white', width: '80%' }}>
-                        <IconButton
-                            size="large"
-                            edge="start"
-                            color="secondary"
-                            aria-label="open drawer"
-                            sx={{ mr: 2 }}
-                        >
-                            <MenuIcon />
-                        </IconButton>
+                    <Toolbar style={{ backgroundColor: 'white', width: '70%' }}>
                         <Typography
                             variant="h6"
                             noWrap
@@ -179,20 +149,26 @@ export default function NavbarMainLayout() {
                         >
                             <img src={logo} alt="logo" style={{ height: 40 }} />
                         </Typography>
-                        <Search>
-                            <SearchIconWrapper>
-                                <SearchIcon />
-                            </SearchIconWrapper>
-                            <StyledInputBase
-                                placeholder="Search…"
-                                inputProps={{ 'aria-label': 'search' }}
-                            />
-                        </Search>
                         <Box sx={{ flexGrow: 1 }} />
-                        <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                            <Button variant="contained" color="secondary">Đăng nhập</Button> &nbsp;
-                            <Button variant="contained" color="secondary">Đăng kí</Button>
-                        </Box>
+                        {
+                            accountShow === null ? <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                                <Button variant="contained" color="secondary" onClick={() => navigate("/login")}>Đăng nhập</Button> &nbsp;
+                                <Button variant="contained" color="secondary" onClick={() => navigate("/register")}>Đăng kí</Button>
+                            </Box> :
+                                <Box style={{ display: 'flex', alignItems: 'center' }}>
+                                    <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+                                    <span style={{ color: 'black', fontWeight: 'bold', marginRight: 30, marginLeft: 10 }}>hahaha</span>
+                                    <IconButton aria-label="delete" style={{ color: "black" }}>
+                                        <Badge badgeContent={4} color="secondary">
+                                            <ShoppingCartOutlinedIcon />
+                                        </Badge>
+                                    </IconButton>
+                                    <IconButton aria-label="delete" style={{ color: "black" }} onClick={handleLogout}>
+                                        <LogoutIcon />
+                                    </IconButton>
+                                </Box>
+                        }
+
                         <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
                             <IconButton
                                 size="large"

@@ -8,7 +8,7 @@ import DashboardDefault from 'views/user-view/layout/MainLayout';
 
 const AuthLogin3 = Loadable(lazy(() => import('views/pages/authentication/authentication3/Login3')));
 const AuthRegister3 = Loadable(lazy(() => import('views/pages/authentication/authentication3/Register3')));
-
+const NotFound404 = Loadable(lazy(() => import('views/NotFound404')));
 const HomePage = Loadable(lazy(() => import('views/user-view/layout/home-page/HomePage')));
 const ListRoom = Loadable(lazy(() => import('views/user-view/layout/list_room-page/ListRoom')));
 const RoomDetail = Loadable(lazy(() => import('views/user-view/layout/list_room-page/components/room-detail/RoomDetail')));
@@ -16,7 +16,7 @@ const FooterLayout = Loadable(lazy(() => import('views/user-view/layout/FooterLa
 // ==============================|| AUTHENTICATION ROUTING ||============================== //
 
 const HomeRoute = {
-    path: '/home',
+    path: '/',
     element: [<DashboardDefault />, <FooterLayout />],
     children: [
         {
@@ -32,9 +32,13 @@ const HomeRoute = {
             element: <RoomDetail />
         },
         {
-            path: '/pages/register',
+            path: '/register',
             element: <AuthRegister3 />
-        }
+        },
+        {
+            path: '*',
+            element: <NotFound404 />
+        },
     ]
 };
 

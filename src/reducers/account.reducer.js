@@ -47,7 +47,21 @@ export const accountReducer = (state = initialState, action) => {
                 ...state,
                 login: action.payload
             }
-
+        case ACTION_TYPES.ADD_ACCOUNT:
+            return {
+                ...state,
+                listAccount: [...action.payload]
+            }
+        case ACTION_TYPES.CHANGE_STATUS:
+            return {
+                ...state,
+                listAccount: [...action.payload]
+            }
+        case ACTION_TYPES.RESET_PASS:
+            return {
+                ...state,
+                listAccount: [...action.payload]
+            }
         default:
             return state;
     }
