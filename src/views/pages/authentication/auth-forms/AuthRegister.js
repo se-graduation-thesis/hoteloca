@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import * as React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
+
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import Formsy from "formsy-react";
 import { address } from 'assets/address';
@@ -11,6 +15,8 @@ import {
     Button,
     Divider,
     FormControl,
+    InputAdornment,
+    IconButton,
     Grid,
     InputLabel,
     MenuItem,
@@ -27,9 +33,20 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import useForm from "./useForm";
 
 import * as actions from "actions/account.action"
-// assets
+import * as actionsCustomer from "actions/customer.action"
+import LoadingButton from '@mui/lab/LoadingButton';
+import SaveIcon from '@mui/icons-material/Save';
 
-// ===========================|| FIREBASE - REGISTER ||=========================== //
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import Slide from '@mui/material/Slide';
+import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
+import { useLocation, useNavigate } from 'react-router';
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const initialFieldValues = {
     diaChi: "",
@@ -41,15 +58,51 @@ const initialFieldValues = {
     email: "",
     quyen: 1,
     trangthai: 1,
+    cmnd: "",
+    quocTich: "Viet Nam",
+    diaChi: "",
+    city: "",
+    district: "",
+    ward: ""
 };
 
 const FirebaseRegister = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const theme = useTheme();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
     const customization = useSelector((state) => state.customization);
+    const listCus = useSelector((state) => state.customer.customers);
+    const [listCusCompare, setListCuscompare] = useState([]);
     const [showPassword, setShowPassword] = useState(false);
     const [age, setAge] = useState('');
+
+    const [loading, setLoading] = useState(false);
+    const [open, setOpen] = useState(false);
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+    function handleClick() {
+        setLoading(true);
+    }
+    const handleClickShowPassword = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
+    useEffect(() => {
+        dispatch(actionsCustomer.fetchAllCustomer());
+    }, [])
+
+    useEffect(() => {
+        if (listCus) {
+            setListCuscompare(listCus)
+        }
+    }, [listCus])
+
     const [district, setDistrict] = useState([])
     const [wards, setWards] = useState([])
     const handleChange = (event) => {
@@ -69,75 +122,113 @@ const FirebaseRegister = () => {
     }
     const validate = (fieldValues = values) => {
         let temp = { ...errors };
-        if ("username" in fieldValues) {
+        if ("cmnd" in fieldValues) {
             let err = 0;
-            user.map((user) => {
+            listCusCompare.map((user) => {
                 if (
-                    user.username.toLowerCase() === fieldValues.username.toLowerCase()
+                    user.cmnd.toLowerCase() === fieldValues.cmnd.toLowerCase() && user.taiKhoanid !== null
                 ) {
                     err = err + 1;
                 }
             });
-            if (fieldValues.username === "") {
-                temp.username = fieldValues.username ? "" : "Username is required.";
+            if (fieldValues.cmnd === "") {
+                temp.cmnd = fieldValues.cmnd ? "" : "Số chứng minh nhân dân hoặc căn cước công dân không được để trống";
             }
-            if (fieldValues.username !== "") {
-                temp.username = /^[A-Za-z1-9]\w{5,14}$/.test(fieldValues.username)
+            if (fieldValues.cmnd !== "") {
+                temp.cmnd = /^[0-9]\w{8,12}$/.test(fieldValues.cmnd)
                     ? ""
-                    : "Username must be at least 6 and at most 15 characters without any special characters";
+                    : "Số chứng minh nhân dân hoặc căn cước công dân là số chỉ 9 hoặc 12 kí tự";
             }
             if (err >= 1) {
                 err < 1
-                    ? (temp.username = "")
-                    : (temp.username = "Username is existed");
+                    ? (temp.cmnd = "")
+                    : (temp.cmnd = "Số chứng minh nhân dân hoặc căn cước công dân này đã tồn tại");
             }
         }
-        if ("lastName" in fieldValues) {
-            if (fieldValues.lastName === "") {
-                temp.lastName = fieldValues.lastName ? "" : "lastName is required.";
+        if ("dienThoai" in fieldValues) {
+            let err = 0;
+            listCusCompare.map((user) => {
+                if (
+                    user.dienThoai.toLowerCase() === fieldValues.dienThoai.toLowerCase() && user.taiKhoanid !== null
+                ) {
+                    err = err + 1;
+                }
+            });
+            if (fieldValues.dienThoai === "") {
+                temp.dienThoai = fieldValues.dienThoai ? "" : "Số điện thoại không được để trống";
             }
-            if (fieldValues.lastName !== "") {
-                temp.lastName =
+            if (fieldValues.dienThoai !== "") {
+                temp.dienThoai = /^[0-9]\w{9,11}$/.test(fieldValues.dienThoai)
+                    ? ""
+                    : "Số điện thoại chỉ chứ 10 hoặc 11 chữ số";
+            }
+            if (err >= 1) {
+                err < 1
+                    ? (temp.dienThoai = "")
+                    : (temp.dienThoai = "Số điện thoại này đã được sử dụng");
+            }
+        }
+        if ("email" in fieldValues) {
+            let err = 0;
+            listCusCompare.map((user) => {
+                if (
+                    user.email.toLowerCase() === fieldValues.email.toLowerCase() && user.taiKhoanid !== null
+                ) {
+                    err = err + 1;
+                }
+            });
+            if (fieldValues.email === "") {
+                temp.email = fieldValues.email ? "" : "Email không được để trống";
+            }
+            if (fieldValues.email !== "") {
+                temp.email = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(fieldValues.email)
+                    ? ""
+                    : "Định dạng email không đúng";
+            }
+            if (err >= 1) {
+                err < 1
+                    ? (temp.email = "")
+                    : (temp.email = "Email này đã tồn tại");
+            }
+        }
+        if ("ho" in fieldValues) {
+            if (fieldValues.ho === "") {
+                temp.ho = fieldValues.ho ? "" : "Họ không được để trống";
+            }
+            if (fieldValues.ho !== "") {
+                temp.ho =
                     /^[a-zA-ZàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]{1,15}(?: [a-zA-ZàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]+){0,6}$/.test(
-                        fieldValues.lastName
+                        fieldValues.ho
                     )
                         ? ""
-                        : "lastName is not valid.";
+                        : "Vui lòng không nhập số hay kí tự đặc biệt";
             }
         }
-        if ("firstName" in fieldValues) {
-            if (fieldValues.firstName === "") {
-                temp.firstName = fieldValues.firstName ? "" : "First is required.";
+        if ("ten" in fieldValues) {
+            if (fieldValues.ten === "") {
+                temp.ten = fieldValues.ten ? "" : "Tên không được để trống";
             }
-            if (fieldValues.firstName !== "") {
-                temp.firstName =
+            if (fieldValues.ten !== "") {
+                temp.ten =
                     /^[a-zA-ZàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]{1,15}(?: [a-zA-ZàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]+){0,6}$/.test(
-                        fieldValues.firstName
+                        fieldValues.ten
                     )
                         ? ""
-                        : "firstName is not valid.";
+                        : "Vui lòng không nhập số hay kí tự đặc biệt";
             }
         }
-        if ("address" in fieldValues) {
-            temp.address = fieldValues.address ? "" : "First is required.";
-        }
-        if ("age" in fieldValues) {
-            temp.age = fieldValues.age ? "" : "Age is required";
-        }
-        if ("password" in fieldValues)
-            if (fieldValues.password === "") {
-                temp.password = fieldValues.password ? "" : "Password is required.";
+
+        if ("matKhau" in fieldValues) {
+            if (fieldValues.matKhau === "") {
+                temp.matKhau = fieldValues.matKhau ? "" : "Mật khẩu không được để trống";
             }
-        if (fieldValues.password !== "") {
-            temp.password = /^[A-Za-z0-9!@#$%^&*]{6,20}$/.test(fieldValues.password)
-                ? ""
-                : "Password must be at least 6 and at most 15 characters";
+            if (fieldValues.matKhau !== "") {
+                temp.matKhau = /^[A-Za-z0-9!@#$%^&*]{6,20}$/.test(fieldValues.matKhau)
+                    ? ""
+                    : "Mật khẩu phải là 6 đến 20 kí tự gao bồm từ A-Z, 1-9 ";
+            }
         }
-        if ("passwordconfirm" in fieldValues) {
-            fieldValues.passwordconfirm == values.password
-                ? (temp.passwordconfirm = "")
-                : (temp.passwordconfirm = "Confirmation password does not match");
-        }
+
 
         setErrors({
             ...temp,
@@ -150,29 +241,55 @@ const FirebaseRegister = () => {
         useForm(initialFieldValues, validate, 0);
 
     const handleSubmit = (e) => {
-        // if (validate()) {
-        values.quyen = 1
-        values.trangThai = 1
-        values.luong = 100
-        values.boPhanid = {
-            id: 1
-        }
-        values.khachSanid = {
-            id: 1
-        }
-        values.cmnd = "9879765877"
-        values.chucVu = "nhanvien"
+        if (validate()) {
+            let accountRegister = {
+                taiKhoan: dienThoai,
+                matKhau: values.matKhau,
+                quyen: 1,
+                trangThai: 1
+            }
+            actions.register(accountRegister).then((res) => {
+                let customer = listCusCompare.find(({ cmnd }) => cmnd === values.cmnd)
+                if (customer !== undefined) {
+                    if (customer.taiKhoanid === null) {
+                        values.id = customer.id
+                        values.diaChi = JSON.stringify({
+                            diaChi: values.diaChi,
+                            city: values.city,
+                            district: values.district,
+                            ward: values.ward
+                        })
+                        values.taiKhoanid = {
+                            id: res.data.id
+                        }
+                        actionsCustomer.register(values).then((response) => {
+                            console.log(response)
+                        })
+                    }
+                } else {
+                    values.taiKhoanid = {
+                        id: res.data.id
+                    }
+                    actionsCustomer.addCustomer(values).then((response) => {
+                        console.log(response)
+                    })
+                }
+            }
+            ).catch((err) => console.log(err));
 
-        values.ngayVaoLam = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString()
-        actions.register(values).then((res) => {
-            console.log(res)
+            handleClick();
+            setTimeout(() => {
+                setOpen(true)
+            }, 3000)
+            setTimeout(() => {
+                navigate("/pages/login");
+            }, 6000)
         }
-        ).catch((err) => console.log(err));
     };
     return (
         <>
             <Grid container direction="column" justifyContent="center" spacing={2}>
-                <Grid item xs={12}>
+                {/* <Grid item xs={12}>
                     <AnimateButton>
                         <Button
                             variant="outlined"
@@ -214,7 +331,7 @@ const FirebaseRegister = () => {
                         </Button>
                         <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
                     </Box>
-                </Grid>
+                </Grid> */}
                 <Grid item xs={12} container alignItems="center" justifyContent="center">
                     <Box sx={{ mb: 2 }}>
                         <Typography variant="subtitle1">Đăng kí với địa chỉ Email</Typography>
@@ -223,161 +340,201 @@ const FirebaseRegister = () => {
             </Grid>
 
             <Formsy onSubmit={handleSubmit} >
-                <p><b>Thông tin chung</b></p>
-                <Grid container spacing={1}>
+                <Grid container spacing={2}>
                     <Grid item xs={6}>
                         <TextField
                             m={2} pt={3}
                             fullWidth
                             id="first-name"
-                            label="Họ"
+                            label="Họ *"
                             name="ho"
                             variant="outlined"
-                            helperText=" "
                             value={values.ho}
                             onChange={handleInputChange}
-                        // {...(errors.firstName && {
-                        //     error: true,
-                        //     helperText: errors.firstName,
-                        // })}
+                            {...(errors.ho && {
+                                error: true,
+                                helperText: errors.ho,
+                            })}
                         />
                     </Grid>
                     <Grid item xs={6}>
                         <TextField
                             id="last-name"
-                            label="Tên"
+                            label="Tên *"
                             name="ten"
                             variant="outlined"
                             fullWidth
-                            helperText=" "
                             value={values.ten}
                             onChange={handleInputChange}
-                        // {...(errors.lastName && { error: true, helperText: errors.lastName })}
+                            {...(errors.ten && { error: true, helperText: errors.ten })}
                         />
                     </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            id="cmnd *"
+                            label="CMND/CCCD"
+                            name="cmnd"
+                            variant="outlined"
+                            fullWidth
+                            value={values.cmnd}
+                            onChange={handleInputChange}
+                            {...(errors.cmnd && { error: true, helperText: errors.cmnd })}
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                            id="age"
+                            label="Số điện thoại *"
+                            variant="outlined"
+                            name="dienThoai"
+                            type="text"
+                            fullWidth
+                            value={values.dienThoai}
+                            onChange={handleInputChange}
+                            {...(errors.dienThoai && { error: true, helperText: errors.dienThoai })}
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                            id="email"
+                            label="Email *"
+                            name="email"
+                            variant="outlined"
+                            fullWidth
+                            value={values.email}
+                            onChange={handleInputChange}
+                            {...(errors.email && { error: true, helperText: errors.email })}
+                        />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormControl fullWidth>
+                            <InputLabel id="demo-simple-select-label">Tỉnh / Thành phố</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                label="Tỉnh / Thành phố"
+                                defaultValue={""}
+                                name="city"
+                                onChange={handleInputChange}
+                            >
+                                {
+                                    address.map((a) => (
+                                        <MenuItem key={a.id} value={a.name} onClick={() => getDistrict(a)}>{a.name}</MenuItem>
+                                    ))
+                                }
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormControl fullWidth>
+                            <InputLabel id="demo-simple-select-label">Quận / Huyện</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                label="Quận / Huyện"
+                                defaultValue={""}
+                                name="district"
+                                onChange={handleInputChange}
+                            >
+                                {
+                                    district.map((a) => (
+                                        <MenuItem key={a.id} value={a.name} onClick={() => getWards(a)}>{a.name} </MenuItem>
+                                    ))
+                                }
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormControl fullWidth>
+                            <InputLabel id="demo-simple-select-label">Xã / Phường</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                label="Xã / Phường"
+                                defaultValue={""}
+                                name="ward"
+                                onChange={handleInputChange}
+                            >
+                                {
+                                    wards.map((a) => (
+                                        <MenuItem key={a.id} value={a.prefix + " " + a.name} > {a.prefix + " " + a.name} </MenuItem>
+                                    ))
+                                }
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            id="address"
+                            label="Địa chỉ"
+                            name="diaChi"
+                            variant="outlined"
+                            fullWidth
+                            value={values.diaChi}
+                            onChange={handleInputChange}
+                        // {...(errors.address && { error: true, helperText: errors.address })}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            id="password"
+                            label="Mật khẩu *"
+                            fullWidth
+                            name="matKhau"
+                            value={values.matKhau}
+                            type={showPassword ? 'text' : 'password'}
+                            onChange={handleInputChange}
+                            InputProps={{
+                                endAdornment:
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={handleClickShowPassword}
+                                            onMouseDown={handleMouseDownPassword}
+                                            edge="end"
+                                            size="large"
+                                        >
+                                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                                        </IconButton>
+                                    </InputAdornment>
+
+                            }}
+
+                            // variant="outlined"
+                            {...(errors.matKhau && { error: true, helperText: errors.matKhau })}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <LoadingButton
+                            size="large"
+                            type="submit"
+                            variant="contained"
+                            color="secondary"
+                            loadingPosition="start"
+                            fullWidth
+                            loading={loading}
+                        >
+                            Đăng ký
+                        </LoadingButton>
+                    </Grid>
                 </Grid>
-
-
-
-                <TextField
-                    id="age"
-                    label="Số điện thoại"
-                    variant="outlined"
-                    helperText=" "
-                    name="dienThoai"
-                    type="text"
-                    fullWidth
-                    value={values.dienThoai}
-                    onChange={handleInputChange}
-                // {...(errors.age && { error: true, helperText: errors.age })}
-                />
-                <TextField
-                    id="email"
-                    label="Email"
-                    name="email"
-                    variant="outlined"
-                    fullWidth
-                    helperText=" "
-                    value={values.email}
-                    onChange={handleInputChange}
-                // {...(errors.address && { error: true, helperText: errors.address })}
-                />
-                <TextField
-                    id="address"
-                    label="Địa chỉ"
-                    name="diaChi"
-                    variant="outlined"
-                    fullWidth
-                    helperText=" "
-                    value={values.diaChi}
-                    onChange={handleInputChange}
-                // {...(errors.address && { error: true, helperText: errors.address })}
-                />
-                <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label">Tỉnh / Thành phố</InputLabel>
-                    <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        label="Tỉnh / Thành phố"
-                        defaultValue={""}
-                        onChange={handleChange}
-                    >
-                        {
-                            address.map((a) => (
-                                <MenuItem key={a.id} value={a.id} onClick={() => getDistrict(a)}>{a.name}</MenuItem>
-                            ))
-                        }
-                    </Select>
-                </FormControl>
-                <div><br></br></div>
-                <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label">Quận / Huyện</InputLabel>
-                    <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        label="Quận / Huyện"
-                        defaultValue={""}
-                        onChange={handleChange}
-                    >
-                        {
-                            district.map((a) => (
-                                <MenuItem key={a.id} value={a.id} onClick={() => getWards(a)}>{a.name} </MenuItem>
-                            ))
-                        }
-                    </Select>
-                </FormControl>
-                <div><br></br></div>
-                <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label">Xã / Phường</InputLabel>
-                    <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        label="Xã / Phường"
-                        defaultValue={""}
-                        onChange={handleChange}
-                    >
-                        {
-                            wards.map((a) => (
-                                <MenuItem key={a.id} value={a.id} > {a.prefix + " " + a.name} </MenuItem>
-                            ))
-                        }
-                    </Select>
-                </FormControl>
-                <p><b>Thông tin tài khoản</b></p>
-                <TextField
-                    id="username"
-                    label="Tên tài khoản"
-                    variant="outlined"
-                    fullWidth
-                    helperText=" "
-                    name="taiKhoan"
-                    value={values.taiKhoan}
-                    onChange={handleInputChange}
-                // {...(errors.username && { error: true, helperText: errors.username })}
-                />
-                <TextField
-                    id="password"
-                    label="Mật khẩu"
-                    fullWidth
-                    name="matKhau"
-                    value={values.matKhau}
-                    type="password"
-                    onChange={handleInputChange}
-                    // variant="outlined"
-                    helperText=" "
-                // {...(errors.password && { error: true, helperText: errors.password })}
-                />
-
-                <Button
-                    fullWidth
-                    size="large"
-                    variant="contained"
-                    color="secondary"
-                    type="submit"
-                >
-                    Đăng ký
-                </Button>
             </Formsy >
+            <Dialog
+                open={open}
+                maxWidth={'xs'}
+                fullWidth={true}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={handleClose}
+                aria-describedby="alert-dialog-slide-description"
+            >
+                <DialogContent style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <CheckCircleTwoToneIcon color='success' sx={{ fontSize: 70 }} />
+                    <span style={{ fontSize: 18, fontWeight: 'bold' }}>Tạo tài khoản thành công</span>
+                </DialogContent>
+                <DialogActions>
+                </DialogActions>
+            </Dialog>
         </>
     );
 };
