@@ -67,14 +67,20 @@ const FirebaseLogin = ({ ...others }) => {
     // };
     const onLogin = (value) => {
         actions.login(value.email, value.password).then((res) => {
+            console.log(res)
             if (res && res.data.id) {
                 const permission = {
                     user_id: res.data.id,
-                    role: 1,
-                    khachsan_id: res.data.khachSanid.id
+                    role: res.data.taiKhoanid.quyen,
                 }
+
                 dispatch(actions.isAuthenticated(permission))
-                navigate("/");
+                if (res.data.taiKhoanid.quyen === 1) {
+                    navigate("/home");
+                }
+                else if (res.data.taiKhoanid.quyen === 2) {
+                    navigate("/");
+                }
             } else {
                 setChecked('flex')
             }
@@ -83,7 +89,7 @@ const FirebaseLogin = ({ ...others }) => {
     return (
         <>
             <Grid container direction="column" justifyContent="center" spacing={2}>
-                <Grid item xs={12}>
+                {/* <Grid item xs={12}>
                     <AnimateButton>
                         <Button
                             disableElevation
@@ -103,8 +109,8 @@ const FirebaseLogin = ({ ...others }) => {
                             Đăng nhập với Google
                         </Button>
                     </AnimateButton>
-                </Grid>
-                <Grid item xs={12}>
+                </Grid> */}
+                {/* <Grid item xs={12}>
                     <Box
                         sx={{
                             alignItems: 'center',
@@ -133,10 +139,10 @@ const FirebaseLogin = ({ ...others }) => {
 
                         <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
                     </Box>
-                </Grid>
+                </Grid> */}
                 <Grid item xs={12} container alignItems="center" justifyContent="center">
                     <Box sx={{ mb: 2 }}>
-                        <Typography variant="subtitle1">Đăng nhập với địa chỉ email</Typography>
+                        <Typography variant="subtitle1">Đăng nhập với số điện thoại</Typography>
                     </Box>
                 </Grid>
             </Grid>
@@ -176,7 +182,7 @@ const FirebaseLogin = ({ ...others }) => {
                 {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
                     <form noValidate onSubmit={handleSubmit} {...others}>
                         <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
-                            <InputLabel htmlFor="outlined-adornment-email-login">Địa chỉ Email / Tài khoản</InputLabel>
+                            <InputLabel htmlFor="outlined-adornment-email-login">Số điện thoại</InputLabel>
                             <OutlinedInput
                                 id="outlined-adornment-email-login"
                                 type="email"
@@ -184,7 +190,7 @@ const FirebaseLogin = ({ ...others }) => {
                                 name="email"
                                 onBlur={handleBlur}
                                 onChange={handleChange}
-                                label="Địa chỉ Email / Tài khoản"
+                                label="Số điện thoại"
                                 inputProps={{}}
                             />
                             {touched.email && errors.email && (
@@ -199,7 +205,7 @@ const FirebaseLogin = ({ ...others }) => {
                             error={Boolean(touched.password && errors.password)}
                             sx={{ ...theme.typography.customInput }}
                         >
-                            <InputLabel htmlFor="outlined-adornment-password-login">Mật khâue</InputLabel>
+                            <InputLabel htmlFor="outlined-adornment-password-login">Mật khẩu</InputLabel>
                             <OutlinedInput
                                 id="outlined-adornment-password-login"
                                 type={showPassword ? 'text' : 'password'}
@@ -248,6 +254,7 @@ const FirebaseLogin = ({ ...others }) => {
 
                         <Box sx={{ mt: 2 }}>
                             <AnimateButton>
+
                                 <Button
                                     disableElevation
                                     disabled={isSubmitting}

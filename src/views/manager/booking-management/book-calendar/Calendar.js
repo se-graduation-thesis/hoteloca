@@ -436,12 +436,10 @@ class Calendar extends React.PureComponent {
         <Paper style={{ padding: 20, marginBottom: 10 }}>
           <Grid container>
             <Grid item xs={1}>
-              <h3>Phòng 1.1</h3>
-              {/* <h3>{this.props.room_id !== null ? this.props.room_id.ten : ""}</h3> */}
+              <h3>{this.props.room_id?.ten}</h3>
             </Grid>
             <Grid item xs={2}>
-              <Chip style={{ marginTop: 10 }} color="warning" label="Phòng thường" />
-              {/* <Chip style={{ marginTop: 10 }} label={this.props.room_id !== null ? this.props.room_id.loaiPhongid.ten : ""} color="warning" /> */}
+              <Chip style={{ marginTop: 10 }} label={this.props.room_id?.loaiPhongid.ten} color="warning" />
             </Grid>
           </Grid>
         </Paper>

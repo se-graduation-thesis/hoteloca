@@ -32,7 +32,7 @@ const HomeRoute = {
             element: <RoomDetail />
         },
         {
-            path: '/pages/register/register3',
+            path: '/pages/register',
             element: <AuthRegister3 />
         }
     ]

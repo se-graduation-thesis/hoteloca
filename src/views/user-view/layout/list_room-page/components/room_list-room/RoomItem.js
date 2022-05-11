@@ -10,7 +10,7 @@ export default function RoomItem({ room }) {
                 <Grid item xs={4}>
                     <img src={room.hinhAnh}
                         alt="image"
-                        style={{ height: 190 }} />
+                        style={{ maxWidth: "100%" }} />
                 </Grid>
 
                 <Grid item xs={5.5}>

@@ -100,7 +100,7 @@ export default function BookingInfomation() {
                 setOpen(true)
             }, 3000)
             setTimeout(() => {
-                navigate("/admin/update-booking/" + phieuThueid);
+                navigate("/admin/update-booking/" + phieuThueid.id);
             }, 6000)
         }
         )

@@ -8,6 +8,7 @@ export default {
         return {
             fetchAll: () => axios.get(url + 'get-all-account'),
             register: (account) => axios.post(url + "employee/register", account),
+            addAccoutNv: (account) => axios.put(url + "register", account),
             login: (username, pass) => axios.post(url + "login/" + username + "&" + pass),
             add_admin: (admin) => axios.post(url + "add-admin", admin),
         };
@@ -15,6 +16,7 @@ export default {
     manager(url = baseApi + 'manager/') {
         return {
             fetchAllManager: () => axios.get(url + 'get-all-manager'),
+            getNvNoneAccount: () => axios.get(url + 'get-all-manager-not-account'),
         };
     },
     room(url = baseApi + 'room/') {
@@ -55,6 +57,7 @@ export default {
             getCustomerById: (id) => axios.get(url + id),
             add_customer: (customer) => axios.post(url, customer),
             listCustomerRent: () => axios.get(url + 'get-all-customer-rent'),
+            register: (customer) => axios.put(url + "register", customer),
         }
     },
     bill_detail(url = baseApi + 'bill-detail/') {

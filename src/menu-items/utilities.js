@@ -2,7 +2,7 @@
 import {
     IconTypography, IconPalette,
     IconShadow, IconWindmill, IconUser, IconBuildingSkyscraper, IconChartInfographic, IconReceipt, IconBuildingWarehouse, IconBrandSlack
-    , IconReceipt2
+    , IconReceipt2, IconUsers, IconUserCheck
 } from '@tabler/icons';
 
 // constant
@@ -17,7 +17,9 @@ const icons = {
     IconReceipt,
     IconBuildingWarehouse,
     IconBrandSlack,
-    IconReceipt2
+    IconReceipt2,
+    IconUsers,
+    IconUserCheck
 };
 
 // ==============================|| UTILITIES MENU ITEMS ||============================== //
@@ -54,25 +56,26 @@ const utilities = {
         {
             id: 'account-manager',
             title: 'Quản Lý Tài Khoản',
-            type: 'collapse',
-            url: '/utils/util-typography',
+            type: 'item',
+            url: '/admin/account-manager',
             icon: icons.IconUser,
-            children: [
-                {
-                    id: 'customer',
-                    title: 'Quản lý tài khoản nhân viên',
-                    type: 'item',
-                    url: '/admin/admin-manager',
-                    breadcrumbs: false
-                },
-                {
-                    id: 'material-icons',
-                    title: 'Quản lý tài khoản khách hàng',
-                    type: 'item',
-                    url: '/admin/customer-management',
-                    breadcrumbs: false
-                }
-            ]
+            breadcrumbs: false
+        },
+        {
+            id: 'nv',
+            title: 'Quản lý nhân viên',
+            type: 'item',
+            url: '/admin/admin-manager',
+            breadcrumbs: false,
+            icon: icons.IconUserCheck,
+        },
+        {
+            id: 'kh',
+            title: 'Quản lý khách hàng',
+            type: 'item',
+            url: '/admin/customer-management',
+            icon: icons.IconUsers,
+            breadcrumbs: false
         },
         {
             id: 'booking',

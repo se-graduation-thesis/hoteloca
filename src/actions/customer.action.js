@@ -37,7 +37,6 @@ export const addCustomer = (customer) => {
     return apiService
         .customer()
         .add_customer(customer)
-
 };
 
 export const listCustomerRent = () => (dispatch) => {
@@ -51,4 +50,9 @@ export const listCustomerRent = () => (dispatch) => {
             });
         })
         .catch((err) => console.log(err));
+};
+export const register = (customer) => {
+    return apiService
+        .customer()
+        .register(customer)
 };

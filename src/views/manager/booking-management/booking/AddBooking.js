@@ -654,7 +654,6 @@ export default function Payment() {
                                     <Button type='submid' color="secondary" variant="contained">Hoàn thành</Button>
                                 </Grid>
                             </Grid>
-
                         </Paper>
                     </Grid>
                 </Grid >
