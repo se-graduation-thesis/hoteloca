@@ -67,11 +67,8 @@ export default function CategoryManager() {
         setPage(0);
     };
     useEffect(() => {
-        if (account) {
-            dispatch(actions.fetchAllCategory())
-        }
-
-    }, [account])
+        dispatch(actions.fetchAllCategory())
+    }, [])
 
     useEffect(() => {
         if (listCategory) {

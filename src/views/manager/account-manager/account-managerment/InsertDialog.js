@@ -101,7 +101,6 @@ export default function InsertBrandDialog(props) {
                 quyen: 2,
                 trangThai: 1
             }
-            console.log(tk)
             accountActions.register(accountRegister).then((res) => {
                 tk.boPhanid = tk.boPhanid.id
                 tk.taiKhoanid = {

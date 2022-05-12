@@ -85,7 +85,6 @@ export default function PaymentManager() {
             setListPayment(listPayment)
         }
     }, [listPayment])
-    console.log(listPayment)
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }} style={{ padding: 20 }}>
             <Grid container spacing={1} style={{ marginTop: 10, padding: 10 }}>

@@ -46,3 +46,55 @@
     font-size: 18px;
     margin-top: -2px;
 }
+
+.box {
+    position: absolute;
+    align-items: center;
+    align-content: center;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    background: rgb(105, 9, 116, 0.9);
+    color: #F5F5F5;
+    clip-path: polygon(0 50%, 50% 100%, 100% 50%, 50% 0);
+    width: 150px;
+    margin-top: -43px !important;
+    margin: 5px;
+    right: 0;
+    animation-name: example;
+    animation-duration: 4s;
+    animation-iteration-count: infinite;
+    cursor: pointer;
+}
+
+@keyframes example {
+    0% {
+        background-color: rgb(105, 9, 116, 0.9);
+    }
+
+    25% {
+        background-color: rgba(40, 3, 44, 0.9);
+    }
+
+    50% {
+        background-color: rgb(105, 9, 116, 0.9);
+    }
+
+    75% {
+        background-color: rgba(40, 3, 44, 0.9);
+    }
+
+    100% {
+        background-color: rgb(105, 9, 116, 0.9);
+    }
+}
+
+/* 2*sin(120/2)*h = w 
+   h = w / (sin(60)*2)
+   h = w * 0.57736
+*/
+.box:before {
+    content: "";
+    display: block;
+    padding-top: 57.73%;
+}

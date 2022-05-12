@@ -71,7 +71,6 @@ const EarningCard = ({ isLoading }) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
-    console.log(list_room_hotel)
     return (
         <>
             {isLoading ? (

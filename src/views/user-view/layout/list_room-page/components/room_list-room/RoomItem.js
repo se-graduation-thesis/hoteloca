@@ -1,9 +1,14 @@
-import { Button, Grid } from "@mui/material";
+import { Button, Chip, Grid } from "@mui/material";
 import { IconPhone, IconSnowflake, IconToolsKitchen2, IconWifi } from "@tabler/icons"
-import { Link } from "react-router-dom";
-
+import { useNavigate } from "react-router";
+import DetailsIcon from '@mui/icons-material/Details';
+import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 export default function RoomItem({ room }) {
-
+    const navigate = useNavigate()
+    const toDetail = () => {
+        navigate("/list-room/room-detail", { state: room })
+    }
     return (
         <div className="body-room__list-room" style={{ borderBottom: '1px solid Chocolate', paddingBottom: 30, marginTop: 30 }}>
             <Grid container spacing={2}>
@@ -16,10 +21,11 @@ export default function RoomItem({ room }) {
                 <Grid item xs={5.5}>
                     <div className="room-title" style={{ borderBottom: '1px solid Chocolate', marginTop: -10 }}>
                         <h2 style={{ color: '#505050' }}>{room.ten}</h2>
-                        <p>Phòng cơ sở của chúng tôi cung cấp tầm nhìn ngoạn mục của đường chân trời.</p>
+                        <Chip label={room.loaiPhongid.ten} color="success"></Chip>
+                        <p style={{ wordBreak: 'break-all' }}>{room.moTa}</p>
                         <ul>
-                            <li>Size: 24 m2</li>
-                            <li>Giường: 2 giường đôi </li>
+                            <li>Số người: {room.loaiPhongid.soNguoi} </li>
+                            <li><span>Số giường:</span> {room.loaiPhongid.soGiuong} </li>
                         </ul>
                     </div>
                     <div className="room-service" style={{ paddingTop: 5 }}>
@@ -31,12 +37,33 @@ export default function RoomItem({ room }) {
                 </Grid>
 
                 <Grid item xs={2.5}>
-                    <div style={{ textAlign: 'center', marginTop: 50 }}>
-                        From
-                        <h1 style={{ fontSize: 30 }}>{room.donGia}</h1>
-                        <Link to="/home/list-room/room-detail" style={{ textDecoration: 'none' }}>
-                            <Button variant="contained" sx={{ backgroundColor: 'Chocolate', color: 'white' }}>Thêm Thông Tin</Button>
-                        </Link>
+                    <div style={{ textAlign: 'center', marginTop: 20, display: 'inline-grid' }}>
+                        <h1 style={{ fontSize: 20 }}>{new Intl.NumberFormat('en-Vn').format(room?.loaiPhongid.donGia) + " VND"}</h1>
+                        <Button
+                            variant="contained"
+                            sx={{ backgroundColor: 'pubble', color: 'white' }}
+                            onClick={toDetail}
+                            startIcon={<ShoppingCartCheckoutIcon />}
+                        >
+                            Đặt phòng
+                        </Button>
+                        <br></br>
+                        <Button
+                            variant="contained"
+                            startIcon={<FavoriteIcon />}
+                            sx={{ backgroundColor: 'red', color: 'white' }}
+                            onClick={toDetail}>
+                            Yêu thích
+                        </Button>
+                        <br></br>
+                        <Button
+                            variant="contained"
+                            startIcon={<DetailsIcon />}
+                            sx={{ backgroundColor: 'Chocolate', color: 'white' }}
+                            onClick={toDetail}>
+                            Xem thêm
+                        </Button>
+
                     </div>
                 </Grid>
             </Grid>

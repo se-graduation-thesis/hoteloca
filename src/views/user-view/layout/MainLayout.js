@@ -14,33 +14,30 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
-import { useSelector } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
 import logo from '../../../assets/images/logo.png'
 import Button from '@mui/material/Button';
 import { Outlet } from 'react-router-dom';
 import LogoutIcon from '@mui/icons-material/Logout';
 import NavBarHomePage from './navbar/NavBarHomePage';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
+import * as action_bill from "actions/bill.action"
+import * as cus_actions from "actions/customer.action"
 import * as actions from "actions/account.action"
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 export default function NavbarMainLayout() {
     const navigate = useNavigate();
-
+    const dispatch = useDispatch();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
     const account = useSelector((state) => state.account.userAuth);
+
+    const customer = useSelector((state) => state.customer.customer);
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
     const [accountShow, setAccountShow] = React.useState(null)
-    React.useEffect(() => {
-        if (account) {
-            try {
-                setAccountShow(JSON.parse(account))
-            } catch (e) {
-
-            }
-        }
-    }, [account])
-    console.log(accountShow)
+    const listBillByStatus = useSelector((state) => state.bill.listBillByStatusAccept);
+    const [bill_show, setBillShow] = React.useState([])
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -136,6 +133,38 @@ export default function NavbarMainLayout() {
         localStorage.setItem("user_authenticated", "")
         location.reload();
     };
+
+    React.useEffect(() => {
+        dispatch(action_bill.fetchBillByStatusAccept())
+    }, [])
+
+    React.useEffect(() => {
+        if (listBillByStatus) {
+            let id = isJson(account) ? JSON.parse(account).user_id : account.user_id
+            setBillShow(listBillByStatus.filter(({ khachHangid }) => khachHangid.id === id))
+
+        }
+    }, [listBillByStatus])
+    React.useEffect(() => {
+        if (account) {
+            if (isJson(account)) {
+                dispatch(cus_actions.getCustomerById(JSON.parse(account).user_id))
+                setAccountShow(JSON.parse(account))
+            } else {
+                dispatch(cus_actions.getCustomerById(account.user_id))
+                setAccountShow(JSON.parse(account.user_id))
+            }
+
+        }
+    }, account)
+    function isJson(str) {
+        try {
+            JSON.parse(str);
+        } catch (e) {
+            return false;
+        }
+        return true;
+    }
     return (
         <Box sx={{ flexGrow: 1 }}>
             <div style={{ position: 'fixed', top: 0, width: '100%', zIndex: 100000 }}>
@@ -157,10 +186,10 @@ export default function NavbarMainLayout() {
                             </Box> :
                                 <Box style={{ display: 'flex', alignItems: 'center' }}>
                                     <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
-                                    <span style={{ color: 'black', fontWeight: 'bold', marginRight: 30, marginLeft: 10 }}>hahaha</span>
+                                    <span style={{ color: 'black', fontWeight: 'bold', marginRight: 30, marginLeft: 10 }}>{customer?.ho + " " + customer?.ten}</span>
                                     <IconButton aria-label="delete" style={{ color: "black" }}>
-                                        <Badge badgeContent={4} color="secondary">
-                                            <ShoppingCartOutlinedIcon />
+                                        <Badge badgeContent={bill_show.length} color="secondary">
+                                            <CalendarMonthIcon />
                                         </Badge>
                                     </IconButton>
                                     <IconButton aria-label="delete" style={{ color: "black" }} onClick={handleLogout}>
@@ -188,7 +217,6 @@ export default function NavbarMainLayout() {
                 <div className='navbar' >
                     <NavBarHomePage />
                 </div>
-
             </div>
             <div style={{ marginTop: 140 }}>
                 <Outlet />
