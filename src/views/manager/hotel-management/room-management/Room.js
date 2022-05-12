@@ -35,8 +35,6 @@ const columns = [
 export default function Room() {
     const dispatch = useDispatch();
 
-    const user = JSON.parse(localStorage.getItem("user_authenticated"));
-
     const [page, setPage] = React.useState(0);
     const [loaiPhong, setLoaiPhong] = React.useState(0);
     const [stateRoom, setStateRoom] = React.useState("full");

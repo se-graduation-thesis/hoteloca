@@ -75,12 +75,7 @@ const FirebaseLogin = ({ ...others }) => {
                 }
 
                 dispatch(actions.isAuthenticated(permission))
-                if (res.data.taiKhoanid.quyen === 1) {
-                    navigate("/home");
-                }
-                else if (res.data.taiKhoanid.quyen === 2) {
-                    navigate("/");
-                }
+                navigate("/");
             } else {
                 setChecked('flex')
             }

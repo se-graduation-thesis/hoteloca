@@ -170,12 +170,26 @@ export default function Payment() {
 
     const { values, setValues, errors, setErrors, handleInputChange, resetForm } =
         useForm(initialFieldValues, validate, 0);
-
+    console.log(account)
     useEffect(() => {
         if (account) {
-            setIdNv(JSON.parse(account).user_id);
+            if (isJson(account)) {
+                setIdNv(JSON.parse(account).user_id);
+            } else {
+                setIdNv(account.user_id)
+            }
         }
     }, [account])
+
+    console
+    function isJson(str) {
+        try {
+            JSON.parse(str);
+        } catch (e) {
+            return false;
+        }
+        return true;
+    }
 
     const handleSubmit = (e) => {
         const booking_info = {
