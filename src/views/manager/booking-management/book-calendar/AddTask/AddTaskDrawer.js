@@ -250,7 +250,8 @@ function AddTaskDrawer(props) {
                   handleCustomer={handleCustomer}
                   complete={completeButton}
                   handleCompleteButton={handleCompleteButton}
-                  handleComplete={handleComplete} /> :
+                  handleComplete={handleComplete}
+                  completed={completed} /> :
                 activeStep === 1 ?
                   <ReservationInfo reservation={reservation}
                     handleReservation={handleReservation}

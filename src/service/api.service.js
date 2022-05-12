@@ -17,6 +17,7 @@ export default {
         return {
             fetchAllManager: () => axios.get(url + 'get-all-manager'),
             getNvNoneAccount: () => axios.get(url + 'get-all-manager-not-account'),
+            add_Employee: (employee) => axios.post(url, employee),
         };
     },
     room(url = baseApi + 'room/') {
@@ -104,6 +105,11 @@ export default {
             get_all_day: (day, month, year) => axios.get(url + "get-all-day/" + day + "&&" + month + "&&" + year),
             get_all_month: (month, year) => axios.get(url + "get-all-month/" + month + "&&" + year),
             get_all_year: (year) => axios.get(url + "get-all-year/" + year),
+        }
+    },
+    bo_phan(url = baseApi + 'bophan/') {
+        return {
+            findAll: () => axios.get(url),
         }
     }
 }
