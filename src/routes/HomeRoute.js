@@ -13,6 +13,7 @@ const HomePage = Loadable(lazy(() => import('views/user-view/layout/home-page/Ho
 const ListRoom = Loadable(lazy(() => import('views/user-view/layout/list_room-page/ListRoom')));
 const RoomDetail = Loadable(lazy(() => import('views/user-view/layout/list_room-page/components/room-detail/RoomDetail')));
 const FooterLayout = Loadable(lazy(() => import('views/user-view/layout/FooterLayout')));
+const Booking = Loadable(lazy(() => import('views/user-view/layout/booking/Booking')));
 // ==============================|| AUTHENTICATION ROUTING ||============================== //
 
 const HomeRoute = {
@@ -34,6 +35,10 @@ const HomeRoute = {
         {
             path: '/register',
             element: <AuthRegister3 />
+        },
+        {
+            path: '/user-booking',
+            element: <Booking />
         },
         {
             path: '*',

@@ -181,7 +181,6 @@ export default function Payment() {
         }
     }, [account])
 
-    console
     function isJson(str) {
         try {
             JSON.parse(str);

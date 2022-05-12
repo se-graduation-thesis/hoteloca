@@ -12,7 +12,7 @@ export default function FilterForm() {
         <Container>
             <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', padding: '10px 20px' }}>
                 <Grid container spacing={2}>
-                    <Grid item xs={3}>
+                    <Grid item xs={5}>
                         <p style={{ color: 'white', fontSize: 16 }}>Check In</p>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <Stack spacing={3}>
@@ -29,7 +29,7 @@ export default function FilterForm() {
                         </LocalizationProvider>
                     </Grid>
 
-                    <Grid item xs={3}>
+                    <Grid item xs={5}>
                         <p style={{ color: 'white', fontSize: 16 }}>Check Out</p>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <Stack spacing={3}>
@@ -45,34 +45,6 @@ export default function FilterForm() {
                             </Stack>
                         </LocalizationProvider>
                     </Grid>
-
-                    <Grid item xs={2}>
-                        <p style={{ color: 'white', fontSize: 16 }}>Nguời Lớn</p>
-                        <TextField
-                            id="outlined-number"
-                            // label="Number"
-                            defaultValue={1}
-                            type="number"
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                        />
-                    </Grid>
-
-                    <Grid item xs={2}>
-                        <p style={{ color: 'white', fontSize: 16 }}>Trẻ Em</p>
-                        <TextField
-                            id="outlined-number"
-                            defaultValue={0}
-                            min
-                            // label="Number"
-                            type="number"
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                        />
-                    </Grid>
-
                     <Grid item xs={2}>
                         <p style={{ color: 'white', fontSize: 16 }}>&emsp;</p>
                         <Button variant="contained" sx={{ height: 52, backgroundColor: 'white', color: 'black' }} fullWidth>Tìm kiếm</Button>

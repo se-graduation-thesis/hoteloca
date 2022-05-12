@@ -7,7 +7,6 @@ import HomeRoute from './HomeRoute'
 import config from 'config';
 
 // ==============================|| ROUTING RENDER ||============================== //
-
 export default function ThemeRoutes() {
     if (!localStorage.getItem("user_authenticated") || localStorage.getItem("user_authenticated") === "undefined") {
         return useRoutes([HomeRoute, AuthenticationRoutes], config.basename);

@@ -1,0 +1,8 @@
+.rhombus {
+    width: 200px;
+    height: 200px;
+
+    margin-top: 100px;
+
+    transform: rotate(67.5deg) skewX(45deg) scaleY(cos(45deg));
+}
