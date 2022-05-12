@@ -7,7 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Button, Chip, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip } from '@mui/material';
+import { Button, Chip, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip, Snackbar, Alert, AlertTitle } from '@mui/material';
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
@@ -16,12 +16,18 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import InsertBrandDialog from './InsertDialog'
 import UpdateBrand from './UpdateDialog'
-
+import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import { useState, useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import * as actions from "actions/account.action"
 import { address } from 'assets/address';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 const columns = [
     { id: 'stt', label: 'STT', minWidth: "10%" },
     { id: 'taiKhoan', label: 'Tài Khoản', minWidth: "30%" },
@@ -33,6 +39,8 @@ export default function Account() {
     const dispatch = useDispatch();
     const [page, setPage] = useState(0);
     const rows = []
+    let vertical = 'top';
+    let horizontal = 'right';
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const listAccount = useSelector((state) => state.account.listAccount);
     const [listAccountShow, setListAccount] = useState([])
@@ -46,14 +54,48 @@ export default function Account() {
     const [status, setStatus] = useState(0);
     const [role, setRole] = useState(0);
     const [id_brand, setId] = useState(0);
+    const [open1, setOpen1] = useState(false);
+    const [open2, setOpen2] = useState(false);
+    const [open3, setOpen3] = useState(false);
+    const [accUp, setAccUp] = useState(null)
+
+    const [alertOpen, setAlertOpen] = useState(false);
+
+    const handleCloseN = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setAlertOpen(false);
+    };
+
+    const handleClickOpen1 = (e) => {
+        setOpen1(true);
+        setAccUp(e)
+    };
+    const handleClose1 = () => {
+        setOpen1(false);
+    };
+
+    const handleClickOpen2 = (e) => {
+        setAccUp(e)
+        setOpen2(true);
+    };
+
+    const handleClose2 = () => {
+        setOpen2(false);
+    };
+    const handleClickOpen3 = (e) => {
+        setAccUp(e)
+        setOpen3(true);
+    };
+
+    const handleClose3 = () => {
+        setOpen3(false);
+    };
     const handleClickOpen = () => {
         setOpen(true);
     };
 
-    const handleClickOpenUpdate = (id) => {
-        setOpenUpdate(true);
-        setId(id)
-    };
     const handleClose = () => {
         setOpen(false);
     };
@@ -147,7 +189,30 @@ export default function Account() {
             })
             setListAccount(rl)
         }
-
+    }
+    const onResetPassword = () => {
+        if (accUp) {
+            accUp.matKhau = "123"
+            dispatch(actions.resetPass(accUp))
+            setAlertOpen(true)
+            handleClose1()
+        }
+    }
+    const onBlock = () => {
+        if (accUp) {
+            accUp.trangThai = 2
+            dispatch(actions.changeStatus(accUp))
+            setAlertOpen(true)
+            handleClose2()
+        }
+    }
+    const onActive = () => {
+        if (accUp) {
+            accUp.trangThai = 1
+            setAlertOpen(true)
+            dispatch(actions.changeStatus(accUp))
+            handleClose3()
+        }
     }
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }} style={{ padding: 20 }}>
@@ -277,11 +342,25 @@ export default function Account() {
                                             }
                                         </TableCell>
                                         <TableCell key={row.stt}>
-                                            <Tooltip title="Sửa loại phòng">
-                                                <IconButton key={row.stt} onClick={() => handleClickOpenUpdate(row.id)} aria-label="delete" color="primary">
-                                                    <Edit />
+                                            <Tooltip title="Đặt lại mật khẩu">
+                                                <IconButton disabled={row.quyen == 1 ? true : false} key={row.stt} onClick={() => handleClickOpen1(row)} aria-label="delete" color="primary">
+                                                    <RestartAltIcon />
                                                 </IconButton>
                                             </Tooltip>
+                                            {
+                                                row.trangThai == 1 ?
+                                                    <Tooltip title="Khóa tài khoản">
+                                                        <IconButton key={row.stt} onClick={() => handleClickOpen2(row)} aria-label="delete" color="primary">
+                                                            < PublishedWithChangesIcon />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                    :
+                                                    <Tooltip title="Mở tài khoản">
+                                                        <IconButton key={row.stt} onClick={() => handleClickOpen3(row)} aria-label="delete" color="error">
+                                                            < PublishedWithChangesIcon />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                            }
                                         </TableCell>
                                     </TableRow>
                                 );
@@ -289,17 +368,96 @@ export default function Account() {
                     </TableBody>
                 </Table>
             </TableContainer>
-
+            <Snackbar autoHideDuration={2000} open={alertOpen} anchorOrigin={{ vertical, horizontal }} onClose={handleCloseN} >
+                <Alert severity="success"><AlertTitle>Thành công</AlertTitle>
+                    Thông báo — <strong>Thao tác đã được ghi lại</strong></Alert>
+            </Snackbar>
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25, 100]}
                 component="div"
-                count={rows.length}
+                labelRowsPerPage='Số hàng'
+                count={listAccountShow.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
+                backIconButtonProps={{
+                    "aria-label": "Previous Page"
+                }}
+                nextIconButtonProps={{
+                    "aria-label": "Next Page"
+                }}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
             <UpdateBrand open={openUpdate} id={id_brand} isShowForm={handleCloseUpdate} />
+            <Dialog
+                open={open1}
+                maxWidth={'xs'}
+                fullWidth={true}
+                onClose={handleClose1}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {""}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Đặt lại mật khẩu
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={onResetPassword}>Đồng ý</Button>
+                    <Button onClick={handleClose1} autoFocus>
+                        Hủy
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={open2}
+                maxWidth={'xs'}
+                fullWidth={true}
+                onClose={handleClose2}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {""}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Khóa tài khoản này
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={onBlock}>Đồng ý</Button>
+                    <Button onClick={handleClose2} autoFocus>
+                        Hủy
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={open3}
+                maxWidth={'xs'}
+                fullWidth={true}
+                onClose={handleClose3}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {""}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Mở tài khoản này
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={onActive}>Đồng ý</Button>
+                    <Button onClick={handleClose3} autoFocus>
+                        Hủy
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Paper >
 
     );

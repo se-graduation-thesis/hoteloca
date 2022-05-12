@@ -39,7 +39,7 @@ const utilities = {
         },
         {
             id: 'loaiphong',
-            title: 'Quản lý phòng',
+            title: 'Quản Lý Phòng',
             type: 'item',
             url: '/admin/hotel-management/room',
             icon: icons.IconBuildingWarehouse,
@@ -47,7 +47,7 @@ const utilities = {
         },
         {
             id: 'dchvu',
-            title: 'Quản lý dịch vụ',
+            title: 'Quản Lý Dịch Vụ',
             type: 'item',
             url: '/admin/hotel-management/service',
             icon: icons.IconBrandSlack,
@@ -63,7 +63,7 @@ const utilities = {
         },
         {
             id: 'nv',
-            title: 'Quản lý nhân viên',
+            title: 'Quản Lý Nhân Viên',
             type: 'item',
             url: '/admin/admin-manager',
             breadcrumbs: false,
@@ -71,7 +71,7 @@ const utilities = {
         },
         {
             id: 'kh',
-            title: 'Quản lý khách hàng',
+            title: 'Quản Lý Khách Hàng',
             type: 'item',
             url: '/admin/customer-management',
             icon: icons.IconUsers,
@@ -99,7 +99,7 @@ const utilities = {
                 },
                 {
                     id: 'listCustomerRent',
-                    title: 'Danh sách Khách hàng đang thuê phòng',
+                    title: 'Danh sách khách hàng đang thuê phòng',
                     type: 'item',
                     url: '/admin/list-customer-rent',
                     breadcrumbs: false
@@ -108,7 +108,7 @@ const utilities = {
         },
         {
             id: 'hoadon',
-            title: 'Quản lý hóa đơn',
+            title: 'Quản Lý Hóa Đơn',
             type: 'item',
             url: '/admin/receipt-managerment',
             icon: icons.IconReceipt2,

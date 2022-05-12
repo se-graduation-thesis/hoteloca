@@ -28,6 +28,11 @@ export const customerReducer = (state = initialState, action) => {
                 ...state,
                 listCustomerRent: [...action.payload],
             }
+        case ACTION_TYPES.SAVE_CUSTOMER:
+            return {
+                ...state,
+                customers: [...action.payload],
+            }
         default:
             return state;
     }
