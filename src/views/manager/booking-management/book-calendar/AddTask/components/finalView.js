@@ -31,6 +31,16 @@ export default function FinalView({ customer, reservation, token, serviceSelect 
 
     const nhanVien = listAccount.filter(e => e.id === reservation.nhanVienid)[0];
 
+    const [diaChi, setDiaChi] = React.useState('');
+    React.useEffect(() => {
+        try {
+            let object = JSON.parse(customer.diaChi);
+            setDiaChi(object.diaChi + ', ' + object.ward + ', ' + object.district + ', ' + object.city);
+        } catch {
+            console.log("error")
+        }
+    })
+
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -73,7 +83,7 @@ export default function FinalView({ customer, reservation, token, serviceSelect 
                                 {/* địa chỉl*/}
                                 <Grid item xs={12} sx={{ display: 'flex' }}>
                                     <Typography sx={{ fontSize: 17 }}>Địa chỉ :</Typography>
-                                    <Typography sx={{ fontSize: 17, marginLeft: 2 }}>{customer.diaChi}</Typography>
+                                    <Typography sx={{ fontSize: 17, marginLeft: 2 }}>{diaChi}</Typography>
                                 </Grid>
                             </Grid>
                         </Item>

@@ -101,7 +101,7 @@ export default function CategoryManager() {
                 </Grid>
 
 
-                <Grid item xs={6} style={{ padding: 10, textAlign: "right" }}>
+                {/* <Grid item xs={6} style={{ padding: 10, textAlign: "right" }}>
                     <TextField
                         label="Nhập nội dung tìm kiếm"
                         size="small"
@@ -115,7 +115,7 @@ export default function CategoryManager() {
                             )
                         }}
                     />
-                </Grid>
+                </Grid> */}
             </Grid>
             <TableContainer sx={{ height: '70%' }}>
                 <Table stickyHeader aria-label="sticky table">

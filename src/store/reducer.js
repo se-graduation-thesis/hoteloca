@@ -10,6 +10,7 @@ import { customerReducer } from '../reducers/customer.reducer';
 
 import { brandReducer } from 'reducers/brand.reducer';
 import { categoryReducer } from 'reducers/category.reducer';
+import { bophanReducer } from 'reducers/bophan.reducer';
 import { phongTNReducer } from 'reducers/phongTN.reducer';
 import taskReducer from 'reducers/booking.reducer';
 
@@ -29,6 +30,7 @@ const reducer = combineReducers({
     service: serviceReducer,
     brand: brandReducer,
     category: categoryReducer,
+    bophan: bophanReducer,
     customer: customerReducer,
     phongTN: phongTNReducer,
     task: taskReducer,

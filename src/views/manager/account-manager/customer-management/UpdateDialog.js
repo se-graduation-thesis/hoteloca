@@ -176,7 +176,7 @@ export default function UpdateBrand(props) {
                 <DialogTitle>
                     <Grid container spacing={1}>
                         <Grid item xs={6}>
-                            <p>Thêm chi nhánh</p>
+                            <p>THÊM LOẠI PHÒNG</p>
                         </Grid>
                         <Grid item xs={6} style={{ textAlign: 'right' }}>
                             <IconButton onClick={onEdit} aria-label="delete" color="primary">
@@ -223,7 +223,7 @@ export default function UpdateBrand(props) {
                             <Grid item xs={6}>
                                 <TextField
                                     id="soGiuong"
-                                    label="Số Phòng *"
+                                    label="Số Giường *"
                                     variant="outlined"
                                     autoComplete='off'
                                     helperText=" "

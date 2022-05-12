@@ -7,7 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip, Typography } from '@mui/material';
+import { Button, Chip, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip, Typography } from '@mui/material';
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
@@ -23,15 +23,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as actions from "actions/bill.action"
 import { Link, useNavigate } from 'react-router-dom';
 import moment from 'moment';
+import CheckIn from './CheckIn';
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
     { id: 'khachhang', label: 'Thông tin khách hàng', minWidth: 100 },
     { id: 'ngayVao', label: 'Ngày đến', minWidth: 100 },
     { id: 'ngayRa', label: 'Ngày đi', minWidth: 100 },
-    // { id: 'loaiphong', label: 'Loại Phòng', minWidth: 100 },
     { id: 'soluongphong', label: 'Số Lượng Phòng', minWidth: 100 },
     { id: 'tenPhong', label: 'Tên Phòng', minWidth: 100 },
-    { id: 'trangThai', label: 'Ghi chú', minWidth: 100 },
+    { id: 'trangThai', label: 'Trạng thái', minWidth: 100 },
+    { id: 'checkIn', label: 'Check-In', minWidth: 100 },
 ];
 
 export default function ListBooking() {
@@ -44,6 +45,8 @@ export default function ListBooking() {
     const [listBillByStatusShow, setListBillByStatusShow] = useState([])
 
     const [open, setOpen] = useState(false);
+    const [checkInState, setCheckInState] = useState(false);
+    const handleCheckInState = (value) => setCheckInState(value);
     const [openUpdate, setOpenUpdate] = useState(false);
 
     const [id_brand, setId] = useState(0);
@@ -82,6 +85,8 @@ export default function ListBooking() {
                 e.khachhang = e.khachHangid.ho + " " + e.khachHangid.ten
                 e.ngayVao = moment(e.ngayVao).format('DD-MM-YYYY HH:mm:ss')
                 e.ngayRa = moment(e.ngayRa).format('DD-MM-YYYY HH:mm:ss')
+                if (e.checkIn)
+                    e.checkIn = moment(e.checkIn).format('DD-MM-YYYY HH:mm:ss')
 
                 if (e.chiTietPhieuThueList.length > 0) {
 
@@ -109,7 +114,7 @@ export default function ListBooking() {
                     <InsertBrandDialog open={open} isShowForm={handleClose} /> */}
                 </Grid>
 
-                <Grid item xs={6} style={{ padding: 10, textAlign: "right" }}>
+                {/* <Grid item xs={6} style={{ padding: 10, textAlign: "right" }}>
                     <TextField
                         label="Nhập nội dung tìm kiếm"
                         size="small"
@@ -123,7 +128,7 @@ export default function ListBooking() {
                             )
                         }}
                     />
-                </Grid>
+                </Grid> */}
             </Grid>
             <TableContainer sx={{ height: '70%' }}>
                 <Table stickyHeader aria-label="sticky table">
@@ -156,14 +161,18 @@ export default function ListBooking() {
                                             return (
                                                 <TableCell key={column.id} align={column.align}>
                                                     {column.format && typeof value === 'number'
-                                                        ? column.format(value)
-                                                        : value}
+                                                        ? column.format(value) :
+                                                        column.id === 'checkIn' ?
+                                                            value ?
+                                                                value :
+                                                                <Button variant="contained" onClick={() => handleCheckInState(true)} >Check - In</Button>
+                                                            : value}
                                                 </TableCell>
                                             );
                                         })}
                                         <TableCell key={row.stt}>
                                             <Tooltip title="Thêm dịch vụ">
-                                                <IconButton key={row.stt} onClick={() => navigate(`/admin/booking-payment/${row.id}`)} aria-label="add-service" color="secondary">
+                                                <IconButton key={row.stt} onClick={() => navigate(`/admin/update-booking/${row.id}`)} aria-label="add-service" color="secondary">
                                                     <RoomServiceIcon />
                                                 </IconButton>
                                             </Tooltip>
@@ -204,6 +213,7 @@ export default function ListBooking() {
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
             <UpdateBrand open={openUpdate} id={id_brand} isShowForm={handleCloseUpdate} />
+            <CheckIn open={checkInState} handleCheckInState={handleCheckInState} />
         </Paper >
     );
 }
