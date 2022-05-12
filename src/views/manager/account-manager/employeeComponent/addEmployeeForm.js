@@ -1,13 +1,16 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from "@mui/material";
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { address } from 'assets/address';
 import * as actions from "actions/manager.action"
 import * as actionBoPhan from "actions/bophan.action"
 import moment from "moment-timezone";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import { DateTimePicker, DesktopDatePicker, LocalizationProvider } from "@mui/lab";
+import { DesktopDatePicker, LocalizationProvider } from "@mui/lab";
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import PositionedSnackbar from "../components/PositionedSnackbar";
+import NumberFormat from "react-number-format";
+import PropTypes from 'prop-types';
 
 const width = 800;
 
@@ -25,6 +28,33 @@ const initialEmployee = {
     trangThai: 1,
     ngayVaoLam: moment.tz(new Date(), "Asia/Ho_Chi_Minh").format(),
     taiKhoanid: null
+};
+
+const NumberFormatCustom = forwardRef(function NumberFormatCustom(props, ref) {
+    const { onChange, ...other } = props;
+
+    return (
+        <NumberFormat
+            {...other}
+            getInputRef={ref}
+            onValueChange={(values) => {
+                onChange({
+                    target: {
+                        name: props.name,
+                        value: values.value,
+                    },
+                });
+            }}
+            thousandSeparator
+            isNumericString
+            prefix=""
+        />
+    );
+});
+
+NumberFormatCustom.propTypes = {
+    name: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
 };
 
 export default function AddEmployeeForm(props) {
@@ -72,16 +102,92 @@ export default function AddEmployeeForm(props) {
         props.isShowAddForm(false);
     }
 
+    const [error, setError] = useState({
+        cmnd: null,
+        sdt: null,
+        email: null,
+        ho: null,
+        ten: null,
+        ngaySinh: null
+    });
+
+    const handleCheckValidation = () => {
+        // const reNum = new RegExp(/\d+$/);
+        const reCMND = new RegExp(/^((\d{9})|(\d{12}))$/);
+        const reSDT = new RegExp(/^(0\d{9})$/);
+        const reEmail = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
+        const reHo = new RegExp(/^[a-zA-ZàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]+$/);
+        const reTen = new RegExp(/^[a-zA-ZàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]{1,15}(?: [a-zA-ZàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]+){0,6}$/);
+
+        let cmnd = null;
+        let sdt = null;
+        let email = null;
+        let ho = null;
+        let ten = null;
+        let ngaySinh = null;
+        let kt = false;
+
+        if (!reCMND.test(employee.cmnd.trim())) {
+            cmnd = 'Số chứng minh nhân dân hoặc căn cước công dân là số chỉ 9 hoặc 12 kí tự';
+            kt = true;
+        } else setEmployee({ ...employee, cmnd: employee.cmnd.trim() })
+
+        if (!reSDT.test(employee.dienThoai.trim())) {
+            sdt = 'Số điện thoại chỉ chứa 10 số';
+            kt = true;
+        } else setEmployee({ ...employee, dienThoai: employee.dienThoai.trim() })
+
+        if (!reEmail.test(employee.email.trim())) {
+            email = 'Định dạng email không đúng';
+            kt = true;
+        } else setEmployee({ ...employee, email: employee.email.trim() })
+
+        if (!reHo.test(employee.ho.trim())) {
+            ho = 'Vui lòng không nhập số hay kí tự đặc biệt';
+            kt = true;
+        } else setEmployee({ ...employee, ho: employee.ho.trim() })
+
+
+        if (!reTen.test(employee.ten.trim())) {
+            ten = 'Vui lòng không nhập số hay kí tự đặc biệt';
+            kt = true;
+        } else setEmployee({ ...employee, ten: employee.ten.trim() })
+
+        let currentDate = new Date();
+        let birth = new Date(employee.ngaySinh)
+
+        if ((currentDate.getFullYear() - birth.getFullYear()) < 18) {
+            ngaySinh = 'Nhân viên phải trên 18 tuổi';
+            kt = true;
+        } else if ((currentDate.getFullYear() - birth.getFullYear()) === 18) {
+            if (currentDate.getMonth() > birth.getMonth()) {
+                ngaySinh = 'Nhân viên phải trên 18 tuổi';
+                kt = true;
+            } else if (currentDate.getMonth() === birth.getMonth()) {
+                if (currentDate.getDate() > birth.getDate()) {
+                    ngaySinh = 'Nhân viên phải trên 18 tuổi';
+                    kt = true;
+                }
+            }
+        }
+
+        setError({ ...error, cmnd: cmnd, ho: ho, ten: ten, sdt: sdt, email: email, ngaySinh: ngaySinh })
+
+        return !kt;
+    }
+
     const handleDiachi = () => {
-        let address = JSON.stringify({
-            diaChi: diaChi,
-            city: tinh,
-            district: huyen,
-            ward: xa
-        })
-        // setEmployee({ ...employee, diaChi: address })
-        employee.diaChi = address;
-        submit();
+        if (handleCheckValidation()) {
+            let address = JSON.stringify({
+                diaChi: diaChi,
+                city: tinh,
+                district: huyen,
+                ward: xa
+            })
+            // setEmployee({ ...employee, diaChi: address })
+            employee.diaChi = address;
+            submit();
+        }
     }
 
     const submit = () => {
@@ -126,6 +232,7 @@ export default function AddEmployeeForm(props) {
 
                                 onChange={(e) => setEmployee({ ...employee, ho: e.target.value })}
                             />
+                            {error.ho && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.ho}</span></>}
                         </Grid>
 
                         <Grid item xs={6}>
@@ -140,6 +247,7 @@ export default function AddEmployeeForm(props) {
 
                                 onChange={(e) => setEmployee({ ...employee, ten: e.target.value })}
                             />
+                            {error.ten && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.ten}</span></>}
                         </Grid>
 
                         {/* CMND - Gioi Tinh */}
@@ -155,6 +263,7 @@ export default function AddEmployeeForm(props) {
 
                                 onChange={(e) => setEmployee({ ...employee, cmnd: e.target.value })}
                             />
+                            {error.cmnd && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.cmnd}</span></>}
                         </Grid>
 
                         <Grid item xs={6}>
@@ -188,13 +297,14 @@ export default function AddEmployeeForm(props) {
                                     }}
                                 />
                             </LocalizationProvider>
+                            {error.ngaySinh && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.ngaySinh}</span></>}
                         </Grid>
 
                         <Grid item xs={6} sx={{ marginTop: 2 }}>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DesktopDatePicker
                                     renderInput={(props) => <TextField {...props} fullWidth />}
-                                    inputFormat="dd/MM/yyyy hh:mm a"
+                                    inputFormat="dd/MM/yyyy"
                                     label="Ngày Vào Làm"
                                     value={employee.ngayVaoLam}
                                     onChange={(newValue) => {
@@ -217,6 +327,7 @@ export default function AddEmployeeForm(props) {
 
                                 onChange={(e) => setEmployee({ ...employee, dienThoai: e.target.value })}
                             />
+                            {error.sdt && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.sdt}</span></>}
                         </Grid>
 
                         <Grid item xs={6}>
@@ -231,20 +342,23 @@ export default function AddEmployeeForm(props) {
 
                                 onChange={(e) => setEmployee({ ...employee, email: e.target.value })}
                             />
+                            {error.email && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.email}</span></>}
                         </Grid>
 
                         {/* Luong - Bộ Phận */}
                         <Grid item xs={6}>
                             <TextField
-                                value={employee.luong}
-                                inputProps={{ readOnly: props.isView, }}
-                                autoComplete="off"
-                                id="outlined-basic"
                                 label="Lương"
-                                variant="outlined"
-                                fullWidth
-
+                                value={employee.luong}
                                 onChange={(e) => setEmployee({ ...employee, luong: e.target.value })}
+                                name="luong"
+                                id="outlined-basic"
+                                variant="outlined"
+                                autoComplete="off"
+                                fullWidth
+                                InputProps={{
+                                    readOnly: props.isView, inputComponent: NumberFormatCustom,
+                                }}
                             />
                         </Grid>
 

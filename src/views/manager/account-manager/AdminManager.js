@@ -27,14 +27,14 @@ const columns = [
     { id: 'email', label: 'Email', minWidth: 100 },
     { id: 'diaChi', label: 'Địa chỉ', minWidth: 100 },
     { id: 'boPhanid', label: 'Bộ phận', minWidth: 100 },
-    { id: 'ngayVaoLam', label: 'Ngày đăng kí', minWidth: 100 },
+    { id: 'ngayVaoLam', label: 'Ngày Vào Làm', minWidth: 100 },
 ];
 
 export default function StickyHeadTable() {
     const dispatch = useDispatch();
     const listaccinrow = [];
     const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [addForm, setAddForm] = React.useState(false);
     const [editForm, setEditForm] = React.useState(false);
     const [isView, setIsView] = React.useState(false);
@@ -161,9 +161,10 @@ export default function StickyHeadTable() {
                     </Table>
                 </TableContainer>
                 <TablePagination
-                    rowsPerPageOptions={[10, 25, 100]}
+                    labelRowsPerPage='Số hàng'
+                    rowsPerPageOptions={[5, 10, 25, 100]}
                     component="div"
-                    count={rows.length}
+                    count={listacc.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}

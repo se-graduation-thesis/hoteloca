@@ -84,12 +84,12 @@ export default function Payment() {
             data_bill_show.phong = JSON.stringify(phong).replaceAll('["', '').replaceAll('"]', '')
             // billDetail.tongDichvu = gia;
             data_bill_show.giaCheckin = gia
-            data_bill_show.countDay = DaysBetween(billDetail.ngayVao, billDetail.ngayRa)
-            data_bill_show.giaPhong = gia * DaysBetween(billDetail.ngayVao, billDetail.ngayRa)
+            data_bill_show.countDay = Math.round(DaysBetween(billDetail.ngayVao, billDetail.ngayRa))
+            data_bill_show.giaPhong = gia * Math.round(DaysBetween(billDetail.ngayVao, billDetail.ngayRa))
             data_bill_show.tienCoc = billDetail.tienCoc
             data_bill_show.phiDv = phiDv
             data_bill_show.listDichvu = billServiceDetailShow
-            data_bill_show.tongChiPhi = gia * DaysBetween(billDetail.ngayVao, billDetail.ngayRa) + phiDv - billDetail.tienCoc
+            data_bill_show.tongChiPhi = gia * Math.round(DaysBetween(billDetail.ngayVao, billDetail.ngayRa)) + phiDv
             data_bill_show.khachHang = billDetail.khachHangid
             data_bill_show.nhanVien = billDetail.nhanVienid
             setBillShow(data_bill_show)

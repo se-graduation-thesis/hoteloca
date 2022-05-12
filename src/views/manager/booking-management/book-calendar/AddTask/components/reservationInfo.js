@@ -8,10 +8,9 @@ import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import moment_t from "moment-timezone";
 import { DateTimePicker, LocalizationProvider } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import imga from "assets/images/icons/room.png"
-import NumberFormat from 'react-number-format';
+import Customer from "views/manager/account-manager/customer-management/Customer";
 
-export default function ReservationInfo({ reservation, handleReservation, token, complete, handleCompleteButton, handleComplete }) {
+export default function ReservationInfo({ reservation, handleReservation, setReservation, token, complete, handleCompleteButton, handleComplete }) {
 
     const dispatch = useDispatch();
     // const account = useSelector((state) => state.account.userAuth);
@@ -22,6 +21,11 @@ export default function ReservationInfo({ reservation, handleReservation, token,
 
     const [list_room_hotel, setListRoomHotel] = useState([]);
     const room = useSelector((state) => state.room.empty_room);
+    const currentRoom = useSelector(state => state.room.room_id);
+    useEffect(() => {
+        dispatch(actionRoom.get_by_id(token))
+    }, [])
+
     useEffect(() => {
         let room_find = {
             trangThai: 0,
@@ -29,12 +33,52 @@ export default function ReservationInfo({ reservation, handleReservation, token,
             ngayRa: reservation.ngayRa
         }
         dispatch(actionRoom.get_empty_room(room_find))
+
+        let numberDate = countDate();
+        let count = numberDate.days;
+        if (numberDate.days < 0)
+            count = 0
+        else if (numberDate.days === 0) {
+            if (numberDate.hours === 0 && numberDate.minutes === 0)
+                count = 0
+            else if (numberDate.hours < 12)
+                count = 0.5
+            else
+                count = 1
+        }
+        else {
+            if (numberDate.hours >= 18)
+                count += 1
+            else if (numberDate.hours >= 6)
+                count += 0.5
+        }
+        if (checkin)
+            handleReservation('tienCoc', count * currentRoom.loaiPhongid.donGia + currentRoom.loaiPhongid.donGia)
+        else
+            handleReservation('tienCoc', count * currentRoom.loaiPhongid.donGia)
+
     }, [reservation.ngayVao, reservation.ngayRa])
     useEffect(() => {
         if (room) {
             setListRoomHotel(room)
         }
     }, [room])
+
+    const [checkin, setCheckin] = useState(false);
+    useEffect(() => {
+        let tienCoc = reservation.tienCoc;
+        if (checkin) {
+            handleReservation('tienCoc', tienCoc + currentRoom.loaiPhongid.donGia);
+            setReservation({ ...reservation, tienCoc: tienCoc + currentRoom.loaiPhongid.donGia, checkIn: moment_t.tz(new Date(), "Asia/Ho_Chi_Minh").format() })
+        }
+        else {
+            handleReservation('checkIn', null)
+            if (tienCoc !== 0) {
+                setReservation({ ...reservation, tienCoc: tienCoc - currentRoom.loaiPhongid.donGia, checkIn: null })
+            }
+        }
+
+    }, [checkin])
 
     const [stateRoom, setStateRoom] = useState(false);
     useEffect(() => {
@@ -62,6 +106,33 @@ export default function ReservationInfo({ reservation, handleReservation, token,
 
         }
     }, [complete === true])
+
+    const countDate = () => {
+
+        let offset = new Date(reservation.ngayRa).getTime() - new Date(reservation.ngayVao).getTime();
+
+        const days = Math.floor(offset / 1000 / 60 / 60 / 24);
+
+        offset -= days * 1000 * 60 * 60 * 24; // giảm offset đi
+
+        const hours = Math.floor(offset / 1000 / 60 / 60);
+
+        offset -= hours * 1000 * 60 * 60; // giảm offset đi
+
+        const minutes = Math.floor(offset / 1000 / 60);
+
+        offset -= minutes * 1000 * 60;
+
+        const seconds = Math.floor(offset / 1000);
+
+        // console.log(days + " ngày " + hours + " giờ " + minutes + " phút " + seconds + " giây");
+        return {
+            days,
+            hours,
+            minutes
+        }
+    }
+
 
     return (
         <>
@@ -125,8 +196,18 @@ export default function ReservationInfo({ reservation, handleReservation, token,
                     !stateRoom ?
                         <Grid item xs={12}>
                             <WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /><span style={{ color: 'red', marginLeft: 10 }}>Thời gian không hợp lệ. Vui lòng chọn thời gian khác</span>
-                        </Grid> : <></>
+                        </Grid> :
+                        <Grid item xs={12}>
+                            <span style={{ marginLeft: 10, color: 'green', fontStyle: 'italic' }}>{countDate().days} ngày {countDate().hours} giờ {countDate().minutes} phút</span>
+                        </Grid>
+
                 }
+
+                <Grid item xs={12}>
+                    <FormGroup>
+                        <FormControlLabel control={<Checkbox onChange={e => setCheckin(e.target.checked)} />} label="Check - In" />
+                    </FormGroup>
+                </Grid>
 
                 {/* Tiền cọc */}
                 <Grid item xs={12} sx={{ marginTop: 2 }}>
@@ -136,27 +217,8 @@ export default function ReservationInfo({ reservation, handleReservation, token,
                         label="Tiền Cọc"
                         variant="outlined"
                         fullWidth
-
-                        onChange={(e) => handleReservation('tienCoc', e.target.value.replaceAll(',', ''))}
+                        inputProps={{ readOnly: true, }}
                     />
-                    {/* <NumberFormat customInput={TextField}
-                        thousandSeparator={true}
-                        id="tienCoc"
-                        label="Tiền Cọc *"
-                        variant="outlined"
-                        helperText=" "
-                        autoComplete='off'
-                        name="tienCoc"
-                        type="t"
-                        InputProps={{
-                            endAdornment: <InputAdornment position="end">VND</InputAdornment>,
-                        }}
-                        inputProps={{
-                            maxLength: 15,
-                        }}
-                        fullWidth
-                        value={reservation.tienCoc}
-                        onChange={(e) => handleReservation('tienCoc', e.target.value)} /> */}
                 </Grid>
 
                 {/* Yêu Cầu */}

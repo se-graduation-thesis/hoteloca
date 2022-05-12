@@ -153,7 +153,8 @@ function AddTaskDrawer(props) {
     ngayLap: moment_t.tz(new Date(), "Asia/Ho_Chi_Minh").format(),
     ngayVao: moment_t.tz(props.dateChoice, "Asia/Ho_Chi_Minh").format(),
     ngayRa: moment_t.tz(props.dateChoice, "Asia/Ho_Chi_Minh").format(),
-    tienCoc: '',
+    checkIn: null,
+    tienCoc: 0,
     trangThai: 1,
     yeuCau: '',
     khachHangid: null
@@ -266,6 +267,7 @@ function AddTaskDrawer(props) {
                 activeStep === 1 ?
                   <ReservationInfo reservation={reservation}
                     handleReservation={handleReservation}
+                    setReservation={setReservation}
                     token={token}
                     complete={completeButton}
                     handleCompleteButton={handleCompleteButton}
