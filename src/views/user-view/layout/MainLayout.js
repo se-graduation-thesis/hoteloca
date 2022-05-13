@@ -152,7 +152,7 @@ export default function NavbarMainLayout() {
                 setAccountShow(JSON.parse(account))
             } else {
                 dispatch(cus_actions.getCustomerById(account.user_id))
-                setAccountShow(JSON.parse(account.user_id))
+                setAccountShow(account.user_id)
             }
 
         }
@@ -185,15 +185,17 @@ export default function NavbarMainLayout() {
                                 <Button variant="contained" color="secondary" onClick={() => navigate("/register")}>Đăng kí</Button>
                             </Box> :
                                 <Box style={{ display: 'flex', alignItems: 'center' }}>
-                                    <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+                                    <Avatar sx={{ width: 32, height: 32 }}>{customer?.ho}</Avatar>
                                     <span style={{ color: 'black', fontWeight: 'bold', marginRight: 30, marginLeft: 10 }}>{customer?.ho + " " + customer?.ten}</span>
-                                    <IconButton aria-label="delete" style={{ color: "black" }}>
+                                    <IconButton onClick={() => navigate("/list-bill")} aria-label="delete" style={{ color: "black" }}>
                                         <Badge badgeContent={bill_show.length} color="secondary">
                                             <CalendarMonthIcon />
                                         </Badge>
+                                        <span style={{ fontSize: 12, marginLeft: 10 }}>ĐƠN ĐẶT CỦA TÔI</span>
                                     </IconButton>
                                     <IconButton aria-label="delete" style={{ color: "black" }} onClick={handleLogout}>
                                         <LogoutIcon />
+                                        <span style={{ fontSize: 12, marginLeft: 10 }}>ĐĂNG XUẤT</span>
                                     </IconButton>
                                 </Box>
                         }

@@ -2,7 +2,7 @@
     display: block;
     visibility: inherit;
     overflow-x: visible;
-    background-color: #F5F5F5;
+    background-color: #47246b;
     /* font-family: 'Courier New', Courier, monospace; */
     border-top: 1px solid gray;
     width: 100%;
@@ -23,20 +23,18 @@
 .bodyNav>ul>li {
     padding: 0px 30px;
     height: 36px;
-
     position: relative;
     box-sizing: border-box;
     overflow: visible;
     visibility: inherit;
-
+    font-weight: bold;
     display: inline-block;
     cursor: pointer;
 }
 
-.active,
-.bodyNav>ul>li:hover {
-    color: #673ab7;
-    font-weight: bold;
+.active {
+    color: white;
+    border-bottom: 1px solid white;
 }
 
 .title {

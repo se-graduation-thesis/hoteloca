@@ -24,26 +24,26 @@ export default function NavBarHomePage() {
                     <ul>
                         <li>
                             <Link to="/" style={{ textDecoration: 'none' }}>
-                                <p className={'title ' + active.home} style={{ borderLeft: 'none' }} onClick={() => handleActive('home')}>Trang chủ</p>
+                                <p className={'title ' + active.home} style={{ borderLeft: 'none', color: 'white' }} onClick={() => handleActive('home')}>Trang chủ</p>
                             </Link>
                         </li>
                         <li style={{ borderLeft: '1px solid #D0D0D0' }}>
-                            <Link to="/list-room" style={{ textDecoration: 'none' }}>
+                            <Link to="/list-room" style={{ textDecoration: 'none', color: 'white' }}>
                                 <p className={'title ' + active.listRoom} onClick={() => handleActive('listRoom')}>Phòng</p>
                             </Link>
                         </li>
                         <li style={{ borderLeft: '1px solid #D0D0D0' }}>
-                            <Link to="#" style={{ textDecoration: 'none' }}>
-                                <p className={'title ' + active.view} onClick={() => handleActive('view')} >Phong Cảnh</p>
+                            <Link to="#" style={{ textDecoration: 'none', color: 'white' }}>
+                                <p className={'title ' + active.view} onClick={() => handleActive('view')} >Về chúng tôi</p>
                             </Link>
                         </li>
                         <li style={{ borderLeft: '1px solid #D0D0D0' }}>
-                            <Link to="#" style={{ textDecoration: 'none' }}>
-                                <p className={'title ' + active.about} onClick={() => handleActive('about')}>Giới Thiệu</p>
+                            <Link to="#" style={{ textDecoration: 'none', color: 'white' }}>
+                                <p className={'title ' + active.about} onClick={() => handleActive('about')}>Liên hệ</p>
                             </Link>
                         </li>
                         <li style={{ borderLeft: '1px solid #D0D0D0' }}>
-                            <Link to="#" style={{ textDecoration: 'none' }}>
+                            <Link to="#" style={{ textDecoration: 'none', color: 'white' }}>
                                 <p className={'title ' + active.contact} onClick={() => handleActive('contact')}>Liên Hệ</p>
                             </Link>
                         </li>

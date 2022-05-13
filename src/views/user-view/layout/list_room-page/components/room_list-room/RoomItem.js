@@ -42,7 +42,7 @@ export default function RoomItem({ room }) {
                         <Button
                             variant="contained"
                             sx={{ backgroundColor: 'pubble', color: 'white' }}
-                            onClick={toDetail}
+                            onClick={() => navigate("/user-booking", { state: room })}
                             startIcon={<ShoppingCartCheckoutIcon />}
                         >
                             Đặt phòng
@@ -63,7 +63,6 @@ export default function RoomItem({ room }) {
                             onClick={toDetail}>
                             Xem thêm
                         </Button>
-
                     </div>
                 </Grid>
             </Grid>
