@@ -24,6 +24,7 @@ import * as actions from "actions/bill.action"
 import { Link, useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import CheckIn from './CheckIn';
+import { da } from 'date-fns/locale';
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
     { id: 'khachhang', label: 'Thông tin khách hàng', minWidth: 100 },
@@ -31,7 +32,6 @@ const columns = [
     { id: 'ngayRa', label: 'Ngày đi', minWidth: 100 },
     { id: 'soluongphong', label: 'Số Lượng Phòng', minWidth: 100 },
     { id: 'tenPhong', label: 'Tên Phòng', minWidth: 100 },
-    { id: 'trangThai', label: 'Trạng thái', minWidth: 100 },
     { id: 'checkIn', label: 'Check-In', minWidth: 100 },
 ];
 
@@ -46,6 +46,7 @@ export default function ListBooking() {
 
     const [open, setOpen] = useState(false);
     const [checkInState, setCheckInState] = useState(false);
+    const [checkInObject, setCheckInObject] = useState({})
     const handleCheckInState = (value) => setCheckInState(value);
     const [openUpdate, setOpenUpdate] = useState(false);
 
@@ -74,15 +75,47 @@ export default function ListBooking() {
         setPage(0);
     };
 
+    const countDate = (ngayVao) => {
+
+        let offset = new Date().getTime() - new Date(ngayVao).setSeconds(0);
+
+        const days = Math.floor(offset / 1000 / 60 / 60 / 24);
+
+        offset -= days * 1000 * 60 * 60 * 24; // giảm offset đi
+
+        const hours = Math.floor(offset / 1000 / 60 / 60);
+
+        offset -= hours * 1000 * 60 * 60; // giảm offset đi
+
+        const minutes = Math.floor(offset / 1000 / 60);
+
+        offset -= minutes * 1000 * 60;
+
+        // console.log(days + " ngày " + hours + " giờ " + minutes + " phút " + seconds + " giây");
+        return {
+            days,
+            hours,
+            minutes
+        }
+    }
+
     useEffect(() => {
         dispatch(actions.fetchBillByStatusAccept())
     }, [])
+
     useEffect(() => {
         if (listBillByStatus.length > 0 && listBillByStatus !== undefined) {
             listBillByStatus.forEach((e, i) => {
                 e.stt = i + 1;
-                e.ngayVao = e.ngayVao
                 e.khachhang = e.khachHangid.ho + " " + e.khachHangid.ten
+                e.ngayVao_old = e.ngayVao
+                e.count = countDate(e.ngayVao_old);
+                if (e.count.days >= 0) {
+                    if (e.count.hours >= 2)
+                        e.trangThai = 4
+                    else if (e.count.hours > 0 || (e.count.hours === 0 && e.count.minutes > 0))
+                        e.trangThai = 3
+                }
                 e.ngayVao = moment(e.ngayVao).format('DD-MM-YYYY HH:mm:ss')
                 e.ngayRa = moment(e.ngayRa).format('DD-MM-YYYY HH:mm:ss')
                 if (e.checkIn)
@@ -103,6 +136,29 @@ export default function ListBooking() {
             setListBillByStatusShow(listBillByStatus)
         }
     }, [listBillByStatus])
+
+    const [autoTime, setAutoTime] = useState(new Date())
+    useEffect(() => {
+        setInterval(() => {
+            setAutoTime(new Date().getMinutes())
+        }, 1000)
+    })
+
+
+    useEffect(() => {
+        listBillByStatusShow.forEach((e) => {
+            e.count = countDate(e.ngayVao_old);
+            if (e.count.days >= 0) {
+                if (e.count.hours >= 2)
+                    dispatch(actions.updateStateOfBill(e.id, 4))
+                else if (e.count.hours > 0 || (e.count.hours === 0 && e.count.minutes > 0))
+                    dispatch(actions.updateStateOfBill(e.id, 3))
+            }
+        })
+        // setListBillByStatusShow(listBillByStatusShow);
+    }, [autoTime])
+
+
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }}>
             <Grid container spacing={1} style={{ padding: 10 }}>
@@ -151,7 +207,7 @@ export default function ListBooking() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {listBillByStatusShow
+                        {listBillByStatusShow.filter(e => e.trangThai !== 4)
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, i) => {
                                 return (
@@ -165,7 +221,7 @@ export default function ListBooking() {
                                                         column.id === 'checkIn' ?
                                                             value ?
                                                                 value :
-                                                                <Button variant="contained" onClick={() => handleCheckInState(true)} >Check - In</Button>
+                                                                <Button variant="contained" color={row["trangThai"] === 3 ? "warning" : "primary"} onClick={() => { handleCheckInState(true); setCheckInObject(row); }} >{row["trangThai"] === 3 ? "Check - In trễ" : "Check - In"}</Button>
                                                             : value}
                                                 </TableCell>
                                             );
@@ -213,7 +269,7 @@ export default function ListBooking() {
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
             <UpdateBrand open={openUpdate} id={id_brand} isShowForm={handleCloseUpdate} />
-            <CheckIn open={checkInState} handleCheckInState={handleCheckInState} />
+            <CheckIn open={checkInState} handleCheckInState={handleCheckInState} checkInObject={checkInObject} />
         </Paper >
     );
 }

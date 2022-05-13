@@ -30,6 +30,16 @@ export const billReducer = (state = initialState, action) => {
                 ...state,
                 bill_by_id: action.payload,
             };
+        case ACTION_TYPES.UPDATE_BILL:
+            return {
+                ...state,
+                listBillByStatusAccept: [...action.payload],
+            };
+        case ACTION_TYPES.UPDATE_STATE_OF_BILL:
+            return {
+                ...state,
+                listBillByStatusAccept: [...action.payload],
+            };
         default:
             return state;
     }

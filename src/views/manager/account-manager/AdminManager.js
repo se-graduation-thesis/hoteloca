@@ -48,7 +48,6 @@ export default function StickyHeadTable() {
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
-
     const handleEditEmployee = (item) => setEditEmployee(item);
     const isShowEditForm = (value) => setEditForm(value);
     const handleIsView = (value) => setIsView(value);

@@ -199,7 +199,8 @@ function AddTaskDrawer(props) {
           phieuThueid: phieuThueid.id,
           phongId: token,
           ngayVao: phieuThueid.ngayVao,
-          ngayRa: phieuThueid.ngayRa
+          ngayRa: phieuThueid.ngayRa,
+          trangThai: 1
         }
         dispatch(actionBillDetail.addBillDetail(billDetail));
 
@@ -215,7 +216,8 @@ function AddTaskDrawer(props) {
             serviceSelect.map((item) => {
               dispatch(actionBillDetailService.add_bill_service_detail({
                 dichVuid: item.id,
-                hoaDonDichVuid: response.data.id
+                hoaDonDichVuid: response.data.id,
+                soLuong: item.soLuong
               }))
             })
           })

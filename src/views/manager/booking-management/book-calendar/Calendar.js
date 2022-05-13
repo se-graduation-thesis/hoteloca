@@ -289,7 +289,7 @@ const CellBase = React.memo(
                 {...provided.droppableProps}
                 ref={provided.innerRef}
               >
-                {tasksOfDay.length === 0 && (
+                {tasksOfDay.filter(e => e.trangThai !== 4).length === 0 && (
                   <Draggable key={uuid()} draggableId={uuid()} index={0}>
                     {(provided) => (
                       <div
@@ -304,7 +304,7 @@ const CellBase = React.memo(
                     )}
                   </Draggable>
                 )}
-                {tasksOfDay.map((task, index) => (
+                {tasksOfDay.filter(e => e.trangThai !== 4).map((task, index) => (
                   <Draggable key={task.id} draggableId={task.id + '0000'} index={index}>
                     {(provided) => (
                       <div
