@@ -1,36 +1,5 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-import Paper from '@mui/material/Paper';
-import Chip from '@mui/material/Chip';
-import { useState, useEffect } from 'react';
-import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ButtonGroup, AlertTitle, FormControl, Snackbar, Grid, IconButton, InputLabel, MenuItem, Select, TextField, Typography, Checkbox } from '@mui/material';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import PaidIcon from '@mui/icons-material/Paid';
-import { useDispatch, useSelector } from 'react-redux';
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import * as actions from 'actions/room.action'
-import * as actionPhongTN from 'actions/phongTN.action';
-import useForm from './useForm'
-import * as actionCustomer from 'actions/customer.action';
-import * as actionService from 'actions/service.action';
 import moment from "moment-timezone";
-import { DateTimePicker, LocalizationProvider } from "@mui/lab";
-import { nations } from "assets/nation"
-import { useNavigate } from 'react-router';
-import Formsy from 'formsy-react';
-import * as cus_actions from "actions/customer.action"
-import imga from "assets/images/icons/room.png"
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import Slide from '@mui/material/Slide';
-import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-import da from 'date-fns/locale/da/index';
-import img from "./paypal.png";
 export default function Payment({ payment }) {
     const disabled = true
     const payment_show = payment
@@ -121,6 +90,7 @@ export default function Payment({ payment }) {
                                             name="cmnd"
                                             type="text"
                                             value={payment?.nhanVienid.cmnd}
+                                            inputProps={{ readOnly: disabled }}
                                             fullWidth
                                             autoComplete='off'
                                         />
@@ -182,20 +152,17 @@ export default function Payment({ payment }) {
                                         />
                                     </Grid>
                                     <Grid item xs={6}>
-                                        <FormControl fullWidth>
-                                            <InputLabel id="qt">Quốc tịch</InputLabel>
-                                            <Select
-                                                labelId="qt"
-                                                id="qt"
-                                                defaultValue="Viet Nam"
-                                                name="quocTich"
-                                                value={payment?.nhanVienid.quocTich}
-                                                inputProps={{ readOnly: disabled }}
-                                                label="Quốc tịch"
-                                            >
-
-                                            </Select>
-                                        </FormControl>
+                                        <TextField
+                                            label="Quốc Tịch *"
+                                            variant="outlined"
+                                            helperText=" "
+                                            name="email"
+                                            type="text"
+                                            fullWidth
+                                            value={payment?.nhanVienid.quocTich}
+                                            inputProps={{ readOnly: disabled }}
+                                            autoComplete='off'
+                                        />
                                     </Grid>
                                 </Grid>
                             </Grid>
