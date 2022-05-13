@@ -86,29 +86,19 @@ export default function InsertBrandDialog(props) {
             }
         }
         if ("soNguoi" in fieldValues) {
-            if (fieldValues.soNguoi === "") {
-                temp.soNguoi = fieldValues.soNguoi ? "" : "Số người không được để trống";
-            }
+            temp.soNguoi = fieldValues.soNguoi ? "" : "Số người không được để trống";
         }
         if ("soGiuong" in fieldValues) {
-            if (fieldValues.soGiuong === "") {
-                temp.soGiuong = fieldValues.soGiuong ? "" : "Số giường không được để trống";
-            }
+            temp.soGiuong = fieldValues.soGiuong ? "" : "Số giường không được để trống";
         }
         if ("chieuDai" in fieldValues) {
-            if (fieldValues.chieuDai === "") {
-                temp.chieuDai = fieldValues.chieuDai ? "" : "Chiều dài không được để trống";
-            }
+            temp.chieuDai = fieldValues.chieuDai ? "" : "Chiều dài không được để trống";
         }
         if ("chieuRong" in fieldValues) {
-            if (fieldValues.chieuRong === "") {
-                temp.chieuRong = fieldValues.chieuRong ? "" : "Chiều rộng không được để trống";
-            }
+            temp.chieuRong = fieldValues.chieuRong ? "" : "Chiều rộng không được để trống";
         }
         if ("donGia" in fieldValues) {
-            if (fieldValues.donGia === "") {
-                temp.donGia = fieldValues.donGia ? "" : "Giá loại phòng không được để trống";
-            }
+            temp.donGia = fieldValues.donGia ? "" : "Giá loại phòng không được để trống";
         }
         setErrors({
             ...temp,
@@ -237,7 +227,6 @@ export default function InsertBrandDialog(props) {
                                     helperText=" "
                                     autoComplete='off'
                                     name="donGia"
-                                    type="t"
                                     InputProps={{
                                         endAdornment: <InputAdornment position="end">VND</InputAdornment>,
                                     }}
@@ -261,7 +250,7 @@ export default function InsertBrandDialog(props) {
                                     multiline
                                     name="moTa"
                                     autoComplete='off'
-                                    rows={4}
+                                    rows={8}
                                     type="text"
                                     fullWidth
                                     value={values.moTa}

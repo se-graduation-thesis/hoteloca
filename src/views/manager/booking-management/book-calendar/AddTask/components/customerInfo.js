@@ -15,7 +15,7 @@ const er = {
     soHoChieu: null
 }
 
-export default function CustomerInfo({ customer, handleCustomer, complete, handleCompleteButton, handleComplete }) {
+export default function CustomerInfo({ customer, handleCustomer, complete, handleCompleteButton, handleComplete, completed }) {
 
     const [error, setError] = useState({
         ho: null,
@@ -28,20 +28,56 @@ export default function CustomerInfo({ customer, handleCustomer, complete, handl
         soHoChieu: null
     });
 
-    const reNum = new RegExp(/\d+$/);
-    const reCMND = new RegExp(/\d{9,12}$/);
-    const reString = new RegExp(/\w+/);
+    const [disable, setDisable] = useState(false);
 
-    const handleCheckValidation = (type, name, tam) => {
+    useEffect(() => {
+        completed['0'] ? setDisable(true) : setDisable(false)
+    }, [completed])
 
-        let value = null;
+    const handleCheckValidation = () => {
+        // const reNum = new RegExp(/\d+$/);
+        const reCMND = new RegExp(/^((\d{9})|(\d{12}))$/);
+        const reSDT = new RegExp(/^(0\d{9})$/);
+        const reEmail = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
+        const reHo = new RegExp(/^[a-zA-ZàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]+$/);
+        const reTen = new RegExp(/^[a-zA-ZàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]{1,15}(?: [a-zA-ZàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]+){0,6}$/);
 
-        if (!type.test(name)) {
-            value = tam + ' là chuỗi ký tự';
+        let cmnd = null;
+        let dienThoai = null;
+        let email = null;
+        let ho = null;
+        let ten = null;
+        let kt = false;
+
+        if (!reCMND.test(customer.cmnd)) {
+            cmnd = 'Số chứng minh nhân dân hoặc căn cước công dân là số chỉ 9 hoặc 12 kí tự';
+            kt = true;
         }
 
-        setError({ ...error, [tam]: value })
+        if (!reSDT.test(customer.dienThoai)) {
+            dienThoai = 'Số điện thoại chỉ chứa 10 số';
+            kt = true;
+        }
 
+        if (!reEmail.test(customer.email)) {
+            email = 'Định dạng email không đúng';
+            kt = true;
+        }
+
+        if (!reHo.test(customer.ho)) {
+            ho = 'Vui lòng không nhập số hay kí tự đặc biệt';
+            kt = true;
+        }
+
+
+        if (!reTen.test(customer.ten)) {
+            ten = 'Vui lòng không nhập số hay kí tự đặc biệt';
+            kt = true;
+        }
+
+        setError({ ...error, cmnd: cmnd, ho: ho, ten: ten, dienThoai: dienThoai, email: email })
+
+        return !kt;
     }
 
     useEffect(() => {
@@ -51,36 +87,17 @@ export default function CustomerInfo({ customer, handleCustomer, complete, handl
 
     useEffect(() => {
         if (complete === true) {
-            let cmnd = null;
-            let ho = null;
-            let ten = null;
-            let dienThoai = null;
-            let kt = false;
-
-            if (!reCMND.test(customer.cmnd)) {
-                cmnd = 'cmnd' + ' là chuỗi ký tự';
-                kt = true;
-            }
-
-            if (!reString.test(customer.ho)) {
-                ho = 'ho' + ' là chuỗi ký tự';
-                kt = true;
-            }
-
-            if (!reString.test(customer.ten)) {
-                ten = 'ten' + ' là chuỗi ký tự';
-                kt = true;
-            }
-
-            if (!reNum.test(customer.dienThoai)) {
-                dienThoai = 'dienThoai' + ' là chuỗi ký tự số';
-                kt = true;
-            }
-
-            setError({ ...error, cmnd: cmnd, ho: ho, ten: ten, dienThoai: dienThoai })
             handleCompleteButton(false);
-            if (!kt)
+            if (handleCheckValidation()) {
+                let address = JSON.stringify({
+                    diaChi: diaChi,
+                    city: tinh,
+                    district: huyen,
+                    ward: xa
+                })
+                handleCustomer('diaChi', address)
                 handleComplete();
+            }
         }
     }, [complete === true])
 
@@ -89,16 +106,34 @@ export default function CustomerInfo({ customer, handleCustomer, complete, handl
     const [tinh, setTinh] = useState('');
     const [huyen, setHuyen] = useState('');
     const [xa, setXa] = useState('');
+    const [diaChi, setDiaChi] = useState('');
+
+    useEffect(() => {
+        if (customer.diaChi !== '') {
+            const data = JSON.parse(customer.diaChi);
+            setTinh(data.city);
+            setDistrict(address.filter(e => e.name === data.city)[0].districts);
+            setHuyen(data.district)
+            setXa(data.ward);
+            setDiaChi(data.diaChi);
+        }
+    }, [customer.diaChi])
+
+    useEffect(() => {
+        if (huyen !== '' && district.length)
+            setWards(district.filter(e => e.name === huyen)[0]?.wards);
+    }, [district])
 
     const getDistrict = (a) => {
         setDistrict(a.districts)
+        setHuyen('')
         setWards([])
     }
 
     const getWards = (a) => {
         setWards(a.wards)
+        setXa('');
     }
-
     return (
         <>
             <Grid container spacing={2}>
@@ -114,24 +149,15 @@ export default function CustomerInfo({ customer, handleCustomer, complete, handl
                         id="outlined-basic"
                         label="CMND/CCCD *"
                         variant="outlined"
+                        autoComplete="off"
                         fullWidth
+                        inputProps={{ readOnly: disable, }}
 
                         onChange={(e) => handleCustomer('cmnd', e.target.value)}
-                        onBlur={() => handleCheckValidation(reCMND, customer.cmnd, 'cmnd')}
                     />
                     {error.cmnd && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.cmnd}</span></>}
                 </Grid>
                 <Grid item xs={6} sx={{ marginTop: 2 }}>
-                    {/* <TextField
-                        value={customer.quocTich}
-                        id="outlined-basic"
-                        label="Quốc Tịch"
-                        variant="outlined"
-                        fullWidth
-
-                        onChange={(e) => handleCustomer('quocTich', e.target.value)}
-                        onBlur={() => handleCheckValidation(reString, customer.quocTich, 'quocTich')}
-                    /> */}
                     <FormControl fullWidth>
                         <InputLabel id="qt">Quốc tịch</InputLabel>
                         <Select
@@ -140,6 +166,8 @@ export default function CustomerInfo({ customer, handleCustomer, complete, handl
                             name="quocTich"
                             value={customer.quocTich}
                             label="Quốc Tịch *"
+                            autoComplete="off"
+                            inputProps={{ readOnly: disable, }}
                             onChange={(e) => handleCustomer('quocTich', e.target.value)}
                         >
                             {
@@ -160,9 +188,10 @@ export default function CustomerInfo({ customer, handleCustomer, complete, handl
                                 label="Số Hộ Chiếu *"
                                 variant="outlined"
                                 fullWidth
+                                autoComplete="off"
+                                inputProps={{ readOnly: disable, }}
 
                                 onChange={(e) => handleCustomer('soHoChieu', e.target.value)}
-                                onBlur={() => handleCheckValidation(reNum, customer.soHoChieu, 'soHoChieu')}
                             />
                         </Grid> : <></>
                 }
@@ -175,9 +204,10 @@ export default function CustomerInfo({ customer, handleCustomer, complete, handl
                         label="Họ *"
                         variant="outlined"
                         fullWidth
+                        autoComplete="off"
+                        inputProps={{ readOnly: disable, }}
 
                         onChange={(e) => handleCustomer('ho', e.target.value)}
-                        onBlur={() => handleCheckValidation(reString, customer.ho, 'ho')}
                     />
                     {error.ho && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.ho}</span></>}
                 </Grid>
@@ -188,9 +218,10 @@ export default function CustomerInfo({ customer, handleCustomer, complete, handl
                         label="Tên *"
                         variant="outlined"
                         fullWidth
+                        autoComplete="off"
+                        inputProps={{ readOnly: disable, }}
 
                         onChange={(e) => handleCustomer('ten', e.target.value)}
-                        onBlur={() => handleCheckValidation(reString, customer.ten, 'ten')}
                     />
                     {error.ten && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.ten}</span></>}
 
@@ -204,9 +235,10 @@ export default function CustomerInfo({ customer, handleCustomer, complete, handl
                         label="Điện Thoại *"
                         variant="outlined"
                         fullWidth
+                        autoComplete="off"
+                        inputProps={{ readOnly: disable, }}
 
                         onChange={(e) => handleCustomer('dienThoai', e.target.value)}
-                        onBlur={() => handleCheckValidation(reNum, customer.dienThoai, 'dienThoai')}
                     />
                     {error.dienThoai && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.dienThoai}</span></>}
                 </Grid>
@@ -217,6 +249,8 @@ export default function CustomerInfo({ customer, handleCustomer, complete, handl
                         label="Email"
                         variant="outlined"
                         fullWidth
+                        autoComplete="off"
+                        inputProps={{ readOnly: disable, }}
 
                         onChange={(e) => handleCustomer('email', e.target.value)}
                     />
@@ -232,6 +266,7 @@ export default function CustomerInfo({ customer, handleCustomer, complete, handl
                             id="demo-simple-select"
                             label="Tỉnh / Thành phố"
                             value={tinh}
+                            inputProps={{ readOnly: disable, }}
                             onChange={(e) => setTinh(e.target.value)}
                         >
                             {
@@ -250,6 +285,7 @@ export default function CustomerInfo({ customer, handleCustomer, complete, handl
                             id="demo-simple-select"
                             label="Quận / Huyện"
                             value={huyen}
+                            inputProps={{ readOnly: disable, }}
                             onChange={(e) => setHuyen(e.target.value)}
                         >
                             {
@@ -268,6 +304,7 @@ export default function CustomerInfo({ customer, handleCustomer, complete, handl
                             id="demo-simple-select"
                             label="Xã / Phường"
                             value={xa}
+                            inputProps={{ readOnly: disable, }}
                             onChange={(e) => setXa(e.target.value)}
                         >
                             {
@@ -280,13 +317,15 @@ export default function CustomerInfo({ customer, handleCustomer, complete, handl
                 </Grid>
                 <Grid item xs={6} sx={{ marginTop: 2 }}>
                     <TextField
-                        value={customer.diaChi}
+                        value={diaChi}
                         id="outlined-basic"
                         label="Địa chỉ"
                         variant="outlined"
                         fullWidth
 
-                        onChange={(e) => handleCustomer('diaChi', e.target.value)}
+                        autoComplete="off"
+                        inputProps={{ readOnly: disable, }}
+                        onChange={(e) => setDiaChi(e.target.value)}
                     />
                     {error.diaChi && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.diaChi}</span></>}
                 </Grid>

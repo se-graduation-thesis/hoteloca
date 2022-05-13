@@ -36,10 +36,12 @@ export const roomReducer = (state = initialState, action) => {
             }
         case ACTION_TYPES.GET_ROOM_EMPTY:
             return {
+                ...state,
                 empty_room: [...action.payload]
             }
         case ACTION_TYPES.GET_BY_ID:
             return {
+                ...state,
                 room_id: action.payload
             }
         default:

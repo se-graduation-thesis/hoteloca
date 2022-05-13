@@ -9,10 +9,7 @@ export default function ContentHomePage() {
                 <Container className="homepage__container">
                     <h1 style={{ fontSize: 40 }}>HOTELOKA - Cho Thuê Khách Sạn Tại Việt Nam</h1>
                     <span style={{ fontSize: 25, lineHeight: 1 }}>
-                        I'm a paragraph. Click here to add your own text and edit me.
-                        It’s easy. Just click “Edit Text” or double click me to add your own content and make changes to the font.
-                        Feel free to drag and drop me anywhere you like on your page.
-                        I’m a great place for you to tell a story and let your users know a little more about you.
+                        Mọi điều ở đây đều đa sắc, kể cả các khách sạn ở thành phố Hồ Chí Minh. Dù bạn có tìm kiếm một khách sạn sang trọng, một resort nghỉ dưỡng yên bình, hay một homestay mang đậm trải nghiệm địa phương thì Sài Gòn vẫn sẽ khiến bạn hài lòng. Nếu đang mơ về một chuyến khám phá đầy lý thú, còn chờ gì nữa mà không chọn ngay một khách sạn ở thành phố Hồ Chí Minh! Đảm bảo sẽ có vô vàn bất ngờ đang chờ bạn đến trải nghiệm đấy!
                     </span>
                 </Container>
             </div>
@@ -21,7 +18,7 @@ export default function ContentHomePage() {
                 <Container className="homepage__container">
                     <Grid container spacing={2}>
                         <Grid item xs={6}>
-                            <h1 style={{ fontSize: 35 }}>Why book with us</h1>
+                            <h1 style={{ fontSize: 35 }}>Tại sao đặt phòng của chúng tôi</h1>
                             <ul style={{ fontSize: 20, lineHeight: 1.5 }}>
                                 <li>Phòng rộng rãi - thoáng mát</li>
                                 <li>View đẹp với cảnh biển</li>
@@ -46,29 +43,29 @@ export default function ContentHomePage() {
                             <h1 style={{ fontSize: 35, lineHeight: 1 }}>Mọi người nói những điều tốt đẹp nhất ...</h1>
                             <div style={{ paddingRight: 50 }}>
                                 <p style={{ fontSize: 15 }}><i>
-                                    “I'm a testimonial.
-                                    Click to edit me and add text that says something nice about you and your services.
-                                    Let your customers review you and tell their friends how great you are.”
+                                    “Mình vừa trải qua kỳ nghỉ 3 ngày 2 đêm tại Khách sạn.
+                                    Thực sự mình rất ấn tượng và cực kỳ happy vì đã gặp được những con người ở đây thân thiện và khách sạn
+                                    hoàn toàn hoàn hảo theo ý muốn của mình.
+                                    Từ Lễ Tân tới Quản lý, tất cả đều quá chuyên nghiệp, phòng ốc cực kỳ sạch sẽ và làm mình cùng bạn bè rất hài lòng. Nếu có quay lại, nhất định sẽ chọn King's finger làm nơi nghĩ dưỡng. Thân chào!”
                                 </i></p>
-                                <p style={{ textAlign: 'right' }}>Adam Kant</p>
+                                <p style={{ textAlign: 'right' }}>Hoài Giang</p>
                             </div> <br />
 
                             <div style={{ paddingRight: 50 }}>
                                 <p style={{ fontSize: 15 }}><i>
-                                    “I'm a testimonial.
-                                    Click to edit me and add text that says something nice about you and your services.
-                                    Let your customers review you and tell their friends how great you are.”
+                                    “Đã có chuyến công tác ở đây và nghỉ tại khách sạn vài ngày.Ở đây khá gần biển và trung tâm, có hồ bơi khá đẹp trên tầng thượng. Các bạn nhân viên lễ tân niềm nở và luôn hướng dẫn nhiệt tình khiến tôi rất thoải mái khi ở đây!”
                                 </i></p>
-                                <p style={{ textAlign: 'right' }}>Adam Kant</p>
+                                <p style={{ textAlign: 'right' }}>Thanh Hoài Nguyễn</p>
                             </div> <br />
 
                             <div style={{ paddingRight: 50 }}>
                                 <p style={{ fontSize: 15 }}><i>
-                                    “I'm a testimonial.
-                                    Click to edit me and add text that says something nice about you and your services.
-                                    Let your customers review you and tell their friends how great you are.”
+                                    “Mến gửi các bạn dịch vụ tại Hoteloca, chị vừa cùng gia đình ở tai khách sạn, dịch vụ tại khách sạn các em rất tốt, nhân viên cũng rất thân thiện, từ các bạn đặt phòng, làm phòng tới những nhân viên chị gặp gỡ hàng ngày
+                                    Bể bơi của khách sạn cũng rất tốt, bọn nhỏ cũng rất thích và dành rất nhiều thời gian ở đây
+                                    Chị cũng nhận được rất nhiều hỗ trợ từ việc thanh toán, điều chỉnh, hay bất kỳ vấn đề gì liên quan đến phòng, các bạn lúc nào cũng hỗ trợ rất tốt
+                                    Cám ơn các em rất nhiều và mong rằng Hoteloca sẽ còn phát triển mạnh hơn nữa”
                                 </i></p>
-                                <p style={{ textAlign: 'right' }}>Adam Kant</p>
+                                <p style={{ textAlign: 'right' }}>Minh Như</p>
                             </div> <br />
                         </Grid>
 

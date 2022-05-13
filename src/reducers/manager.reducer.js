@@ -17,6 +17,11 @@ export const managerReducer = (state = initialState, action) => {
                 ...state,
                 listManagerNone: [...action.payload],
             };
+        case ACTION_TYPES.ADD_EMPLOYEE:
+            return {
+                ...state,
+                listManager: [...action.payload],
+            };
         default:
             return state;
     }

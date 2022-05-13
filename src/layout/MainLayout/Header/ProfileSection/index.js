@@ -58,7 +58,7 @@ const ProfileSection = () => {
     const handleLogout = () => {
         actions.userlogout()
         localStorage.setItem("user_authenticated", "")
-        navigate("/pages/login")
+        navigate("/login")
     };
 
     const handleClose = (event) => {

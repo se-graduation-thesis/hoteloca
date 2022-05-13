@@ -282,7 +282,7 @@ const FirebaseRegister = () => {
                 setOpen(true)
             }, 3000)
             setTimeout(() => {
-                navigate("/pages/login");
+                navigate("/login");
             }, 6000)
         }
     };

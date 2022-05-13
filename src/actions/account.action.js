@@ -3,7 +3,10 @@ import apiService from "../service/api.service";
 export const ACTION_TYPES = {
     FETCH_ALL_ACCCOUNT: "FETCH_ALL_ACCCOUNT",
     LOGIN: 'LOGIN',
-    LOGOUT: 'LOGOUT'
+    LOGOUT: 'LOGOUT',
+    ADD_ACCOUNT: "ADD_ACCOUNT",
+    CHANGE_STATUS: "CHANGE_STATUS",
+    RESET_PASS: "CHANGE_STATUS"
 
 };
 export const isAuthenticated = (userExitedid) => {
@@ -29,6 +32,42 @@ export const fetchAllAccount = () => (dispatch) => {
         .then((response) => {
             dispatch({
                 type: ACTION_TYPES.FETCH_ALL_ACCCOUNT,
+                payload: response.data,
+            });
+        })
+        .catch((err) => console.log(err));
+};
+export const addAccoutNv = (acc) => (dispatch) => {
+    apiService
+        .account()
+        .addAccoutNv(acc)
+        .then((response) => {
+            dispatch({
+                type: ACTION_TYPES.ADD_ACCOUNT,
+                payload: response.data,
+            });
+        })
+        .catch((err) => console.log(err));
+};
+export const changeStatus = (acc) => (dispatch) => {
+    apiService
+        .account()
+        .updateStatus(acc)
+        .then((response) => {
+            dispatch({
+                type: ACTION_TYPES.CHANGE_STATUS,
+                payload: response.data,
+            });
+        })
+        .catch((err) => console.log(err));
+};
+export const resetPass = (acc) => (dispatch) => {
+    apiService
+        .account()
+        .resetPass(acc)
+        .then((response) => {
+            dispatch({
+                type: ACTION_TYPES.RESET_PASS,
                 payload: response.data,
             });
         })

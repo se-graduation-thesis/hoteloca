@@ -43,6 +43,12 @@ export default function ListCustomerRent() {
         if (listCustomerRent) {
             listCustomerRent.forEach((e, i) => {
                 e.stt = i + 1
+                try {
+                    let object = JSON.parse(e.diaChi);
+                    e.diaChi = object.diaChi + ', ' + object.ward + ', ' + object.district + ', ' + object.city
+                } catch {
+                    console.log("error")
+                }
             })
             setCustomerRents(listCustomerRent)
         }

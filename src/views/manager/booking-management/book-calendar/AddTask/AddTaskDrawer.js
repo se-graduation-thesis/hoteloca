@@ -149,15 +149,27 @@ function AddTaskDrawer(props) {
   const account = useSelector((state) => state.account.userAuth);
 
   const [reservation, setReservation] = React.useState({
-    nhanVienid: JSON.parse(account).user_id,
+    nhanVienid: isJson(account) ? JSON.parse(account).user_id : account.user_id,
     ngayLap: moment_t.tz(new Date(), "Asia/Ho_Chi_Minh").format(),
     ngayVao: moment_t.tz(props.dateChoice, "Asia/Ho_Chi_Minh").format(),
     ngayRa: moment_t.tz(props.dateChoice, "Asia/Ho_Chi_Minh").format(),
-    tienCoc: '',
+    checkIn: null,
+    tienCoc: 0,
     trangThai: 1,
     yeuCau: '',
     khachHangid: null
   })
+
+
+
+  function isJson(str) {
+    try {
+      JSON.parse(str);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
 
   React.useEffect(() => {
     setReservation({ ...reservation, ngayVao: moment_t.tz(props.dateChoice, "Asia/Ho_Chi_Minh").format(), ngayRa: moment_t.tz(props.dateChoice, "Asia/Ho_Chi_Minh").format() })
@@ -250,10 +262,12 @@ function AddTaskDrawer(props) {
                   handleCustomer={handleCustomer}
                   complete={completeButton}
                   handleCompleteButton={handleCompleteButton}
-                  handleComplete={handleComplete} /> :
+                  handleComplete={handleComplete}
+                  completed={completed} /> :
                 activeStep === 1 ?
                   <ReservationInfo reservation={reservation}
                     handleReservation={handleReservation}
+                    setReservation={setReservation}
                     token={token}
                     complete={completeButton}
                     handleCompleteButton={handleCompleteButton}

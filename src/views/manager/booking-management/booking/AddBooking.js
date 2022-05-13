@@ -27,6 +27,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import Slide from '@mui/material/Slide';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import da from 'date-fns/locale/da/index';
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -169,12 +170,25 @@ export default function Payment() {
 
     const { values, setValues, errors, setErrors, handleInputChange, resetForm } =
         useForm(initialFieldValues, validate, 0);
-
+    console.log(account)
     useEffect(() => {
         if (account) {
-            setIdNv(JSON.parse(account).user_id);
+            if (isJson(account)) {
+                setIdNv(JSON.parse(account).user_id);
+            } else {
+                setIdNv(account.user_id)
+            }
         }
     }, [account])
+
+    function isJson(str) {
+        try {
+            JSON.parse(str);
+        } catch (e) {
+            return false;
+        }
+        return true;
+    }
 
     const handleSubmit = (e) => {
         const booking_info = {
@@ -333,13 +347,22 @@ export default function Payment() {
 
     useEffect(() => {
         let depo = 0;
+        let dv = 0
         if (roomSelect.length > 0) {
             roomSelect.forEach((e) => {
                 depo += e.loaiPhongid.donGia
             })
         }
-        setDeposit(depo / 2)
-    }, [roomSelect])
+        if (serviceSelect.length > 0) {
+            serviceSelect.forEach((e) => {
+                dv += e.donGia * e.soLuong
+            })
+        }
+        let day = Math.round(DaysBetween(checkin, checkout))
+        setDeposit(depo * day + dv)
+
+    }, [roomSelect][serviceSelect])
+    console.log(serviceSelect)
     const onChangeCheckIn = (e) => {
         setCheckIn(e)
         let room_find = {
@@ -347,6 +370,20 @@ export default function Payment() {
             ngayRa: moment.tz(checkout, "Asia/Ho_Chi_Minh").format()
         }
         dispatch(actions.get_empty_room(room_find))
+    }
+
+    function DaysBetween(start, end) {
+        const oneDay = 1000 * 60 * 60 * 24;
+        let day = (treatAsUTC(end) - treatAsUTC(start)) / oneDay
+        if (day == 0) {
+            day = 1
+        }
+        return day;
+    }
+    function treatAsUTC(date) {
+        var result = new Date(date);
+        result.setMinutes(result.getMinutes() - result.getTimezoneOffset());
+        return result;
     }
     const onChangeCheckOut = (e) => {
         setCheckOut(e)
@@ -574,10 +611,7 @@ export default function Payment() {
                                     </Grid>
                                 </Grid>
 
-                                <Grid item xs={12} style={{ textAlign: 'right' }}>
-                                    <span style={{ color: "black", fontSize: 18, fontWeight: 'bold' }}>TIỀN CỌC : </span>
-                                    <span style={{ color: "black", fontSize: 18, fontWeight: 'bold' }}>{new Intl.NumberFormat('en-Vn').format(deposit) + " VND"}</span>
-                                </Grid>
+
 
                             </Grid>
                         </Paper>
@@ -601,54 +635,54 @@ export default function Payment() {
                                                     }
                                                 </div>
                                                 <span className="div-lable-span">Thêm các dịch vụ mới</span>
-                                                <IconButton aria-label="delete" color="secondary" onClick={() => setOpen(!open)}>
-                                                    {!open ? <AddCircleOutlineIcon /> : <RemoveCircleOutlineIcon />}
-                                                </IconButton>
                                             </div>
                                         </Grid>
                                     </Grid>
 
                                     {
-                                        open ?
-                                            <div style={{ marginTop: 30 }}>
-                                                <Typography sx={{ fontWeight: 'bold', fontSize: 18, textAlign: 'center  ' }}>BẢNG DANH SÁCH CÁC DỊCH VỤ</Typography>
-                                                <TableContainer style={{ marginTop: 20 }} component={Paper} sx={{ maxHeight: 300 }}>
-                                                    <Table stickyHeader aria-label="sticky table">
-                                                        <TableHead>
-                                                            <TableRow>
-                                                                <TableCell>Tên</TableCell>
-                                                                <TableCell align="center">Đơn Giá</TableCell>
-                                                                <TableCell align="center">Mô Tả</TableCell>
-                                                                <TableCell align="center">Số lượng</TableCell>
-                                                                <TableCell align="center"></TableCell>
+                                        <div style={{ marginTop: 30 }}>
+                                            <Typography sx={{ fontWeight: 'bold', fontSize: 18, textAlign: 'center  ' }}>BẢNG DANH SÁCH CÁC DỊCH VỤ</Typography>
+                                            <TableContainer style={{ marginTop: 20 }} component={Paper} sx={{ maxHeight: 300 }}>
+                                                <Table stickyHeader aria-label="sticky table">
+                                                    <TableHead>
+                                                        <TableRow>
+                                                            <TableCell>Tên</TableCell>
+                                                            <TableCell align="center">Đơn Giá</TableCell>
+                                                            <TableCell align="center">Mô Tả</TableCell>
+                                                            <TableCell align="center">Số lượng</TableCell>
+                                                            <TableCell align="center"></TableCell>
+                                                        </TableRow>
+                                                    </TableHead>
+                                                    <TableBody>
+                                                        {listService.map((row) => (
+                                                            <TableRow
+                                                                key={row.id}
+                                                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                            >
+                                                                <TableCell component="th" scope="row">
+                                                                    {row.ten}
+                                                                </TableCell>
+                                                                <TableCell align="center">{row.donGia}</TableCell>
+                                                                <TableCell align="center">{row.moTa}</TableCell>
+                                                                <TableCell align="center">
+                                                                    <ButtonGroup size="small" aria-label="small outlined button group">
+                                                                        <Button onClick={() => handleDecrement(row.id)}>-</Button>
+                                                                        <Button disabled>{row.soLuong}</Button>
+                                                                        <Button onClick={() => handleIncrement(row.id)}>+</Button>
+                                                                    </ButtonGroup>
+                                                                </TableCell>
+                                                                <TableCell align="center"><Checkbox value={row.id} onChange={(e, checked) => handleService(e, checked)} /></TableCell>
                                                             </TableRow>
-                                                        </TableHead>
-                                                        <TableBody>
-                                                            {listService.map((row) => (
-                                                                <TableRow
-                                                                    key={row.id}
-                                                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                                                >
-                                                                    <TableCell component="th" scope="row">
-                                                                        {row.ten}
-                                                                    </TableCell>
-                                                                    <TableCell align="center">{row.donGia}</TableCell>
-                                                                    <TableCell align="center">{row.moTa}</TableCell>
-                                                                    <TableCell align="center">
-                                                                        <ButtonGroup size="small" aria-label="small outlined button group">
-                                                                            <Button onClick={() => handleDecrement(row.id)}>-</Button>
-                                                                            <Button disabled>{row.soLuong}</Button>
-                                                                            <Button onClick={() => handleIncrement(row.id)}>+</Button>
-                                                                        </ButtonGroup>
-                                                                    </TableCell>
-                                                                    <TableCell align="center"><Checkbox value={row.id} onChange={(e, checked) => handleService(e, checked)} /></TableCell>
-                                                                </TableRow>
-                                                            ))}
-                                                        </TableBody>
-                                                    </Table>
-                                                </TableContainer>
-                                            </div> : <></>
+                                                        ))}
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
+                                        </div>
                                     }
+                                </Grid>
+                                <Grid item xs={12} style={{ textAlign: 'right' }}>
+                                    <span style={{ color: "black", fontSize: 18, fontWeight: 'bold' }}>TIỀN CỌC : </span>
+                                    <span style={{ color: "black", fontSize: 18, fontWeight: 'bold' }}>{new Intl.NumberFormat('en-Vn').format(deposit) + " VND"}</span>
                                 </Grid>
                                 <Grid item xs={12} style={{ textAlign: 'right' }}>
                                     <Button type='submid' color="secondary" variant="contained">Hoàn thành</Button>

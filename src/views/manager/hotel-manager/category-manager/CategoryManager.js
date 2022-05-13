@@ -22,21 +22,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as actions from "actions/category.action"
 import { address } from 'assets/address';
 const columns = [
-    { id: 'stt', label: 'STT', minWidth: 1 },
-    { id: 'ten', label: 'Tên loại phòng', minWidth: 100 },
-    { id: 'soNguoi', label: 'Số Người', minWidth: 100 },
-    { id: 'soGiuong', label: 'Số giường', minWidth: 100 },
-    { id: 'dienTich', label: 'Diện tích', minWidth: 100 },
-    { id: 'donGia', label: 'Đơn giá', minWidth: 100 },
-    { id: 'moTa', label: 'Mô tả', minWidth: 100 },
-    { id: 'hinhAnh', label: 'Ảnh mô tả', minWidth: 100 },
+    { id: 'stt', label: 'STT', minWidth: "5%", whiteSpace: "normal" },
+    { id: 'ten', label: 'Tên loại phòng', minWidth: "10%", whiteSpace: "normal" },
+    { id: 'soNguoi', label: 'Số Người', minWidth: "7%", whiteSpace: "normal" },
+    { id: 'soGiuong', label: 'Số giường', minWidth: "8%", whiteSpace: "normal" },
+    { id: 'dienTich', label: 'Diện tích', minWidth: "8%", whiteSpace: "normal" },
+    { id: 'donGia', label: 'Đơn giá', minWidth: "13%", whiteSpace: "normal" },
+
 ];
 
 export default function CategoryManager() {
     const dispatch = useDispatch();
     const [page, setPage] = useState(0);
     const rows = []
-    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
     const listCategory = useSelector((state) => state.category.listCategory);
     const [listCategoryShow, setListCategory] = useState([])
     const account = useSelector((state) => state.account.userAuth);
@@ -68,11 +67,8 @@ export default function CategoryManager() {
         setPage(0);
     };
     useEffect(() => {
-        if (account) {
-            dispatch(actions.fetchAllCategory())
-        }
-
-    }, [account])
+        dispatch(actions.fetchAllCategory())
+    }, [])
 
     useEffect(() => {
         if (listCategory) {
@@ -105,7 +101,7 @@ export default function CategoryManager() {
                 </Grid>
 
 
-                <Grid item xs={6} style={{ padding: 10, textAlign: "right" }}>
+                {/* <Grid item xs={6} style={{ padding: 10, textAlign: "right" }}>
                     <TextField
                         label="Nhập nội dung tìm kiếm"
                         size="small"
@@ -119,7 +115,7 @@ export default function CategoryManager() {
                             )
                         }}
                     />
-                </Grid>
+                </Grid> */}
             </Grid>
             <TableContainer sx={{ height: '70%' }}>
                 <Table stickyHeader aria-label="sticky table">
@@ -129,12 +125,23 @@ export default function CategoryManager() {
                                 <TableCell
                                     key={column.id}
                                     align={column.align}
-                                    style={{ minWidth: column.minWidth }}
+                                    style={{ width: column.minWidth, whiteSpace: column.whiteSpace }}
                                 >
                                     {column.label}
                                 </TableCell>
                             ))}
                             <TableCell
+                                style={{ width: "25%" }}
+                            >
+                                {"Mô tả"}
+                            </TableCell>
+                            <TableCell
+                                style={{ width: "10%" }}
+                            >
+                                {"Ảnh mô tả"}
+                            </TableCell>
+                            <TableCell
+                                style={{ width: "10%" }}
                                 key={"action"}
                             >
                                 {"Hành động"}
@@ -157,6 +164,13 @@ export default function CategoryManager() {
                                                 </TableCell>
                                             );
                                         })}
+                                        <TableCell style={{ whiteSpace: 'pre-wrap' }}>
+                                            {row.moTa}
+                                        </TableCell>
+                                        <TableCell>
+                                            <img src="http://danlyhotel.com/upload/img/products/b178a1e4709a13e7f26ac2cd9ca79631.jpg" style={{ maxWidth: "100%" }} />
+                                            {/* {row.hinhAnh} */}
+                                        </TableCell>
                                         <TableCell key={row.stt}>
                                             <Tooltip title="Sửa loại phòng">
                                                 <IconButton key={row.stt} onClick={() => handleClickOpenUpdate(row.id)} aria-label="delete" color="primary">
@@ -172,9 +186,10 @@ export default function CategoryManager() {
             </TableContainer>
 
             <TablePagination
-                rowsPerPageOptions={[10, 25, 100]}
+                rowsPerPageOptions={[5, 10, 25, 100]}
                 component="div"
-                count={rows.length}
+                labelRowsPerPage='Số hàng'
+                count={listCategoryShow.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

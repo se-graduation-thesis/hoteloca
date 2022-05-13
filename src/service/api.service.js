@@ -11,12 +11,15 @@ export default {
             addAccoutNv: (account) => axios.put(url + "register", account),
             login: (username, pass) => axios.post(url + "login/" + username + "&" + pass),
             add_admin: (admin) => axios.post(url + "add-admin", admin),
+            resetPass: (acc) => axios.put(url + "reset-password", acc),
+            updateStatus: (acc) => axios.put(url + "update", acc)
         };
     },
     manager(url = baseApi + 'manager/') {
         return {
             fetchAllManager: () => axios.get(url + 'get-all-manager'),
             getNvNoneAccount: () => axios.get(url + 'get-all-manager-not-account'),
+            add_Employee: (employee) => axios.post(url, employee),
         };
     },
     room(url = baseApi + 'room/') {
@@ -58,6 +61,7 @@ export default {
             add_customer: (customer) => axios.post(url, customer),
             listCustomerRent: () => axios.get(url + 'get-all-customer-rent'),
             register: (customer) => axios.put(url + "register", customer),
+            save_customer: (customer) => axios.post(url + "add", customer),
         }
     },
     bill_detail(url = baseApi + 'bill-detail/') {
@@ -104,6 +108,11 @@ export default {
             get_all_day: (day, month, year) => axios.get(url + "get-all-day/" + day + "&&" + month + "&&" + year),
             get_all_month: (month, year) => axios.get(url + "get-all-month/" + month + "&&" + year),
             get_all_year: (year) => axios.get(url + "get-all-year/" + year),
+        }
+    },
+    bo_phan(url = baseApi + 'bophan/') {
+        return {
+            findAll: () => axios.get(url),
         }
     }
 }
