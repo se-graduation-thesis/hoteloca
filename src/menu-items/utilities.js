@@ -31,7 +31,7 @@ const utilities = {
     children: [
         {
             id: 'hotel-manager',
-            title: 'Quản Lý Loại Phòng',
+            title: 'Loại Phòng',
             type: 'item',
             url: '/admin/category-manager',
             icon: icons.IconBuildingSkyscraper,
@@ -39,7 +39,7 @@ const utilities = {
         },
         {
             id: 'loaiphong',
-            title: 'Quản Lý Phòng',
+            title: 'Phòng',
             type: 'item',
             url: '/admin/hotel-management/room',
             icon: icons.IconBuildingWarehouse,
@@ -47,7 +47,7 @@ const utilities = {
         },
         {
             id: 'dchvu',
-            title: 'Quản Lý Dịch Vụ',
+            title: 'Dịch Vụ',
             type: 'item',
             url: '/admin/hotel-management/service',
             icon: icons.IconBrandSlack,
@@ -55,7 +55,7 @@ const utilities = {
         },
         {
             id: 'account-manager',
-            title: 'Quản Lý Tài Khoản',
+            title: 'Tài Khoản',
             type: 'item',
             url: '/admin/account-manager',
             icon: icons.IconUser,
@@ -63,7 +63,7 @@ const utilities = {
         },
         {
             id: 'nv',
-            title: 'Quản Lý Nhân Viên',
+            title: 'Nhân Viên',
             type: 'item',
             url: '/admin/admin-manager',
             breadcrumbs: false,
@@ -71,7 +71,7 @@ const utilities = {
         },
         {
             id: 'kh',
-            title: 'Quản Lý Khách Hàng',
+            title: 'Khách Hàng',
             type: 'item',
             url: '/admin/customer-management',
             icon: icons.IconUsers,
@@ -79,7 +79,7 @@ const utilities = {
         },
         {
             id: 'booking',
-            title: 'Quản Lý Đặt Phòng',
+            title: 'Đặt Phòng',
             type: 'collapse',
             icon: icons.IconReceipt,
             children: [
@@ -108,7 +108,7 @@ const utilities = {
         },
         {
             id: 'hoadon',
-            title: 'Quản Lý Hóa Đơn',
+            title: 'Hóa Đơn',
             type: 'item',
             url: '/admin/receipt-managerment',
             icon: icons.IconReceipt2,
@@ -125,7 +125,7 @@ const utilities = {
                     id: 'tkhd',
                     title: 'Thống kê khách hàng',
                     type: 'item',
-                    url: '/icons/tabler-icons',
+                    url: '/admin/customer-statistics',
                     breadcrumbs: false
                 },
                 {

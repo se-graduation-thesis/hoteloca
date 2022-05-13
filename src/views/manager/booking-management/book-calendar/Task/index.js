@@ -36,20 +36,27 @@ const sliderMarks = [
   },
   {
     value: 1,
-    label: "Doing",
+    label: "New",
   },
   {
     value: 2,
     label: "Done",
+  },
+  {
+    value: 3,
+    label: "Check-in Late",
+  },
+  {
+    value: 4,
+    label: "Cancel",
   },
 ];
 
 function Icon({ trangThai, fontSizeValue }) {
   const className = classNames({
     icon: true,
-    "icon-done": trangThai === 1,
-    "icon-doing": trangThai === 2,
-    "icon-new": trangThai === 0,
+    "icon-new": trangThai === 1,
+    "icon-done": trangThai === 2,
     "icon-closed": trangThai === 3,
   });
   if (trangThai === 2)
@@ -66,7 +73,7 @@ function Icon({ trangThai, fontSizeValue }) {
         style={{ fontSize: fontSizeValue ? fontSizeValue : null }}
       />
     );
-  if (trangThai === 0)
+  if (trangThai === 2)
     return (
       <RadioButtonUncheckedIcon
         className={className}
@@ -165,16 +172,15 @@ function Task({ task }) {
       <div
         className={classNames({
           "task-name": true,
-          "task-name--done": task.trangThai === 1,
-          "task-name--doing": task.trangThai === 2,
-          "task-name--new": task.trangThai === 0,
+          "task-name--done": task.trangThai === 2,
+          "task-name--new": task.trangThai === 1,
           "task-name--closed": task.trangThai === 3,
         })}
         onClick={handleClick}
       >
         {task.phieuThueid.khachHangid.ho} {task.phieuThueid.khachHangid.ten}
       </div>
-      <Popover
+      {/* <Popover
         // id={id}
         open={open}
         anchorEl={anchorEl}
@@ -270,6 +276,8 @@ function Task({ task }) {
                     'trangThai-slider--new': task.trangThai === 0,
                     'trangThai-slider--doing': task.trangThai === 2,
                     'trangThai-slider--done': task.trangThai === 1,
+                    'trangThai-slider--done': task.trangThai === 3,
+                    'trangThai-slider--done': task.trangThai === 4,
                   })}
                 />
               </Box>
@@ -321,7 +329,7 @@ function Task({ task }) {
         isOpenDrawer={isOpenDrawer}
         changeOpenDrawer={handleChangeOpenDrawer}
         onDelete={handleClickDelete}
-      />
+      /> */}
     </div>
   );
 }

@@ -14,6 +14,8 @@ const ListRoom = Loadable(lazy(() => import('views/user-view/layout/list_room-pa
 const RoomDetail = Loadable(lazy(() => import('views/user-view/layout/list_room-page/components/room-detail/RoomDetail')));
 const FooterLayout = Loadable(lazy(() => import('views/user-view/layout/FooterLayout')));
 const Booking = Loadable(lazy(() => import('views/user-view/layout/booking/Booking')));
+const ListBill = Loadable(lazy(() => import('views/user-view/layout/Bill/ListBill')));
+const Billinfo = Loadable(lazy(() => import('views/user-view/layout/Bill/Billinfo')));
 // ==============================|| AUTHENTICATION ROUTING ||============================== //
 
 const HomeRoute = {
@@ -33,12 +35,16 @@ const HomeRoute = {
             element: <RoomDetail />
         },
         {
-            path: '/register',
-            element: <AuthRegister3 />
-        },
-        {
             path: '/user-booking',
             element: <Booking />
+        },
+        {
+            path: '/list-bill',
+            element: <ListBill />
+        },
+        {
+            path: '/bill-info/:bill',
+            element: <Billinfo />
         },
         {
             path: '*',

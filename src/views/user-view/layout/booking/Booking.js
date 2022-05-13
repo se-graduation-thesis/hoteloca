@@ -3,71 +3,74 @@ import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
-import Paper from '@mui/material/Paper';
 import Chip from '@mui/material/Chip';
 import { useState, useEffect } from 'react';
-import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ButtonGroup, AlertTitle, FormControl, Snackbar, Grid, IconButton, InputLabel, MenuItem, Select, TextField, Typography, Checkbox } from '@mui/material';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import PaidIcon from '@mui/icons-material/Paid';
+import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Checkbox, Alert } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import * as actions from 'actions/room.action'
-import * as actionPhongTN from 'actions/phongTN.action';
-import useForm from './useForm'
-import * as actionCustomer from 'actions/customer.action';
 import * as actionService from 'actions/service.action';
 import moment from "moment-timezone";
 import { DateTimePicker, LocalizationProvider } from "@mui/lab";
-import { nations } from "assets/nation"
-import { useNavigate } from 'react-router';
-import Formsy from 'formsy-react';
+import { useNavigate, useLocation } from 'react-router';
 import * as cus_actions from "actions/customer.action"
-import imga from "assets/images/icons/room.png"
 import * as actionBillDetail from 'actions/bill-detail.action';
 import * as actionBill from 'actions/bill.action';
-import * as actionBillService from 'actions/bill-service.action';
-import * as actionBillDetailService from 'actions/bill-service-detail.action';
-import * as actionManager from 'actions/manager.action';
-import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-import da from 'date-fns/locale/da/index';
-import img from "./paypal.png";
-import Payment from './Payment';
-import CustomerInfo from './CustomerInfo'
-const steps = ['Thông tin đặt phòng', 'Chọn phòng', 'Thông tin khách hàng', 'Thanh toán'];
+
+
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import Slide from '@mui/material/Slide';
 import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
-
-
+import * as actionsCategory from "actions/category.action"
+import './booking.css'
+import Payment from './Payment';
+import PayPal from "./PayPal.js"
+import CustomerInfo from './CustomerInfo'
+import ListRoom from './ListRoom'
+import SuccessBooking from './SuccessBooking'
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+const steps = ['Thông tin đặt phòng', 'Chọn phòng', 'Thông tin khách hàng', 'Thanh toán'];
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 const colors = ["primary", "secondary", "info", "error", "success"]
 export default function HorizontalLinearStepper() {
-    const [activeStep, setActiveStep] = React.useState(0);
-    const [skipped, setSkipped] = React.useState(new Set());
+    const { state } = useLocation()
+    const dispatch = useDispatch()
     const account = useSelector((state) => state.account.userAuth);
     const customer = useSelector((state) => state.customer.customer);
-    const handleReset = () => {
-        setActiveStep(0);
-    };
-    const dispatch = useDispatch()
-    const navigate = useNavigate();
-    const services = useSelector(state => state.service.services);
     const room = useSelector((state) => state.room.empty_room);
+    const listCategory = useSelector((state) => state.category.listCategory);
+    const [activeStep, setActiveStep] = React.useState(0);
+    const [skipped, setSkipped] = React.useState(new Set());
     const [checkin, setCheckIn] = useState(new Date)
     const [payment, setPayment] = useState(new Date)
     const [checkout, setCheckOut] = useState(new Date((new Date()).valueOf() + 1000 * 3600 * 24))
     const [list_room_hotel, setListRoomHotel] = useState([]);
-    const [serviceSelect, setServiceSelect] = useState([]);
     const [roomSelect, setRoomSelect] = useState([]);
     const [deposit, setDeposit] = useState(0);
     const [open, setOpen] = useState(false);
-    const [listService, setListService] = useState([])
-    const [open1, setOpen1] = React.useState(false);
+    const [listCategoryShow, setListCategory] = useState([])
+    const [lp, setCategory] = useState(0);
+    const [success, onSuccess] = useState(false)
+
+    const increment = () => {
+        onSuccess(true)
+    }
+    const handleReset = () => {
+        setActiveStep(0);
+    };
+    useEffect(() => {
+        if (state) {
+            let list_state_room = []
+            list_state_room.push(state)
+            setRoomSelect(list_state_room)
+            setActiveStep(2)
+        }
+    }, state)
+
     useEffect(() => {
         if (account) {
             if (isJson(account)) {
@@ -78,6 +81,7 @@ export default function HorizontalLinearStepper() {
 
         }
     }, account)
+
     function isJson(str) {
         try {
             JSON.parse(str);
@@ -86,6 +90,7 @@ export default function HorizontalLinearStepper() {
         }
         return true;
     }
+
     const isStepOptional = (step) => {
         return step === 1;
     };
@@ -96,13 +101,14 @@ export default function HorizontalLinearStepper() {
 
     const handleNext = () => {
         if (activeStep === 0) {
+            setRoomSelect([])
             onFindTime()
         } else if (activeStep === 1) {
             if (roomSelect.length === 0) {
                 return
             }
         } else if (activeStep === 2) {
-            let a = {
+            let bill_add = {
                 ngayVao: checkin,
                 ngayRa: checkout,
                 listRoom: roomSelect,
@@ -110,8 +116,11 @@ export default function HorizontalLinearStepper() {
                 soNgay: Math.round(DaysBetween(checkin, checkout)),
                 tienCoc: deposit
             }
-            setPayment(a)
+            setPayment(bill_add)
         } else if (activeStep === 3) {
+            if (success === false) {
+                return
+            }
             onSubmit()
         }
         let newSkipped = skipped;
@@ -128,22 +137,6 @@ export default function HorizontalLinearStepper() {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
-    const handleSkip = () => {
-        if (!isStepOptional(activeStep)) {
-            throw new Error("You can't skip a step that isn't optional.");
-        }
-
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        setSkipped((prevSkipped) => {
-            const newSkipped = new Set(prevSkipped.values());
-            newSkipped.add(activeStep);
-            return newSkipped;
-        });
-    };
-    const handleClickOpen = () => {
-        setOpen1(true);
-    };
-
     const handleClose = () => {
         setOpen1(false);
         setOpen(false)
@@ -156,6 +149,7 @@ export default function HorizontalLinearStepper() {
         }
         dispatch(actions.get_empty_room(room_find))
     }, [])
+
     useEffect(() => {
         if (room) {
             let set_list_room = []
@@ -168,41 +162,15 @@ export default function HorizontalLinearStepper() {
         }
     }, [room])
 
+    useEffect(() => {
+        if (success === true) {
+            handleNext()
+        }
+    }, [success])
 
     useEffect(() => {
         dispatch(actionService.fetchAllService())
     }, [])
-
-    useEffect(() => {
-        if (services) {
-            let list_tam = []
-            services.forEach((e) => {
-                let service_count = {
-                    donGia: e.donGia,
-                    id: e.id,
-                    moTa: e.moTa,
-                    ten: e.ten,
-                    trangThai: e.trangThai,
-                    soLuong: 1
-                }
-                list_tam.push(service_count)
-            })
-            setListService(list_tam)
-        }
-    }, [services])
-
-    const handleService = (e, checked) => {
-        let i = null;
-        let tam = listService.filter(item => item.id === Number(e.target.value))[0];
-        let arr = null;
-        if (checked === true) {
-            setServiceSelect([...serviceSelect, tam]);
-        }
-        else {
-            arr = serviceSelect.filter(item => item.id !== Number(e.target.value));
-            setServiceSelect(arr);
-        }
-    }
 
     const handleRoom = (e, checked) => {
         let i = null;
@@ -216,101 +184,19 @@ export default function HorizontalLinearStepper() {
             setRoomSelect(arr);
         }
     }
-    const handleIncrement = (id) => {
-        let list_tam = []
-        let list_select = []
-        listService.forEach((e) => {
-            if (e.id === id) {
-                let service_count = {
-                    donGia: e.donGia,
-                    id: e.id,
-                    moTa: e.moTa,
-                    ten: e.ten,
-                    trangThai: e.trangThai,
-                    soLuong: e.soLuong + 1
-                }
-                list_tam.push(service_count)
-            }
-            else {
-                list_tam.push(e)
-            }
-        })
-        serviceSelect.forEach((e) => {
-            if (e.id === id) {
-                let service_count = {
-                    donGia: e.donGia,
-                    id: e.id,
-                    moTa: e.moTa,
-                    ten: e.ten,
-                    trangThai: e.trangThai,
-                    soLuong: e.soLuong + 1
-                }
-                list_select.push(service_count)
-            }
-            else {
-                list_select.push(e)
-            }
-        })
-        setServiceSelect(list_select)
-        setListService(list_tam)
-        // setCounter(counter + 1);
-    };
-    const handleDecrement = (id) => {
-        let list_tam = []
-        let list_select = []
-        listService.forEach((e) => {
-            if (e.id === id) {
-                let service_count = {
-                    donGia: e.donGia,
-                    id: e.id,
-                    moTa: e.moTa,
-                    ten: e.ten,
-                    trangThai: e.trangThai,
-                    soLuong: e.soLuong === 1 ? 1 : e.soLuong - 1
-                }
-                list_tam.push(service_count)
-            }
-            else {
-                list_tam.push(e)
-            }
-        })
-        serviceSelect.forEach((e) => {
-            if (e.id === id) {
-                let service_count = {
-                    donGia: e.donGia,
-                    id: e.id,
-                    moTa: e.moTa,
-                    ten: e.ten,
-                    trangThai: e.trangThai,
-                    soLuong: e.soLuong === 1 ? 1 : e.soLuong - 1
-                }
-                list_select.push(service_count)
-            }
-            else {
-                list_select.push(e)
-            }
-        })
-        setServiceSelect(list_select)
-        setListService(list_tam)
-    };
 
     useEffect(() => {
         let depo = 0;
-        let dv = 0
         if (roomSelect.length > 0) {
             roomSelect.forEach((e) => {
                 depo += e.loaiPhongid.donGia
             })
         }
-        if (serviceSelect.length > 0) {
-            serviceSelect.forEach((e) => {
-                dv += e.donGia * e.soLuong
-            })
-        }
         let day = Math.round(DaysBetween(checkin, checkout))
-        setDeposit(depo * day + dv)
+        setDeposit(depo * day)
 
-    }, [roomSelect][serviceSelect])
+    }, [roomSelect])
+
     const onFindTime = () => {
         let room_find = {
             ngayVao: moment.tz(checkin, "Asia/Ho_Chi_Minh").format(),
@@ -339,11 +225,9 @@ export default function HorizontalLinearStepper() {
         setCheckIn(e)
     }
 
-
     const onSubmit = () => {
         const booking_info = {
             list_room_hotel: roomSelect,
-            // list_service: serviceSelect,
             nhanVienid: 1,
             khachHangid: customer,
             tienCoc: deposit,
@@ -364,31 +248,56 @@ export default function HorizontalLinearStepper() {
                 }
                 dispatch(actionBillDetail.addBillDetail(billDetail));
             })
-            // if (booking_info.list_service.length) {
-            //     const billService = {
-            //         ngayLap: moment.tz(new Date, "Asia/Ho_Chi_Minh").format(),
-            //         tongTien: 0,
-            //         ghiChu: "",
-            //         phieuThueid: phieuThueid
-            //     }
-            //     actionBillService.add_bill_service(billService).then((response) => {
-            //         booking_info.list_service.forEach((item) => {
-            //             dispatch(actionBillDetailService.add_bill_service_detail({
-            //                 dichVuid: item.id,
-            //                 soLuong: item.soLuong,
-            //                 hoaDonDichVuid: response.data.id
-            //             }))
-            //         })
-            //     })
-            // }
             setTimeout(() => {
                 setOpen(true)
             }, 3000)
         }
         )
-
-
     }
+
+    useEffect(() => {
+        dispatch(actionsCategory.fetchAllCategory())
+    }, [])
+    useEffect(() => {
+        if (listCategory) {
+            setListCategory(listCategory)
+        }
+    }, [listCategory])
+    useEffect(() => {
+        if (room) {
+            if (lp === 0) {
+                setListRoomHotel(room.filter(({ trangThaiHomNay }) => trangThaiHomNay === 1))
+            }
+            else {
+                setListRoomHotel(room.filter(({ trangThaiHomNay, loaiPhongid }) => trangThaiHomNay === 1 && loaiPhongid.id === lp))
+            }
+        }
+    }, [room])
+    const handleChange = (event) => {
+        setCategory(event.target.value);
+    };
+    const onFind = () => {
+        let room_find = {
+            trangThai: 0,
+            ngayVao: moment.tz(checkin, "Asia/Ho_Chi_Minh").format(),
+            ngayRa: moment.tz(checkout, "Asia/Ho_Chi_Minh").format()
+        }
+        dispatch(actions.get_empty_room(room_find))
+    }
+    const [scrollPosition, setScrollPosition] = useState(0);
+    const handleScroll = () => {
+        const position = window.pageYOffset;
+        setScrollPosition(position);
+    };
+
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+    let limit = Math.max(document.body.scrollHeight, document.body.offsetHeight,
+        document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight);
 
     return (
         <div style={{ alignContent: "center", display: 'flex', justifyContent: 'center', marginTop: 10 }}>
@@ -401,7 +310,7 @@ export default function HorizontalLinearStepper() {
                             stepProps.completed = false;
                         }
                         return (
-                            <Step key={label} {...stepProps}>
+                            <Step key={label} {...stepProps} >
                                 <StepLabel {...labelProps}>{label}</StepLabel>
                             </Step>
                         );
@@ -409,12 +318,10 @@ export default function HorizontalLinearStepper() {
                 </Stepper>
                 {activeStep === steps.length ? (
                     <React.Fragment>
-                        <Typography sx={{ mt: 2, mb: 1 }}>
-                            Hoàn thành
-                        </Typography>
+                        <SuccessBooking />
                         <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                             <Box sx={{ flex: '1 1 auto' }} />
-                            <Button onClick={handleReset}>Reset</Button>
+                            <Button onClick={handleReset} variant='contained' color='secondary'>Tiếp tục đặt phòng</Button>
                         </Box>
                     </React.Fragment>
                 ) : (
@@ -449,27 +356,93 @@ export default function HorizontalLinearStepper() {
                                 </Grid> :
                                 activeStep === 1 ?
                                     <>
-                                        <Grid container spacing={8}>
+                                        <Grid container spacing={4}>
                                             <Grid xs={12} item><h2>2. CHỌN PHÒNG</h2></Grid>
+
+                                            <Grid xs={6} item>
+                                                <FormControl fullWidth>
+                                                    <InputLabel id="demo-simple-select-label">Loại phòng</InputLabel>
+                                                    <Select
+                                                        labelId="demo-simple-select-label"
+                                                        id="demo-simple-select"
+                                                        value={lp}
+                                                        label="Loại phòng"
+                                                        onChange={handleChange}
+                                                    >
+                                                        <MenuItem value={0}>Tất cả các loại phòng</MenuItem>
+                                                        {
+                                                            listCategoryShow.map((e, i) => (
+                                                                <MenuItem key={i} value={e.id}>{e.ten}</MenuItem>
+                                                            ))
+                                                        }
+                                                    </Select>
+                                                </FormControl>
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                <Button onClick={onFind} variant="contained" sx={{ height: 52, backgroundColor: 'Chocolate', color: 'white' }}>Tìm kiếm</Button>
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                {
+                                                    roomSelect.map((e) => (
+                                                        <Chip style={{ margin: 10 }} label={e.ten + "( " + e.loaiPhongid.ten + " )"} color="secondary"></Chip>
+                                                    ))
+                                                }
+                                            </Grid>
                                             {list_room_hotel.length > 0 ?
                                                 list_room_hotel.map((e, i) => {
                                                     return (
-                                                        <Grid item xs={1} key={i}>
-                                                            <img src={imga} alt="bk" width={"100%"} />
-                                                            <p>{e.ten}</p>
-                                                            <Checkbox
-                                                                value={e.id} onChange={(el, checked) => handleRoom(el, checked)}
-                                                                inputProps={{ 'aria-label': 'controlled' }}
-                                                            />
+                                                        <Grid item xs={10} key={i}>
+                                                            <Grid container>
+                                                                <Grid item xs={10}>
+                                                                    <ListRoom room={e} />
+                                                                </Grid>
+                                                                <Grid item xs={2} style={{
+                                                                    borderTop: '2px solid purple',
+                                                                    borderRight: '2px solid purple',
+                                                                    borderBottom: '2px solid purple',
+                                                                    padding: 10,
+                                                                    display: 'flex',
+                                                                    textAlign: 'center',
+                                                                    justifyContent: 'center',
+                                                                    alignItems: 'center'
+                                                                }}>
+                                                                    <div>
+                                                                        <span style={{ color: 'black', fontWeight: 'bold' }}>Chọn phòng</span>
+                                                                        <Checkbox
+                                                                            value={e.id} onChange={(el, checked) => handleRoom(el, checked)}
+                                                                            defaultChecked={roomSelect.filter(({ id }) => id === e.id).length > 0 ? true : false}
+                                                                            inputProps={{ 'aria-label': 'controlled' }}
+                                                                        />
+                                                                    </div>
+                                                                </Grid>
+                                                            </Grid>
                                                         </Grid>
                                                     )
                                                 }
                                                 ) :
-                                                <Grid item xs={12}>
+                                                <Grid item xs={10}>
                                                     <p style={{ color: 'red', fontWeight: 'bold' }}>Hiện tại không có phòng nào trống trong khoảng thời gian này</p>
                                                 </Grid>
-
                                             }
+                                            <Grid item xs={2} className={scrollPosition < limit - 1500 ? "deposit_po" : "deposit"}>
+                                                <Grid container className="item">
+                                                    <Grid item xs={12} style={{ textAlign: 'center' }} >
+                                                        <p style={{ color: 'black' }}>{roomSelect.length} Phòng</p>
+                                                        <p style={{ color: 'black', fontSize: 20 }}>{new Intl.NumberFormat('en-Vn').format(deposit) + " VND"}</p>
+                                                        <p style={{ color: 'black' }}>{Math.round(DaysBetween(checkin, checkout))} Ngày</p>
+                                                    </Grid>
+                                                    <Grid item xs={12} style={{ textAlign: 'center', marginBottom: 20 }}>
+                                                        {
+                                                            scrollPosition < limit - 1500 ?
+                                                                <Button onClick={handleNext} variant='contained' style={{ backgroundColor: "chocolate" }}>
+                                                                    Tiếp theo
+                                                                </Button> :
+                                                                <CalendarMonthIcon color='secondary' />
+                                                        }
+
+                                                    </Grid>
+                                                </Grid>
+                                            </Grid>
                                             <Grid item xs={12} style={{ textAlign: 'right' }}>
                                                 <span style={{ color: "black", fontSize: 18, fontWeight: 'bold' }}>TIỀN CỌC : </span>
                                                 <span style={{ color: "black", fontSize: 18, fontWeight: 'bold' }}>{new Intl.NumberFormat('en-Vn').format(deposit) + " VND"}</span>
@@ -486,14 +459,13 @@ export default function HorizontalLinearStepper() {
                                                 <Grid item xs={12} >
                                                     <h3>Thanh Toán</h3>
                                                     <Grid item xs={12} style={{ backgroundColor: "#fafafa", padding: 20, border: "1px solid #c7c7c7" }}>
-                                                        <div style={{ padding: 10, marginBottom: 20, backgroundColor: "white", display: 'flex', alignItems: 'center', border: "1px solid #c7c7c7", borderRadius: 5 }}>
-                                                            <img src={img} style={{ width: 80 }} />
-                                                            <span style={{ marginLeft: 20, color: "black", fontWeight: 'bold' }}>Cổng thanh toán Paypal</span>
-                                                        </div>
+                                                        <PayPal deposit={deposit} onClick={increment} />
                                                         <div>
-                                                            <Button variant="contained" size="large">
-                                                                Xác nhận thanh toán
-                                                            </Button>
+                                                            {
+                                                                success ?
+                                                                    <Alert variant="filled" severity="success">Hóa đơn đã được thanh toán</Alert>
+                                                                    : <Alert variant="filled" severity="error">Vui lòng thanh toán hóa đơn</Alert>
+                                                            }
                                                         </div>
                                                     </Grid>
                                                 </Grid>
@@ -503,15 +475,16 @@ export default function HorizontalLinearStepper() {
                         </div>
                         <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                             <Button
-                                color="inherit"
+                                color="secondary"
                                 disabled={activeStep === 0}
                                 onClick={handleBack}
                                 sx={{ mr: 1 }}
+                                variant='contained'
                             >
                                 Trở lại
                             </Button>
                             <Box sx={{ flex: '1 1 auto' }} />
-                            <Button onClick={handleNext}>
+                            <Button onClick={handleNext} variant='contained' color="secondary">
                                 {activeStep === steps.length - 1 ? 'Kết thúc' : 'Tiếp theo'}
                             </Button>
                         </Box>

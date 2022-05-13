@@ -143,7 +143,7 @@ export default function FinalView({ customer, reservation, token, serviceSelect 
                                                     <TableCell>Tên</TableCell>
                                                     <TableCell align="center">Đơn Giá</TableCell>
                                                     <TableCell align="center">Mô Tả</TableCell>
-                                                    <TableCell align="center"></TableCell>
+                                                    <TableCell align="center">Số Lượng</TableCell>
                                                 </TableRow>
                                             </TableHead>
                                             <TableBody>
@@ -157,7 +157,7 @@ export default function FinalView({ customer, reservation, token, serviceSelect 
                                                         </TableCell>
                                                         <TableCell align="center">{row.donGia}</TableCell>
                                                         <TableCell align="center">{row.moTa}</TableCell>
-                                                        <TableCell align="center"></TableCell>
+                                                        <TableCell align="center">{row.soLuong}</TableCell>
                                                     </TableRow>
                                                 ))}
                                             </TableBody>

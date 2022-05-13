@@ -80,6 +80,8 @@ export default {
             fetchAllBillByStatus: (id) => axios.get(url + 'get-all-bill-by-status/' + id),
             add_bill: (bill) => axios.post(url, bill),
             fetchBillById: (id) => axios.get(url + 'get-by-id/' + id),
+            updateBill: (id) => axios.put(url + id),
+            updateStateOfBill: (id, state) => axios.put(url + 'trangThai/' + id + "/" + state),
             fetchAllBillByStatusFinish: () => axios.get(url + 'get-all-bill-by-status-finish/'),
         }
     },

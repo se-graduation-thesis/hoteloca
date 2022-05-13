@@ -151,7 +151,7 @@ export default function Payment() {
 
     const renderButton = () => {
         if (billDetail) {
-            if (billDetail.trangThai === 1) {
+            if (billDetail.trangThai === 1 || billDetail.trangThai === 3) {
                 return (
                     <Button disabled={button} variant="contained" size='large' endIcon={<PaidIcon />} color="secondary" onClick={onSubmit}>
                         Thanh Toán

@@ -171,6 +171,7 @@ export default function ReservationInfo({ reservation, handleReservation, setRes
                             inputFormat="dd/MM/yyyy hh:mm a"
                             label="Ngày Vào"
                             value={reservation.ngayVao}
+                            minDateTime={new Date(reservation.ngayLap)}
                             onChange={(newValue) => {
                                 handleReservation('ngayVao', moment_t.tz(newValue, "Asia/Ho_Chi_Minh").format());
                             }}

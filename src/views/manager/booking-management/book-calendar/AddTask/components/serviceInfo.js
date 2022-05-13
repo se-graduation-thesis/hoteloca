@@ -1,4 +1,4 @@
-import { Checkbox, Chip, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Button, ButtonGroup, Checkbox, Chip, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { useEffect, useState } from "react";
@@ -35,12 +35,40 @@ export default function ServiceInfo({ token, updateService, complete, handleComp
         let tam = services.filter(item => item.id === Number(e.target.value))[0];
         let arr = null;
         if (checked === true) {
+            tam.soLuong = 1;
             setServiceSelect([...serviceSelect, tam]);
         }
         else {
+            tam.soLuong = null;
             arr = serviceSelect.filter(item => item.id !== Number(e.target.value));
             setServiceSelect(arr);
         }
+    }
+
+    const handleIncrement = (id) => {
+        let arr = [];
+        serviceSelect.forEach((e) => {
+            if (e.id === id) {
+                e.soLuong += 1;
+                arr.push(e)
+            } else {
+                arr.push(e)
+            }
+        })
+        setServiceSelect(arr)
+    }
+
+    const handleDecrement = (id) => {
+        let arr = [];
+        serviceSelect.forEach((e) => {
+            if (e.id === id) {
+                e.soLuong > 1 ? e.soLuong -= 1 : e.soLuong
+                arr.push(e)
+            } else {
+                arr.push(e)
+            }
+        })
+        setServiceSelect(arr)
     }
 
     useEffect(() => {
@@ -68,51 +96,53 @@ export default function ServiceInfo({ token, updateService, complete, handleComp
                         <div style={{ width: "100%" }}>
                             {
                                 serviceSelect.map((e, index) => (
-                                    <Chip style={{ margin: 5 }} key={e.id} color={colors[index]} label={e.ten} />
+                                    <Chip style={{ margin: 5 }} key={e.id} color={colors[index]} label={e.soLuong > 1 ? e.ten + " x" + e.soLuong : e.ten} />
                                 ))
                             }
                         </div>
                         <span className="div-lable-span">Thêm các dịch vụ mới</span>
-                        <IconButton aria-label="delete" color="secondary" onClick={() => setOpen(!open)}>
-                            {!open ? <AddCircleOutlineIcon /> : <RemoveCircleOutlineIcon />}
-                        </IconButton>
                     </div>
                 </Grid>
             </Grid>
 
-            {
-                open ?
-                    <div style={{ marginTop: 30 }}>
-                        <Typography sx={{ fontWeight: 'bold', fontSize: 18, textAlign: 'center  ' }}>Bảng danh sách các Dịch vụ</Typography>
-                        <TableContainer component={Paper} sx={{ maxHeight: 300 }}>
-                            <Table stickyHeader aria-label="sticky table">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Tên</TableCell>
-                                        <TableCell align="center">Đơn Giá</TableCell>
-                                        <TableCell align="center">Mô Tả</TableCell>
-                                        <TableCell align="center"></TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {services.map((row) => (
-                                        <TableRow
-                                            key={row.id}
-                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                        >
-                                            <TableCell component="th" scope="row">
-                                                {row.ten}
-                                            </TableCell>
-                                            <TableCell align="center">{row.donGia}</TableCell>
-                                            <TableCell align="center">{row.moTa}</TableCell>
-                                            <TableCell align="center"><Checkbox value={row.id} onChange={(e, checked) => handleService(e, checked)} /></TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </div> : <></>
-            }
+            <div style={{ marginTop: 30 }}>
+                <Typography sx={{ fontWeight: 'bold', fontSize: 18, textAlign: 'center  ' }}>Bảng danh sách các Dịch vụ</Typography>
+                <TableContainer component={Paper} sx={{ maxHeight: 300 }}>
+                    <Table stickyHeader aria-label="sticky table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Tên</TableCell>
+                                <TableCell align="center">Đơn Giá</TableCell>
+                                <TableCell align="center">Mô Tả</TableCell>
+                                <TableCell align="center">Số lượng</TableCell>
+                                <TableCell align="center"></TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {services.map((row) => (
+                                <TableRow
+                                    key={row.id}
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                    <TableCell component="th" scope="row">
+                                        {row.ten}
+                                    </TableCell>
+                                    <TableCell align="center">{row.donGia}</TableCell>
+                                    <TableCell align="center">{row.moTa}</TableCell>
+                                    <TableCell align="center">
+                                        <ButtonGroup size="small" aria-label="small outlined button group">
+                                            <Button disabled={!row.soLuong} onClick={() => handleDecrement(row.id)}>-</Button>
+                                            <Button disabled={!row.soLuong}>{row.soLuong}</Button>
+                                            <Button disabled={!row.soLuong} onClick={() => handleIncrement(row.id)}>+</Button>
+                                        </ButtonGroup>
+                                    </TableCell>
+                                    <TableCell align="center"><Checkbox value={row.id} onChange={(e, checked) => handleService(e, checked)} /></TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </div>
         </>
     )
 }
