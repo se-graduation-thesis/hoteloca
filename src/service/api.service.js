@@ -20,6 +20,7 @@ export default {
             fetchAllManager: () => axios.get(url + 'get-all-manager'),
             getNvNoneAccount: () => axios.get(url + 'get-all-manager-not-account'),
             add_Employee: (employee) => axios.post(url, employee),
+            findById: (id) => axios.get(url + id),
         };
     },
     room(url = baseApi + 'room/') {

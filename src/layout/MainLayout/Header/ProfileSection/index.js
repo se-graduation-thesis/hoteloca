@@ -51,6 +51,16 @@ const ProfileSection = () => {
     const [notification, setNotification] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(-1);
     const [open, setOpen] = useState(false);
+    const account = useSelector((state) => state.account.userAuth);
+    const employeeId = isJson(account) ? JSON.parse(account).user_id : account.user_id;
+    function isJson(str) {
+        try {
+            JSON.parse(str);
+        } catch (e) {
+            return false;
+        }
+        return true;
+    }
     /**
      * anchorRef is used on different componets and specifying one type leads to other components throwing an error
      * */
@@ -198,7 +208,7 @@ const ProfileSection = () => {
                                                 <ListItemButton
                                                     sx={{ borderRadius: `${customization.borderRadius}px` }}
                                                     selected={selectedIndex === 1}
-                                                    onClick={(event) => handleListItemClick(event, 1, '/user/social-profile/posts')}
+                                                // onClick={(event) => handleListItemClick(event, 1, '/user/social-profile/posts')}
                                                 >
                                                     <ListItemIcon>
                                                         <IconUser stroke={1.5} size="1.3rem" />
@@ -207,7 +217,7 @@ const ProfileSection = () => {
                                                         primary={
                                                             <Grid container spacing={1} justifyContent="space-between">
                                                                 <Grid item>
-                                                                    <Typography variant="body2">Thông tin tài khoản</Typography>
+                                                                    <Typography variant="body2" onClick={() => navigate(`/admin/Staff-Info/${employeeId}`)} >Thông tin tài khoản</Typography>
                                                                 </Grid>
                                                                 <Grid item>
                                                                     <Chip

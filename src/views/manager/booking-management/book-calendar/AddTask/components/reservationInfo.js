@@ -167,6 +167,7 @@ export default function ReservationInfo({ reservation, handleReservation, setRes
                 <Grid item xs={6} sx={{ marginTop: 2 }}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DateTimePicker
+                            views={['ngày', 'tháng', 'năm']}
                             renderInput={(props) => <TextField {...props} fullWidth />}
                             inputFormat="dd/MM/yyyy hh:mm a"
                             label="Ngày Vào"

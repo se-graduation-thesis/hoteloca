@@ -4,6 +4,7 @@ export const ACTION_TYPES = {
     FETCH_ALL_MANAGER: "FETCH_ALL_MANAGER",
     FETCH_ALL_MANAGER_NONE_ACCOUNT: "FETCH_ALL_MANAGER_NONE_ACCOUNT",
     ADD_EMPLOYEE: "ADD_EMPLOYEE",
+    FIND_BY_ID: "FIND_BY_ID",
 };
 
 export const fetchAllManager = () => (dispatch) => {
@@ -38,6 +39,19 @@ export const add_Employee = (employee) => (dispatch) => {
         .then((response) => {
             dispatch({
                 type: ACTION_TYPES.ADD_EMPLOYEE,
+                payload: response.data,
+            });
+        })
+        .catch((err) => console.log(err));
+};
+
+export const findById = (id) => (dispatch) => {
+    apiService
+        .manager()
+        .findById(id)
+        .then((response) => {
+            dispatch({
+                type: ACTION_TYPES.FIND_BY_ID,
                 payload: response.data,
             });
         })
