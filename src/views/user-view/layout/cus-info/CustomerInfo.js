@@ -11,7 +11,6 @@ import { address } from 'assets/address';
 import * as actions from "actions/manager.action"
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import PositionedSnackbar from "../components/PositionedSnackbar";
 import UpdatePhone from "./component/UpdatePhone";
 
 const marginTop = 3;
@@ -484,10 +483,6 @@ export default function StaffInfo() {
                             </Button>
                         </DialogActions>
                     </Dialog>
-                </div>
-
-                <div>
-                    <PositionedSnackbar open={snackbarState} message={"Cập nhật Thành Công."} />
                 </div>
 
                 <div>
