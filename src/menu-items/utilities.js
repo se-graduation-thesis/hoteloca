@@ -132,7 +132,7 @@ const utilities = {
                     id: 'tkkh',
                     title: 'Thống kê hóa đơn',
                     type: 'item',
-                    url: '/icons/material-icons',
+                    url: '/admin/bill-statistics',
                     breadcrumbs: false
                 }
             ]
