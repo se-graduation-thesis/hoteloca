@@ -16,6 +16,7 @@ const FooterLayout = Loadable(lazy(() => import('views/user-view/layout/FooterLa
 const Booking = Loadable(lazy(() => import('views/user-view/layout/booking/Booking')));
 const ListBill = Loadable(lazy(() => import('views/user-view/layout/Bill/ListBill')));
 const Billinfo = Loadable(lazy(() => import('views/user-view/layout/Bill/Billinfo')));
+const CustomerInfo = Loadable(lazy(() => import('views/user-view/layout/cus-info/CustomerInfo')));
 // ==============================|| AUTHENTICATION ROUTING ||============================== //
 
 const HomeRoute = {

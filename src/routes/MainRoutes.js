@@ -69,7 +69,7 @@ const MainRoutes = {
             element: <AccountManager />
         },
         {
-            path: '/admin/staff-info/:employeeId',
+            path: '/admin/staff-info',
             element: <StaffInfo />
         },
         {

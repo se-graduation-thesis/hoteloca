@@ -119,5 +119,15 @@ export default {
         return {
             findAll: () => axios.get(url),
         }
-    }
+    },
+    upload(url = baseApi + "storage/") {
+        return {
+            upload_file: (formData) =>
+                axios.post(url + "uploadFile/", formData, {
+                    headers: {
+                        "content-type": "multipart/form-data",
+                    },
+                }),
+        };
+    },
 }
