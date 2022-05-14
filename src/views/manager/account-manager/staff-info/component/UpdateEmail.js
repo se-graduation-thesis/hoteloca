@@ -8,7 +8,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { Divider } from '@mui/material';
 import { useEffect, useState } from 'react';
 
-export default function UpdatePhone(props) {
+export default function UpdateEmail(props) {
 
     const [data, setData] = useState(null);
     useEffect(() => {
@@ -16,20 +16,20 @@ export default function UpdatePhone(props) {
     }, [props.object])
 
     const handleClose = () => {
-        props.handleOpenPhone(false);
+        props.handleOpenEmail(false);
     };
 
     return (
         <div>
             <Dialog open={props.open} onClose={handleClose}>
-                <DialogTitle sx={{ fontSize: 18 }}>CẬP NHẬT SỐ ĐIỆN THOẠI</DialogTitle>
+                <DialogTitle sx={{ fontSize: 18 }}>CẬP NHẬT EMAIL</DialogTitle>
                 <Divider />
                 <DialogContent>
                     <DialogContentText sx={{ fontSize: 18 }}>
-                        Vui lòng nhập số điện thoại của bạn tại đây
+                        Vui lòng nhập email của bạn tại đây
                     </DialogContentText>
-                    <TextField id="outlined-basic" autoFocus fullWidth sx={{ marginTop: 2 }} variant="outlined" value={data?.dienThoai} />
-                    <p>Mã xác thực (OTP) sẽ được gửi đến số điện thoại này để xác minh số điện thoại là của bạn</p>
+                    <TextField id="outlined-basic" autoFocus label="Địa chỉ Email" type="email" fullWidth sx={{ marginTop: 2 }} variant="standard" value={data?.email} />
+                    <p>Mã xác thực (OTP) sẽ được gửi đến email này để xác minh email là của bạn</p>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} variant="outlined">Hủy</Button>
