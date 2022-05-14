@@ -44,7 +44,7 @@ const ReceiptManagerment = Loadable(lazy(() => import('views/manager/receipt-man
 const BrandManager = Loadable(lazy(() => import('views/manager/hotel-manager/brand-manager/BrandManager')));
 const CategoryManager = Loadable(lazy(() => import('views/manager/hotel-manager/category-manager/CategoryManager')));
 const MainCustomerStatistics = Loadable(lazy(() => import('views/manager/statistical/customer-statistics/MainCustomerStatistics')));
-
+const MainBillStatistics = Loadable(lazy(() => import('views/manager/statistical/bill-statistics/MainBillStatistics')));
 
 // sample page routing
 const CustomerManagement = Loadable(lazy(() => import('views/manager/account-manager/customer-management/Customer')));
@@ -159,6 +159,10 @@ const MainRoutes = {
         {
             path: '/admin/customer-management',
             element: <CustomerManagement />
+        },
+        {
+            path: '/admin/bill-statistics',
+            element: <MainBillStatistics />
         },
         {
             path: '/admin/customer-statistics',

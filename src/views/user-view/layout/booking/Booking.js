@@ -138,7 +138,6 @@ export default function HorizontalLinearStepper() {
     };
 
     const handleClose = () => {
-        setOpen1(false);
         setOpen(false)
     };
     useEffect(() => {
