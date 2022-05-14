@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import PositionedSnackbar from "../components/PositionedSnackbar";
 import UpdatePhone from "./component/UpdatePhone";
+import UpdateEmail from "./component/UpdateEmail";
 
 const marginTop = 3;
 
@@ -492,6 +493,7 @@ export default function StaffInfo() {
 
                 <div>
                     <UpdatePhone open={openPhone} handleOpenPhone={handleOpenPhone} object={data} />
+                    <UpdateEmail open={openEmail} handleOpenEmail={handleOpenEmail} object={data} />
                 </div>
             </div>
         </div>
