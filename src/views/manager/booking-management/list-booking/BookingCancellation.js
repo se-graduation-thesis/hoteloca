@@ -7,36 +7,39 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Button, Chip, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip } from '@mui/material';
+import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import Edit from '@mui/icons-material/Edit';
 
-import InsertBrandDialog from './InsertDialog'
-import UpdateBrand from './UpdateDialog'
+import InsertBrandDialog from './InsertBrandDialog'
+import UpdateBrand from './UpdateBrand'
 
 import { useState, useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import * as actions from "actions/customer.action"
-import { address } from 'assets/address';
+import * as actions from "actions/bill.action"
+import moment from 'moment';
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
-    { id: 'ho', label: 'Họ', minWidth: 100 },
-    { id: 'ten', label: 'Tên', minWidth: 100 },
-    { id: 'diaChi', label: 'Địa Chỉ', minWidth: 100 },
-    { id: 'dienThoai', label: 'Số điện thoại', minWidth: 100 },
+    { id: 'khachhang', label: 'Thông tin khách hàng', minWidth: 100 },
+    { id: 'ngayVao', label: 'Ngày đến', minWidth: 100 },
+    { id: 'ngayRa', label: 'Ngày đi', minWidth: 100 },
+    // { id: 'loaiphong', label: 'Loại Phòng', minWidth: 100 },
+    { id: 'soluongphong', label: 'Số Lượng Phòng', minWidth: 100 },
+    { id: 'tenPhong', label: 'Tên Phòng', minWidth: 100 },
+    // { id: 'trangThai', label: 'Ghi chú', minWidth: 100 },
 ];
 
-export default function Customer() {
+export default function BookingCancellation() {
     const dispatch = useDispatch();
     const [page, setPage] = useState(0);
     const rows = []
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const listCustomer = useSelector((state) => state.customer.customers);
-    const [listCustomerShow, setListCustomer] = useState([])
-    const account = useSelector((state) => state.account.userAuth);
+    const listBillByStatus = useSelector((state) => state.bill.listBillByStatusCancel);
+    const [listBillByStatusShow, setListBillByStatusShow] = useState([])
+
     const [open, setOpen] = useState(false);
     const [openUpdate, setOpenUpdate] = useState(false);
 
@@ -64,61 +67,49 @@ export default function Customer() {
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
-    useEffect(() => {
-        if (account) {
-            dispatch(actions.fetchAllCustomer())
-        }
-
-    }, [account])
 
     useEffect(() => {
-        if (listCustomer) {
-            listCustomer.forEach((e, i) => {
-                e.stt = i + 1
-                try {
-                    let object = JSON.parse(e.diaChi);
-                    e.diaChi = object.diaChi + ', ' + object.ward + ', ' + object.district + ', ' + object.city
-                } catch {
-                    console.log("error")
+        dispatch(actions.fetchBillByStatusCancel())
+    }, [])
+    console.log(listBillByStatus)
+    useEffect(() => {
+        if (listBillByStatus.length > 0 && listBillByStatus !== undefined) {
+            listBillByStatus.forEach((e, i) => {
+                e.stt = i + 1;
+                e.ngayVao = e.ngayVao
+                e.khachhang = e.khachHangid.ho + " " + e.khachHangid.ten
+                e.ngayVao = moment(e.ngayVao).format('DD-MM-YYYY HH:mm:ss')
+                e.ngayRa = moment(e.ngayRa).format('DD-MM-YYYY HH:mm:ss')
+                if (e.chiTietPhieuThueList.length > 0) {
+
+                    e.soluongphong = e.chiTietPhieuThueList.length;
+                    let tenphong = "";
+                    e.chiTietPhieuThueList.forEach((e1) => {
+                        tenphong += e1.phongId.ten + " "
+                        // listBillByStatus.loaiphong
+                    });
+                    e.tenPhong = tenphong
                 }
-            })
-            setListCustomer(listCustomer)
-        }
-    }, [listCustomer])
 
-    const onFind = (e) => {
-        console.log(e)
-        if (listCustomer) {
-            let rl = listCustomer.filter((fb) =>
-                fb.ten.toLowerCase().includes(e.target.value.toLowerCase()) || fb.ho.toLowerCase().includes(e.target.value.toLowerCase())
-            )
-            rl.forEach((e, i) => {
-                e.stt = i + 1
             })
-            setListCustomer(rl)
+            setListBillByStatusShow(listBillByStatus)
         }
-    }
+    }, [listBillByStatus])
     return (
-        <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }} style={{ padding: 20 }}>
-            <Grid container spacing={1} style={{ marginTop: 10, padding: 10 }}>
+        <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }}>
+            <Grid container spacing={1} style={{ padding: 10 }}>
                 <Grid item xs={12}>
-                    <h2 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN KHÁCH HÀNG</h2>
-                </Grid>
-                <Grid item xs={12} style={{ marginBottom: 10, padding: 10 }}>
-                    <span style={{ paddingTop: 10, fontWeight: "bold", marginRight: 10 }}>SỐ LƯỢNG KHÁCH HÀNG HIỆN CÓ</span>
-                    <Chip label={listCustomerShow.length} color="primary" />
+                    <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN CÁC ĐƠN ĐẶT HÀNG HIỆN CÓ</h3>
                 </Grid>
                 <Grid item xs={6}>
-                    <Button onClick={handleClickOpen} variant="contained" color="secondary">Thêm khách hàng</Button>
-                    <InsertBrandDialog open={open} isShowForm={handleClose} />
+                    {/* <Button onClick={handleClickOpen} variant="contained" color="secondary">Thêm chi nhánh</Button>
+                    <InsertBrandDialog open={open} isShowForm={handleClose} /> */}
                 </Grid>
-
 
                 <Grid item xs={6} style={{ padding: 10, textAlign: "right" }}>
                     <TextField
-                        label="Nhập tên khách hàng cần tìm"
+                        label="Nhập nội dung tìm kiếm"
                         size="small"
-                        onChange={(e) => onFind(e)}
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="start">
@@ -131,7 +122,7 @@ export default function Customer() {
                     />
                 </Grid>
             </Grid>
-            <TableContainer sx={{ height: '60%' }}>
+            <TableContainer sx={{ height: '70%' }}>
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>
@@ -139,13 +130,12 @@ export default function Customer() {
                                 <TableCell
                                     key={column.id}
                                     align={column.align}
-                                    style={{ width: column.minWidth, whiteSpace: column.whiteSpace }}
+                                    style={{ minWidth: column.minWidth }}
                                 >
                                     {column.label}
                                 </TableCell>
                             ))}
                             {/* <TableCell
-                                style={{ width: "10%" }}
                                 key={"action"}
                             >
                                 {"Hành động"}
@@ -153,11 +143,11 @@ export default function Customer() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {listCustomerShow
+                        {listBillByStatusShow
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row) => {
+                            .map((row, i) => {
                                 return (
-                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.stt}>
+                                    <TableRow hover role="checkbox" tabIndex={-1} key={i}>
                                         {columns.map((column) => {
                                             const value = row[column.id];
                                             return (
@@ -169,24 +159,30 @@ export default function Customer() {
                                             );
                                         })}
                                         {/* <TableCell key={row.stt}>
-                                            <Tooltip title="Sửa loại phòng">
-                                                <IconButton key={row.stt} onClick={() => handleClickOpenUpdate(row.id)} aria-label="delete" color="primary">
-                                                    <Edit />
-                                                </IconButton>
-                                            </Tooltip>
+                                            <IconButton key={row.stt} onClick={() => handleClickOpenUpdate(row.id)} aria-label="delete" color="primary">
+                                                <Edit />
+                                            </IconButton>
                                         </TableCell> */}
                                     </TableRow>
                                 );
                             })}
                     </TableBody>
                 </Table>
+                {
+                    listBillByStatusShow.length ?
+                        <div></div>
+                        :
+                        <div style={{ textAlign: "center" }}>
+                            <Typography style={{ padding: 30, fontSize: 16 }}>Không có đơn nào đã thanh toán </Typography>
+                        </div>
+                }
             </TableContainer>
 
             <TablePagination
+                labelRowsPerPage='Số hàng'
                 rowsPerPageOptions={[5, 10, 25, 100]}
                 component="div"
-                labelRowsPerPage='Số hàng'
-                count={listCustomerShow.length}
+                count={rows.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -194,6 +190,5 @@ export default function Customer() {
             />
             <UpdateBrand open={openUpdate} id={id_brand} isShowForm={handleCloseUpdate} />
         </Paper >
-
     );
 }

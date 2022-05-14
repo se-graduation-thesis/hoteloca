@@ -2,18 +2,16 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
 import { useTheme } from '@mui/material/styles';
-import AppBar from '@mui/material/AppBar';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import PhoneIcon from '@mui/icons-material/Phone';
-import AddTaskIcon from '@mui/icons-material/AddTask';
 import { makeStyles } from '@mui/styles';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
 import ListBooking from './ListBooking'
 import BookingFinish from './BookingFinish';
+import BookingCancellation from './BookingCancellation';
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -87,6 +85,11 @@ export default function FullWidthTabs() {
                         className={classes.wrapper}
                         icon={<ReceiptLongIcon />}
                         label="Danh sách đơn đặt đã hoàn thành" {...a11yProps(1)} />
+
+                    <Tab style={{ padding: 20 }}
+                        className={classes.wrapper}
+                        icon={<PlaylistRemoveIcon />}
+                        label="Danh sách đơn đặt đã quá hạn" {...a11yProps(2)} />
                 </Tabs>
             </Box>
             <SwipeableViews
@@ -102,6 +105,9 @@ export default function FullWidthTabs() {
                 </TabPanel> */}
                 <TabPanel value={value} index={1} dir={theme.direction}>
                     <BookingFinish />
+                </TabPanel>
+                <TabPanel value={value} index={2} dir={theme.direction}>
+                    <BookingCancellation />
                 </TabPanel>
             </SwipeableViews>
         </Box>

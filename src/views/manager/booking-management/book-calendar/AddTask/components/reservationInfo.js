@@ -8,16 +8,28 @@ import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import moment_t from "moment-timezone";
 import { DateTimePicker, LocalizationProvider } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import Customer from "views/manager/account-manager/customer-management/Customer";
 
-export default function ReservationInfo({ reservation, handleReservation, setReservation, token, complete, handleCompleteButton, handleComplete }) {
+export default function ReservationInfo({ reservation, handleReservation, completed, token, complete, handleCompleteButton, handleComplete }) {
 
     const dispatch = useDispatch();
-    // const account = useSelector((state) => state.account.userAuth);
     const listAccount = useSelector((state) => state.manager.listManager);
     useEffect(() => {
         dispatch(actions.fetchAllManager())
     }, [])
+
+    const [data, setData] = useState({
+        nhanVienid: reservation.nhanVienid,
+        ngayLap: moment_t.tz(new Date(), "Asia/Ho_Chi_Minh").format(),
+        ngayVao: moment_t.tz(reservation.ngayVao, "Asia/Ho_Chi_Minh").format(),
+        ngayRa: moment_t.tz(reservation.ngayRa, "Asia/Ho_Chi_Minh").format(),
+        checkIn: null,
+        tienCoc: 0,
+        trangThai: 1,
+        yeuCau: '',
+        khachHangid: null
+    })
+
+    const handleData = (e) => setData({ ...data, [e.target.name]: e.target.value });
 
     const [list_room_hotel, setListRoomHotel] = useState([]);
     const room = useSelector((state) => state.room.empty_room);
@@ -29,8 +41,8 @@ export default function ReservationInfo({ reservation, handleReservation, setRes
     useEffect(() => {
         let room_find = {
             trangThai: 0,
-            ngayVao: reservation.ngayVao,
-            ngayRa: reservation.ngayRa
+            ngayVao: data.ngayVao,
+            ngayRa: data.ngayRa
         }
         dispatch(actionRoom.get_empty_room(room_find))
 
@@ -53,11 +65,12 @@ export default function ReservationInfo({ reservation, handleReservation, setRes
                 count += 0.5
         }
         if (checkin)
-            handleReservation('tienCoc', count * currentRoom.loaiPhongid.donGia + currentRoom.loaiPhongid.donGia)
+            setData({ ...data, tienCoc: count * currentRoom.loaiPhongid.donGia + currentRoom.loaiPhongid.donGia })
         else
-            handleReservation('tienCoc', count * currentRoom.loaiPhongid.donGia)
+            setData({ ...data, tienCoc: count * currentRoom.loaiPhongid.donGia })
 
-    }, [reservation.ngayVao, reservation.ngayRa])
+
+    }, [data.ngayVao, data.ngayRa])
     useEffect(() => {
         if (room) {
             setListRoomHotel(room)
@@ -66,15 +79,14 @@ export default function ReservationInfo({ reservation, handleReservation, setRes
 
     const [checkin, setCheckin] = useState(false);
     useEffect(() => {
-        let tienCoc = reservation.tienCoc;
+        let tienCoc = data.tienCoc;
         if (checkin) {
-            handleReservation('tienCoc', tienCoc + currentRoom.loaiPhongid.donGia);
-            setReservation({ ...reservation, tienCoc: tienCoc + currentRoom.loaiPhongid.donGia, checkIn: moment_t.tz(new Date(), "Asia/Ho_Chi_Minh").format() })
+            setData({ ...data, tienCoc: tienCoc + currentRoom.loaiPhongid.donGia, checkIn: moment_t.tz(new Date(), "Asia/Ho_Chi_Minh").format() })
         }
         else {
-            handleReservation('checkIn', null)
+            setData({ ...data, checkIn: null })
             if (tienCoc !== 0) {
-                setReservation({ ...reservation, tienCoc: tienCoc - currentRoom.loaiPhongid.donGia, checkIn: null })
+                setData({ ...data, tienCoc: tienCoc - currentRoom.loaiPhongid.donGia, checkIn: null })
             }
         }
 
@@ -99,8 +111,9 @@ export default function ReservationInfo({ reservation, handleReservation, setRes
 
     useEffect(() => {
         if (complete === true) {
-            if (stateRoom && reservation.ngayVao <= reservation.ngayRa) {
+            if (stateRoom && data.ngayVao <= data.ngayRa) {
                 handleComplete();
+                handleReservation(data)
             }
             handleCompleteButton(false);
 
@@ -109,7 +122,7 @@ export default function ReservationInfo({ reservation, handleReservation, setRes
 
     const countDate = () => {
 
-        let offset = new Date(reservation.ngayRa).getTime() - new Date(reservation.ngayVao).getTime();
+        let offset = new Date(data.ngayRa).getTime() - new Date(data.ngayVao).getTime();
 
         const days = Math.floor(offset / 1000 / 60 / 60 / 24);
 
@@ -149,17 +162,17 @@ export default function ReservationInfo({ reservation, handleReservation, setRes
                         label="Nhân Viên"
                         variant="outlined"
                         fullWidth
-                        disabled
+                        inputProps={{ readOnly: true, }}
                     />
                 </Grid>
                 <Grid item xs={6} sx={{ marginTop: 2 }}>
                     <TextField
-                        value={moment(reservation.ngayLap).format('DD/MM/YYYY HH:mm:ss')}
+                        value={moment(data.ngayLap).format('DD/MM/YYYY HH:mm:ss')}
                         id="outlined-basic"
                         label="Ngày Lập"
                         variant="outlined"
                         fullWidth
-                        disabled
+                        inputProps={{ readOnly: true, }}
                     />
                 </Grid>
 
@@ -167,14 +180,15 @@ export default function ReservationInfo({ reservation, handleReservation, setRes
                 <Grid item xs={6} sx={{ marginTop: 2 }}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DateTimePicker
-                            views={['ngày', 'tháng', 'năm']}
                             renderInput={(props) => <TextField {...props} fullWidth />}
                             inputFormat="dd/MM/yyyy hh:mm a"
                             label="Ngày Vào"
-                            value={reservation.ngayVao}
-                            minDateTime={new Date(reservation.ngayLap)}
+                            inputProps={{ readOnly: completed['1'], }}
+                            disableOpenPicker={completed['1']}
+                            value={data.ngayVao}
+                            minDateTime={new Date(data.ngayLap)}
                             onChange={(newValue) => {
-                                handleReservation('ngayVao', moment_t.tz(newValue, "Asia/Ho_Chi_Minh").format());
+                                setData({ ...data, ngayVao: moment_t.tz(newValue, "Asia/Ho_Chi_Minh").format() });
                             }}
                         />
                     </LocalizationProvider>
@@ -185,10 +199,12 @@ export default function ReservationInfo({ reservation, handleReservation, setRes
                             renderInput={(props) => <TextField {...props} fullWidth />}
                             inputFormat="dd/MM/yyyy hh:mm a"
                             label="Ngày Ra"
-                            value={reservation.ngayRa}
-                            minDateTime={new Date(reservation.ngayVao)}
+                            inputProps={{ readOnly: completed['1'], }}
+                            disableOpenPicker={completed['1']}
+                            value={data.ngayRa}
+                            minDateTime={new Date(data.ngayVao)}
                             onChange={(newValue) => {
-                                handleReservation('ngayRa', moment_t.tz(newValue, "Asia/Ho_Chi_Minh").format());
+                                setData({ ...data, ngayRa: moment_t.tz(newValue, "Asia/Ho_Chi_Minh").format() });
                             }}
                         />
                     </LocalizationProvider>
@@ -207,14 +223,14 @@ export default function ReservationInfo({ reservation, handleReservation, setRes
 
                 <Grid item xs={12}>
                     <FormGroup>
-                        <FormControlLabel control={<Checkbox onChange={e => setCheckin(e.target.checked)} />} label="Check - In" />
+                        <FormControlLabel control={<Checkbox disabled={completed['1']} onChange={e => setCheckin(e.target.checked)} />} label="Check - In" />
                     </FormGroup>
                 </Grid>
 
                 {/* Tiền cọc */}
                 <Grid item xs={12} sx={{ marginTop: 2 }}>
                     <TextField
-                        value={formatCash(reservation.tienCoc)}
+                        value={formatCash(data.tienCoc)}
                         id="outlined-basic"
                         label="Tiền Cọc"
                         variant="outlined"
@@ -226,16 +242,17 @@ export default function ReservationInfo({ reservation, handleReservation, setRes
                 {/* Yêu Cầu */}
                 <Grid item xs={12} sx={{ marginTop: 2 }}>
                     <TextField
-                        value={reservation.yeuCau}
+                        value={data.yeuCau}
                         id="outlined-basic"
                         label="Yêu Cầu"
+                        name="yeuCau"
                         variant="outlined"
                         fullWidth
                         multiline
                         rows={4}
 
-                        onChange={(e) => handleReservation('yeuCau', e.target.value)}
-
+                        onChange={handleData}
+                        inputProps={{ readOnly: completed['1'], }}
                     />
                 </Grid>
             </Grid>

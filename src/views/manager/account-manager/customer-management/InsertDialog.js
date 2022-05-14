@@ -34,9 +34,11 @@ const initialFieldValues = {
     ten: "",
     dienThoai: "",
     taiKhoan: "",
+    gioiTinh: true,
+    ngayThamGia: new Date(),
     email: "",
     quyen: 1,
-    trangthai: 1,
+    trangThai: 1,
     cmnd: "",
     quocTich: "Viet Nam",
     diaChi: "",
@@ -79,6 +81,10 @@ export default function InsertBrandDialog(props) {
 
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
+    const [tinh, setTinh] = useState('');
+    const [huyen, setHuyen] = useState('');
+    const [xa, setXa] = useState('');
+    const [diaChi, setDiaChi] = useState('');
 
     // const handleClose = () => {
     //     setOpen(false);
@@ -106,13 +112,59 @@ export default function InsertBrandDialog(props) {
         console.error('Register');
     };
 
+    address.sort(function (a, b) {
+        const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+        const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+        if (nameA < nameB) {
+            return -1;
+        }
+        if (nameA > nameB) {
+            return 1;
+        }
+
+        // names must be equal
+        return 0;
+    })
+
     const getDistrict = (a) => {
         setDistrict(a.districts)
         setWards([])
     }
+    useEffect(() => {
+        district.sort(function (a, b) {
+            const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+            const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+            if (nameA < nameB) {
+                return -1;
+            }
+            if (nameA > nameB) {
+                return 1;
+            }
+
+            // names must be equal
+            return 0;
+        })
+    }, [district])
+
     const getWards = (a) => {
         setWards(a.wards)
     }
+    useEffect(() => {
+        wards.sort(function (a, b) {
+            const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+            const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+            if (nameA < nameB) {
+                return -1;
+            }
+            if (nameA > nameB) {
+                return 1;
+            }
+
+            // names must be equal
+            return 0;
+        })
+    }, [wards])
+
     const validate = (fieldValues = values) => {
         let temp = { ...errors };
         if ("cmnd" in fieldValues) {
@@ -218,11 +270,18 @@ export default function InsertBrandDialog(props) {
         if (fieldValues == values) return Object.values(temp).every((x) => x == "");
     };
 
-    const { values, setValues, errors, setErrors, handleInputChange, resetForm } =
+    const { values, errors, setErrors, handleInputChange, resetForm } =
         useForm(initialFieldValues, validate, 0);
 
     const handleSubmit = (e) => {
         if (validate()) {
+            let address = JSON.stringify({
+                diaChi: diaChi,
+                city: tinh,
+                district: huyen,
+                ward: xa
+            })
+            values.diaChi = address;
             dispatch(actionsCustomer.save_customer(values))
             handleClick();
             // resetForm();
@@ -267,7 +326,7 @@ export default function InsertBrandDialog(props) {
                                     {...(errors.ten && { error: true, helperText: errors.ten })}
                                 />
                             </Grid>
-                            <Grid item xs={12}>
+                            <Grid item xs={6}>
                                 <TextField
                                     id="cmnd *"
                                     label="CMND/CCCD"
@@ -279,6 +338,22 @@ export default function InsertBrandDialog(props) {
                                     onChange={handleInputChange}
                                     {...(errors.cmnd && { error: true, helperText: errors.cmnd })}
                                 />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <FormControl fullWidth>
+                                    <InputLabel id="demo-simple-select-label">Giới Tính</InputLabel>
+                                    <Select
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        name="gioiTinh"
+                                        value={values.gioiTinh}
+                                        label="Giới Tính"
+                                        onChange={handleInputChange}
+                                    >
+                                        <MenuItem value={false}>Nữ</MenuItem>
+                                        <MenuItem value={true}>Nam</MenuItem>
+                                    </Select>
+                                </FormControl>
                             </Grid>
                             <Grid item xs={6}>
                                 <TextField
@@ -314,9 +389,9 @@ export default function InsertBrandDialog(props) {
                                         labelId="demo-simple-select-label"
                                         id="demo-simple-select"
                                         label="Tỉnh / Thành phố"
-                                        defaultValue={""}
+                                        value={tinh}
                                         name="city"
-                                        onChange={handleInputChange}
+                                        onChange={e => setTinh(e.target.value)}
                                     >
                                         {
                                             address.map((a) => (
@@ -333,9 +408,9 @@ export default function InsertBrandDialog(props) {
                                         labelId="demo-simple-select-label"
                                         id="demo-simple-select"
                                         label="Quận / Huyện"
-                                        defaultValue={""}
+                                        value={huyen}
                                         name="district"
-                                        onChange={handleInputChange}
+                                        onChange={e => setHuyen(e.target.value)}
                                     >
                                         {
                                             district.map((a) => (
@@ -352,9 +427,9 @@ export default function InsertBrandDialog(props) {
                                         labelId="demo-simple-select-label"
                                         id="demo-simple-select"
                                         label="Xã / Phường"
-                                        defaultValue={""}
+                                        value={xa}
                                         name="ward"
-                                        onChange={handleInputChange}
+                                        onChange={e => setXa(e.target.value)}
                                     >
                                         {
                                             wards.map((a) => (
@@ -372,8 +447,8 @@ export default function InsertBrandDialog(props) {
                                     variant="outlined"
                                     fullWidth
                                     autoComplete='off'
-                                    value={values.diaChi}
-                                    onChange={handleInputChange}
+                                    value={diaChi}
+                                    onChange={e => setDiaChi(e.target.value)}
                                 // {...(errors.address && { error: true, helperText: errors.address })}
                                 />
                             </Grid>

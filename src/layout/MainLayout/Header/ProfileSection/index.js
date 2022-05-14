@@ -217,7 +217,7 @@ const ProfileSection = () => {
                                                         primary={
                                                             <Grid container spacing={1} justifyContent="space-between">
                                                                 <Grid item>
-                                                                    <Typography variant="body2" onClick={() => navigate(`/admin/Staff-Info/${employeeId}`)} >Thông tin tài khoản</Typography>
+                                                                    <Typography variant="body2" onClick={() => { navigate(`/admin/Staff-Info/${employeeId}`); setOpen(false); }} >Thông tin tài khoản</Typography>
                                                                 </Grid>
                                                                 <Grid item>
                                                                     <Chip

@@ -13,7 +13,6 @@ import * as actionBillDetail from 'actions/bill-detail.action';
 import * as actionBill from 'actions/bill.action';
 import * as actionBillService from 'actions/bill-service.action';
 import * as actionBillDetailService from 'actions/bill-service-detail.action';
-import * as cus_actions from "actions/customer.action"
 import FinalView from './components/finalView';
 import PositionedSnackbar from 'views/manager/hotel-management/components/PositionedSnackbar';
 
@@ -98,18 +97,6 @@ function AddTaskDrawer(props) {
 
   // ===================================================================
 
-  const listCus = useSelector((state) => state.customer.customers);
-  React.useEffect(() => {
-    dispatch(cus_actions.fetchAllCustomer());
-  }, [])
-
-  const [listCusCompare, setListCuscompare] = React.useState([]);
-  React.useEffect(() => {
-    if (listCus) {
-      setListCuscompare(listCus)
-    }
-  }, [listCus])
-
   const [customer, setCustomer] = React.useState({
     ho: '',
     ten: '',
@@ -120,30 +107,12 @@ function AddTaskDrawer(props) {
     quocTich: 'Viet Nam',
     soHoChieu: '',
     trangThai: 1,
+    ngayThamGia: moment_t.tz(new Date(), "Asia/Ho_Chi_Minh").format(),
     password: ''
   })
 
-  const cusInitial = {
-    ho: '',
-    ten: '',
-    cmnd: '',
-    diaChi: '',
-    dienThoai: '',
-    email: '',
-    quocTich: 'Viet Nam',
-    soHoChieu: '',
-    trangThai: 1,
-    password: ''
-  }
-
-  React.useEffect(() => {
-    const cus = listCusCompare.filter(e => e.cmnd === customer.cmnd);
-    if (cus.length)
-      setCustomer(...cus);
-  }, [customer.cmnd])
-
-  const handleCustomer = (title, value) => {
-    setCustomer({ ...customer, [title]: value });
+  const handleCustomer = (data) => {
+    setCustomer(data);
   }
 
   const account = useSelector((state) => state.account.userAuth);
@@ -160,8 +129,6 @@ function AddTaskDrawer(props) {
     khachHangid: null
   })
 
-
-
   function isJson(str) {
     try {
       JSON.parse(str);
@@ -175,8 +142,8 @@ function AddTaskDrawer(props) {
     setReservation({ ...reservation, ngayVao: moment_t.tz(props.dateChoice, "Asia/Ho_Chi_Minh").format(), ngayRa: moment_t.tz(props.dateChoice, "Asia/Ho_Chi_Minh").format() })
   }, [props.dateChoice])
 
-  const handleReservation = (title, value) => {
-    setReservation({ ...reservation, [title]: value })
+  const handleReservation = (data) => {
+    setReservation(data)
   }
 
   const [serviceSelect, setServiceSelect] = React.useState([]);
@@ -269,11 +236,11 @@ function AddTaskDrawer(props) {
                 activeStep === 1 ?
                   <ReservationInfo reservation={reservation}
                     handleReservation={handleReservation}
-                    setReservation={setReservation}
                     token={token}
                     complete={completeButton}
                     handleCompleteButton={handleCompleteButton}
-                    handleComplete={handleComplete} /> :
+                    handleComplete={handleComplete}
+                    completed={completed} /> :
                   <ServiceInfo token={token}
                     updateService={handleService}
                     complete={completeButton}

@@ -85,6 +85,7 @@ export default {
             updateBill: (id) => axios.put(url + id),
             updateStateOfBill: (id, state) => axios.put(url + 'trangThai/' + id + "/" + state),
             fetchAllBillByStatusFinish: () => axios.get(url + 'get-all-bill-by-status-finish/'),
+            fetchAllBillByStatusCancel: () => axios.get(url + 'get-all-bill-by-status-cancel/')
         }
     },
     phongTN(url = baseApi + 'phongTN/') {
