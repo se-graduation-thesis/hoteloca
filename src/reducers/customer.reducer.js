@@ -4,6 +4,11 @@ const initialState = {
     customers: [],
     customer: {},
     listCustomerRent: [],
+    customerByYear: [],
+    customerByMonth: [],
+    customerByDay: [],
+    topByYear: [],
+    topByMonth: [],
 };
 
 export const customerReducer = (state = initialState, action) => {
@@ -32,6 +37,31 @@ export const customerReducer = (state = initialState, action) => {
             return {
                 ...state,
                 customers: [...action.payload],
+            }
+        case ACTION_TYPES.GET_CUSTOMER_BY_YEAR:
+            return {
+                ...state,
+                customerByYear: [...action.payload],
+            }
+        case ACTION_TYPES.GET_CUSTOMER_BY_MONTH:
+            return {
+                ...state,
+                customerByMonth: [...action.payload],
+            }
+        case ACTION_TYPES.GET_CUSTOMER_BY_DAY:
+            return {
+                ...state,
+                customerByDay: [...action.payload],
+            }
+        case ACTION_TYPES.TOP_CUSTOMER_BY_YEAR:
+            return {
+                ...state,
+                topByYear: [...action.payload],
+            }
+        case ACTION_TYPES.TOP_CUSTOMER_BY_MONTH:
+            return {
+                ...state,
+                topByMonth: [...action.payload],
             }
         default:
             return state;

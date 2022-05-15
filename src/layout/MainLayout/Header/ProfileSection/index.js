@@ -35,6 +35,8 @@ import MainCard from 'ui-component/cards/MainCard';
 import Transitions from 'ui-component/extended/Transitions';
 import UpgradePlanCard from './UpgradePlanCard';
 import User1 from 'assets/images/users/user-round.svg';
+import * as actionsManager from "actions/manager.action"
+
 
 // assets
 import { IconLogout, IconSearch, IconSettings, IconUser } from '@tabler/icons';
@@ -61,6 +63,10 @@ const ProfileSection = () => {
         }
         return true;
     }
+    const manager = useSelector(state => state.manager.manager)
+    useEffect(() => {
+        dispatch(actionsManager.findById(employeeId))
+    }, [])
     /**
      * anchorRef is used on different componets and specifying one type leads to other components throwing an error
      * */
@@ -123,7 +129,7 @@ const ProfileSection = () => {
                 }}
                 icon={
                     <Avatar
-                        src={User1}
+                        src={manager?.hinhAnh ? manager.hinhAnh : User1}
                         sx={{
                             ...theme.typography.mediumAvatar,
                             margin: '8px 0 8px 8px !important',
@@ -217,7 +223,7 @@ const ProfileSection = () => {
                                                         primary={
                                                             <Grid container spacing={1} justifyContent="space-between">
                                                                 <Grid item>
-                                                                    <Typography variant="body2" onClick={() => { navigate(`/admin/Staff-Info/${employeeId}`); setOpen(false); }} >Thông tin tài khoản</Typography>
+                                                                    <Typography variant="body2" onClick={() => { navigate(`/admin/Staff-Info`); setOpen(false); }} >Thông tin tài khoản</Typography>
                                                                 </Grid>
                                                                 <Grid item>
                                                                     <Chip

@@ -63,6 +63,11 @@ export default {
             listCustomerRent: () => axios.get(url + 'get-all-customer-rent'),
             register: (customer) => axios.put(url + "register", customer),
             save_customer: (customer) => axios.post(url + "add", customer),
+            getKhachHangByYear: (year) => axios.get(url + "thongke/" + year),
+            getKhachHangByMonth: (year, month) => axios.get(url + "thongke/" + year + "/" + month),
+            getKhachHangByDay: (year, month, day) => axios.get(url + "thongke/" + year + "/" + month + "/" + day),
+            topKhachHangByYear: (year) => axios.get(url + "topByYear/" + year),
+            topKhachHangByMonth: (year, month) => axios.get(url + "topByMonth/" + year + "/" + month),
         }
     },
     bill_detail(url = baseApi + 'bill-detail/') {

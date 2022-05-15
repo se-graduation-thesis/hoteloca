@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import * as actionCategory from 'actions/category.action';
 import * as actions from 'actions/room.action';
+import * as actionsUploadFile from 'actions/upload.action';
 import PositionedSnackbar from "../../components/PositionedSnackbar";
 
 
@@ -67,6 +68,21 @@ export default function AddRoomForm(props) {
         props.isShowAddForm(false);
     }
 
+    const [image, setImage] = useState();
+    const [file, setFile] = useState(null);
+
+    const handleImage = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            let reader = new FileReader();
+            let fileTemp = e.target.files[0];
+            setFile(fileTemp)
+            reader.onloadend = () => {
+                setImage(reader.result);
+            };
+            reader.readAsDataURL(fileTemp);
+        }
+    }
+
     const handleCheckValidation = () => {
         const reString = new RegExp(/\w+/);
         let ten = null;
@@ -87,15 +103,36 @@ export default function AddRoomForm(props) {
 
     const submit = () => {
         if (handleCheckValidation()) {
-            dispatch(actions.addRoom(phong));
+            if (file) {
+                const formData = new FormData();
+                formData.append("file", file);
+                actionsUploadFile.upload(formData)
+                    .then((response) => {
+                        phong.hinhAnh = response.data;
+                        dispatch(actions.addRoom(phong));
 
-            props.isShowAddForm(false);
-            reset();
+                        props.isShowAddForm(false);
+                        reset();
 
-            setSnackbarState(true);
-            setTimeout(function () {
-                setSnackbarState(false);
-            }, 3000);
+                        setSnackbarState(true);
+                        setTimeout(function () {
+                            setSnackbarState(false);
+                        }, 3000);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            } else {
+                dispatch(actions.addRoom(phong));
+
+                props.isShowAddForm(false);
+                reset();
+
+                setSnackbarState(true);
+                setTimeout(function () {
+                    setSnackbarState(false);
+                }, 3000);
+            }
         }
 
     }
@@ -144,7 +181,11 @@ export default function AddRoomForm(props) {
 
                         {/* File */}
                         <Grid item xs={12}>
-                            <TextField type="file" inputProps={{ multiple: true, readOnly: props.isView }} id=" outlined-basic" variant="outlined" fullWidth />
+                            <TextField type="file" accept="image/*" onChange={handleImage} inputProps={{ multiple: true, readOnly: props.isView }} id=" outlined-basic" variant="outlined" fullWidth />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            {image && <img src={image} alt="" style={{ width: 490, height: 350 }} />}
                         </Grid>
 
                         {/* Mô Tả */}

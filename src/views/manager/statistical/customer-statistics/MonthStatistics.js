@@ -18,7 +18,6 @@ import Edit from '@mui/icons-material/Edit';
 import { useState, useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import * as actions from "actions/payment.action"
 import { useNavigate } from 'react-router-dom';
 import { Chart as ChartJS, registerables } from 'chart.js';
 import { Bar } from 'react-chartjs-2'
@@ -26,56 +25,47 @@ import moment from 'moment-timezone'
 
 ChartJS.register(...registerables);
 
-export default function DayStatistics({ monthSelect, yearSelect }) {
+export default function MonthStatistics({ yearSelect }) {
     const dispatch = useDispatch();
-    const listCustomer = useSelector((state) => state.customer.customerByMonth);
+    const listCustomer = useSelector((state) => state.customer.customerByYear);
     const [listShow, setListShow] = useState([])
-
-    const getAllDaysInMonth = (year, month) => {
-        const date = new Date(year, month, 1);
-
-        const dates = [];
-
-        while (date.getMonth() === month) {
-            dates.push(new Date(date).getDate());
-            date.setDate(date.getDate() + 1);
-        }
-        return dates;
-    }
-    let day_in_month = getAllDaysInMonth(yearSelect, monthSelect - 1)
+    const listMonth = [
+        "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"
+    ]
+    // useEffect(() => {
+    //     dispatch(actions.getKhachHangByMonth(props.yearSelect, props.monthSelect))
+    // }, [])
     useEffect(() => {
         if (listCustomer) {
+            let list_month = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
             let counts = []
-            day_in_month.forEach((e1) => {
+            list_month.forEach((e1) => {
                 let count = 0;
                 listCustomer.forEach((e) => {
-                    let day = moment(e.ngayThamGia).date();
                     let month = moment(e.ngayThamGia).month() + 1;
                     let year = moment(e.ngayThamGia).year();
                     let year_now = yearSelect
-                    let month_now = monthSelect
-                    if (year_now === year && month_now == month && e1 === day) {
+                    if (month == e1 && year_now === year) {
                         count += 1
                     }
-
                 })
                 counts.push(count)
             })
 
             setListShow(counts)
         }
-    }, [listCustomer, monthSelect, yearSelect])
+    }, [listCustomer, yearSelect])
     return (
         <>
-            <h3>Biểu đồ số lượng khách hàng trong Tháng {monthSelect} / {yearSelect}</h3>
+            <h3>Biểu đồ số lượng khách hàng theo tháng trong năm {yearSelect}</h3>
             <Bar
                 data={{
-                    labels: day_in_month,
+                    labels: listMonth,
                     datasets: [
                         {
                             label: "Số Người",
                             backgroundColor: [
-                                "#008810",
+                                "#ad5a00",
                             ],
                             data: listShow
                         }

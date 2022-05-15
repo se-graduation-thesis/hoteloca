@@ -14,6 +14,7 @@ import { useParams } from "react-router";
 import PositionedSnackbar from "../components/PositionedSnackbar";
 import UpdatePhone from "./component/UpdatePhone";
 import UpdateEmail from "./component/UpdateEmail";
+import * as actionsUploadFile from 'actions/upload.action';
 
 const marginTop = 3;
 
@@ -40,9 +41,8 @@ export default function StaffInfo() {
         dispatch(actions.findById(employeeId))
     }, [])
 
-    const [value, setValue] = useState();
     const [data, setData] = useState({
-        gioiTinh: true
+        gioiTinh: true,
     })
     const [district, setDistrict] = useState([])
     const [wards, setWards] = useState([])
@@ -53,12 +53,41 @@ export default function StaffInfo() {
     const [ten, setTen] = useState('')
     const [confirm, setConfirm] = useState(false);
     const [snackbarState, setSnackbarState] = useState(false);
+    const [image, setImage] = useState("/broken-image.jpg")
+    const [file, setFile] = useState(null);
+
+    const handleImage = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            let reader = new FileReader();
+            let file1 = e.target.files[0];
+            setFile(file1)
+            reader.onloadend = () => {
+                setImage(reader.result);
+            };
+            reader.readAsDataURL(file1);
+        }
+    }
 
     // -------------------- component
     const [openPhone, setOpenPhone] = useState(false);
     const [openEmail, setOpenEmail] = useState(false);
     const handleOpenPhone = value => setOpenPhone(value);
     const handleOpenEmail = value => setOpenEmail(value);
+    // -------------------------------------------------
+
+    address.sort(function (a, b) {
+        const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+        const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+        if (nameA < nameB) {
+            return -1;
+        }
+        if (nameA > nameB) {
+            return 1;
+        }
+
+        // names must be equal
+        return 0;
+    })
 
     const getDistrict = (a) => {
         setDistrict(a.districts)
@@ -66,10 +95,42 @@ export default function StaffInfo() {
         setWards([])
     }
 
+    useEffect(() => {
+        district.sort(function (a, b) {
+            const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+            const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+            if (nameA < nameB) {
+                return -1;
+            }
+            if (nameA > nameB) {
+                return 1;
+            }
+
+            // names must be equal
+            return 0;
+        })
+    }, [district])
+
     const getWards = (a) => {
         setWards(a.wards)
         setXa('');
     }
+
+    useEffect(() => {
+        wards.sort(function (a, b) {
+            const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+            const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+            if (nameA < nameB) {
+                return -1;
+            }
+            if (nameA > nameB) {
+                return 1;
+            }
+
+            // names must be equal
+            return 0;
+        })
+    }, [wards])
 
     useEffect(() => {
         if (huyen !== '' && district.length)
@@ -88,9 +149,12 @@ export default function StaffInfo() {
             }
 
             setTen(manager.ho + ' ' + manager.ten)
+            setImage(manager.hinhAnh)
             setData(manager)
+            console.log(manager)
         }
     }, [manager])
+    console.log(image)
 
     const [error, setError] = useState({
         cmnd: null,
@@ -164,14 +228,36 @@ export default function StaffInfo() {
     }
 
     const submit = () => {
-        dispatch(actions.add_Employee(data))
+        if (file) {
+            const formData = new FormData();
+            formData.append("file", file);
+            actionsUploadFile.upload(formData)
+                .then((response) => {
+                    console.log(">", response);
+                    data.hinhAnh = response.data;
+                    console.log(">>", data)
+                    dispatch(actions.add_Employee(data))
 
-        setConfirm(false);
+                    setConfirm(false);
 
-        setSnackbarState(true);
-        setTimeout(function () {
-            setSnackbarState(false);
-        }, 3000);
+                    setSnackbarState(true);
+                    setTimeout(function () {
+                        setSnackbarState(false);
+                    }, 3000);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        } else {
+            dispatch(actions.add_Employee(data))
+
+            setConfirm(false);
+
+            setSnackbarState(true);
+            setTimeout(function () {
+                setSnackbarState(false);
+            }, 3000);
+        }
     }
 
     return (
@@ -187,10 +273,10 @@ export default function StaffInfo() {
                                 <Grid container spacing={2}>
                                     <Grid item xs={3}>
                                         <label htmlFor="icon-button-file">
-                                            <Input accept="image/*" id="icon-button-file" type="file" />
+                                            <Input accept="image/*" onChange={handleImage} id="icon-button-file" type="file" />
                                             <IconButton color="primary" aria-label="upload picture" component="span">
                                                 <Avatar
-                                                    src="/broken-image.jpg"
+                                                    src={image}
                                                     sx={{ width: 130, height: 130 }}
                                                 />
                                             </IconButton>
