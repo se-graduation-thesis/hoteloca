@@ -57,8 +57,8 @@ export default function Checkout() {
                                     <br></br>
                                     <Chip
                                         icon={e.trangThai === 1 ? < CheckCircleOutlinedIcon /> : <CancelOutlinedIcon />}
-                                        label={e.trangThai === 0 ? "Có người" : "Đã trả phòng"}
-                                        color={e.trangThai === 0 ? "error" : "primary"}
+                                        label={e.trangThai === 1 ? "Có người" : "Đã trả phòng"}
+                                        color={e.trangThai === 1 ? "error" : "primary"}
                                     />
                                     <br></br>
                                     <div style={{ marginTop: 20 }}>
@@ -83,7 +83,7 @@ export default function Checkout() {
                                             color: "black",
                                         }} />
                                     </IconButton>
-                                    <Button onClick={() => handleCheckOut(e.id)} variant="contained" style={{ marginLeft: 120 }} color="success" size="large" disabled={e.trangThai === 1 ? true : false}>Trả Phòng</Button>
+                                    <Button onClick={() => handleCheckOut(e.id)} variant="contained" style={{ marginLeft: 120 }} color="success" size="large" disabled={e.trangThai === 1 ? false : true}>Trả Phòng</Button>
 
                                 </CardActions>
                             </Card>

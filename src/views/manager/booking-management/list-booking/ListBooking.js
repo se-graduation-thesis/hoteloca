@@ -33,6 +33,7 @@ const columns = [
     { id: 'soluongphong', label: 'Số Lượng Phòng', minWidth: 100 },
     { id: 'tenPhong', label: 'Tên Phòng', minWidth: 100 },
     { id: 'checkIn', label: 'Check-In', minWidth: 100 },
+    { id: 'trangThai', label: 'trangThai', minWidth: 100 },
 ];
 
 export default function ListBooking() {
@@ -149,7 +150,7 @@ export default function ListBooking() {
 
     useEffect(() => {
         listBillByStatusShow.forEach((e) => {
-            if (!e.CheckIn) {
+            if (!e.checkIn) {
                 e.count = countDate(e.ngayVao_old);
                 if (e.count.days >= 0) {
                     if (e.count.hours >= 2)

@@ -103,8 +103,9 @@ export default function AddRoomForm(props) {
         }
     }
 
+
     // ------------------------------
-    console.log(file)
+    console.log(Object.keys(file).length)
     // --------------------------------
 
     const handleCheckValidation = () => {
@@ -124,28 +125,40 @@ export default function AddRoomForm(props) {
         return !kt;
 
     }
-
     const submit = () => {
         if (handleCheckValidation()) {
+            let length = Object.keys(file).length;
+            let i = 0;
             if (file) {
                 const formData = new FormData();
-                formData.append("file", file);
-                actionsUploadFile.upload(formData)
-                    .then((response) => {
-                        phong.hinhAnh = response.data;
-                        dispatch(actions.addRoom(phong));
+                const arr = [];
+                const newFile = Object.keys(file).reduce((object, key) => {
+                    formData.append("file", file[key]);
+                    actionsUploadFile.upload(formData)
+                        .then((response) => {
+                            arr.push(response.data);
+                            i++;
+                            if (i === length) {
+                                phong.hinhAnh = JSON.stringify(arr);
+                                console.log("<><><>", phong.hinhAnh);
 
-                        props.isShowAddForm(false);
-                        reset();
+                                dispatch(actions.addRoom(phong));
 
-                        setSnackbarState(true);
-                        setTimeout(function () {
-                            setSnackbarState(false);
-                        }, 3000);
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
+                                props.isShowAddForm(false);
+                                reset();
+
+                                setSnackbarState(true);
+                                setTimeout(function () {
+                                    setSnackbarState(false);
+                                }, 3000);
+                            }
+                            console.log("-----", arr);
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                    return object
+                }, {})
             } else {
                 dispatch(actions.addRoom(phong));
 
@@ -160,6 +173,42 @@ export default function AddRoomForm(props) {
         }
 
     }
+
+    // const submit = () => {
+    //     if (handleCheckValidation()) {
+    //         if (file) {
+    //             const formData = new FormData();
+    //             formData.append("file", file);
+    //             actionsUploadFile.upload(formData)
+    //                 .then((response) => {
+    //                     phong.hinhAnh = response.data;
+    //                     dispatch(actions.addRoom(phong));
+
+    //                     props.isShowAddForm(false);
+    //                     reset();
+
+    //                     setSnackbarState(true);
+    //                     setTimeout(function () {
+    //                         setSnackbarState(false);
+    //                     }, 3000);
+    //                 })
+    //                 .catch((error) => {
+    //                     console.log(error);
+    //                 });
+    //         } else {
+    //             dispatch(actions.addRoom(phong));
+
+    //             props.isShowAddForm(false);
+    //             reset();
+
+    //             setSnackbarState(true);
+    //             setTimeout(function () {
+    //                 setSnackbarState(false);
+    //             }, 3000);
+    //         }
+    //     }
+
+    // }
 
     const width = image.length ? 1000 : 500;
 
@@ -236,25 +285,24 @@ export default function AddRoomForm(props) {
                         </Grid>
                         <Grid item xs={6} sx={{ paddingLeft: 3 }}>
                             <Grid container spacing={2}>
-                                {image.length > 0 ? image.map((ima, index) =>
-                                    // <Grid item xs={3} key={index}>
-                                    //     <img src={e} alt="" style={{ width: "100%" }} />
-                                    // </Grid>
-                                    <Card sx={{ maxWidth: 140, marginLeft: 1, marginTop: 2 }} key={index} >
-                                        <CardActionArea>
-                                            {/* <span >abc</span> */}
-                                            <IconButton onClick={() => handleIma(ima, index)} style={{ position: "absolute", top: 0, right: 0 }}>
-                                                <CancelPresentationIcon />
-                                            </IconButton>
-                                            <CardMedia
-                                                component="img"
-                                                height="140"
-                                                image={ima}
-                                                alt="green iguana"
-                                            />
-                                        </CardActionArea>
-                                    </Card>
-                                ) : <></>}
+                                {
+                                    image.length ? image.map((ima, index) => (
+                                        <Card sx={{ maxWidth: 140, marginLeft: 1, marginTop: 2 }} key={index} >
+                                            <CardActionArea>
+                                                {/* <span >abc</span> */}
+                                                <IconButton onClick={() => handleIma(ima, index)} style={{ position: "absolute", top: 0, right: 0 }}>
+                                                    <CancelPresentationIcon />
+                                                </IconButton>
+                                                <CardMedia
+                                                    component="img"
+                                                    height="140"
+                                                    image={ima}
+                                                    alt="green iguana"
+                                                />
+                                            </CardActionArea>
+                                        </Card>
+                                    )) : <></>
+                                }
                             </Grid>
                         </Grid>
                     </Grid>

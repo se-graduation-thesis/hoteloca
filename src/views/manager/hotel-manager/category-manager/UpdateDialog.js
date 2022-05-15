@@ -1,4 +1,3 @@
-import * as React from 'react';
 
 import { Alert, AlertTitle, Button, FormControl, Grid, IconButton, InputAdornment, MenuItem, Select, Snackbar, TextField } from '@mui/material';
 
@@ -10,13 +9,15 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import useForm from './useForm';
 import NumberFormat from 'react-number-format';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { styled } from '@mui/material/styles';
 
 import { useDispatch, useSelector } from 'react-redux';
 import * as actions from "actions/category.action"
+import * as actionsUploadFile from 'actions/upload.action';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 import { Edit } from '@mui/icons-material';
-
 import * as brandActions from "actions/brand.action"
 const initialFieldValues = {
     ten: "",
@@ -29,6 +30,9 @@ const initialFieldValues = {
     moTa: "",
     hinhAnh: "",
 };
+const Input = styled('input')({
+    display: 'none',
+});
 export default function UpdateBrand(props) {
     const dispatch = useDispatch();
     let vertical = 'top';
@@ -42,6 +46,7 @@ export default function UpdateBrand(props) {
     const listCategory = useSelector((state) => state.category.listCategory);
     const [listCategoryShow, setListCategory] = useState([])
     const account = useSelector((state) => state.account.userAuth);
+    const imgRef = useRef();
 
     const onEdit = () => {
         setDisabled(false)
@@ -128,21 +133,74 @@ export default function UpdateBrand(props) {
     const { values, setValues, errors, setErrors, handleInputChange, resetForm } =
         useForm(initialFieldValues, validate, 0);
 
+    const [image, setImage] = useState(null);
+    useEffect(() => {
+        setImage(values.hinhAnh);
+    }, [values.hinhAnh])
+
+    const [file, setFile] = useState(null);
+
+    const handleIma = () => {
+        setImage(null);
+        setFile(null);
+    }
+
+    const handleImage = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            let reader = new FileReader();
+            let file1 = e.target.files[0];
+            setFile(file1)
+            reader.onloadend = () => {
+                setImage(reader.result);
+            };
+            reader.readAsDataURL(file1);
+        }
+    }
 
     const handleSubmit = (e) => {
         if (validate()) {
-            let dientich = {
-                chieudai: values.chieuDai,
-                chieurong: values.chieuRong
+            if (file) {
+                const formData = new FormData();
+                formData.append("file", file);
+                actionsUploadFile.upload(formData)
+                    .then((response) => {
+                        values.hinhAnh = response.data;
+
+                        let dientich = {
+                            chieudai: values.chieuDai,
+                            chieurong: values.chieuRong
+                        }
+
+                        values.dienTich = JSON.stringify(dientich)
+                        if (typeof values.donGia !== "number") {
+                            values.donGia = Number(values.donGia.replaceAll(',', ''))
+                        }
+                        dispatch(actions.insertCategory(values))
+                        setAlertOpen(true)
+                        resetForm()
+
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            } else {
+                values.hinhAnh = response.data;
+
+                let dientich = {
+                    chieudai: values.chieuDai,
+                    chieurong: values.chieuRong
+                }
+
+                values.dienTich = JSON.stringify(dientich)
+                if (typeof values.donGia !== "number") {
+                    values.donGia = Number(values.donGia.replaceAll(',', ''))
+                }
+                dispatch(actions.insertCategory(values))
+                setAlertOpen(true)
+                resetForm()
+
             }
 
-            values.dienTich = JSON.stringify(dientich)
-            if (typeof values.donGia !== "number") {
-                values.donGia = Number(values.donGia.replaceAll(',', ''))
-            }
-            values.hinhAnh = "abc"
-            dispatch(actions.insertCategory(values))
-            setAlertOpen(true)
         };
 
     }
@@ -163,7 +221,8 @@ export default function UpdateBrand(props) {
                     donGia: res.data.donGia,
                     chieuDai: dienTich.chieudai,
                     chieuRong: dienTich.chieurong,
-                    moTa: res.data.moTa
+                    moTa: res.data.moTa,
+                    hinhAnh: res.data.hinhAnh
                 }),
                     setTenLp(res.data.ten)
             })
@@ -299,6 +358,24 @@ export default function UpdateBrand(props) {
                                 {/* <TextField
                                    
                                 /> */}
+                            </Grid>
+                            <Grid item xs={12} style={{ display: displayButton }}>
+                                <input ref={imgRef} hidden accept="image/*" id="contained-button-file" onChange={handleImage} type="file" />
+                                <Button variant="contained" component="span" onClick={() => imgRef.current.click()}>
+                                    Thêm Ảnh
+                                </Button>
+
+                                {image &&
+                                    <IconButton onClick={handleIma}>
+                                        <DeleteForeverIcon sx={{ fontSize: 40 }} />
+                                    </IconButton>
+                                }
+
+                            </Grid>
+                            <Grid item xs={12}>
+                                {image &&
+                                    <img src={image} alt="" style={{ width: 490, height: 350 }} />
+                                }
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
