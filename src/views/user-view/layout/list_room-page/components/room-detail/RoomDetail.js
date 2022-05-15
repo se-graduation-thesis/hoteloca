@@ -6,12 +6,27 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import CarouselRoomDetail from "./carousel_room-detail/CarouselRoomDetail";
 import { useLocation } from "react-router";
+import DialogCustom from '../../../DialogCustom'
+import { useSelector } from "react-redux";
 import './RoomDetail.css';
 
 export default function RoomDetail() {
     const [checkIn, setCheckIn] = useState(null);
     const [checkOut, setCheckOut] = useState(null);
     const { state } = useLocation()
+    const account = useSelector((state) => state.account.userAuth);
+    const [open, setOpen] = useState(false);
+    const handleClose = () => {
+        setOpen(false)
+    }
+
+    const onAddBill = () => {
+        if (!account) {
+            setOpen(true)
+            return
+        }
+        navigate("/user-booking", { state: room })
+    }
     return (
         <div className="room-detail">
             <Container sx={{ color: '#303030', mt: 5 }}>
@@ -98,11 +113,11 @@ export default function RoomDetail() {
                     <div style={{ border: '1px solid chocolate', padding: 20, width: 280 }}>
                         <Grid container spacing={1}>
                             <Grid item xs={12}>
-                                <Button variant="contained" sx={{ height: 52, backgroundColor: 'Chocolate', color: 'white' }} fullWidth>Đặt Ngay</Button>
+                                <Button variant="contained" onClick={onAddBill} sx={{ height: 52, backgroundColor: 'Chocolate', color: 'white' }} fullWidth>Đặt Ngay</Button>
                             </Grid>
                         </Grid>
                     </div>
-
+                    <DialogCustom open_dialog={open} handleClose={handleClose} />
                 </div>
             </Container>
         </div>

@@ -17,6 +17,7 @@ const Booking = Loadable(lazy(() => import('views/user-view/layout/booking/Booki
 const ListBill = Loadable(lazy(() => import('views/user-view/layout/Bill/ListBill')));
 const Billinfo = Loadable(lazy(() => import('views/user-view/layout/Bill/Billinfo')));
 const CustomerInfo = Loadable(lazy(() => import('views/user-view/layout/cus-info/CustomerInfo')));
+const Contact = Loadable(lazy(() => import('views/user-view/layout/Contact/Contact')));
 // ==============================|| AUTHENTICATION ROUTING ||============================== //
 
 const HomeRoute = {
@@ -46,6 +47,14 @@ const HomeRoute = {
         {
             path: '/bill-info/:bill',
             element: <Billinfo />
+        },
+        {
+            path: '/customer-info',
+            element: <CustomerInfo />
+        },
+        {
+            path: '/contact',
+            element: <Contact />
         },
         {
             path: '*',
