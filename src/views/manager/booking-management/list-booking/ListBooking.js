@@ -110,16 +110,18 @@ export default function ListBooking() {
                 e.khachhang = e.khachHangid.ho + " " + e.khachHangid.ten
                 e.ngayVao_old = e.ngayVao
                 e.count = countDate(e.ngayVao_old);
-                if (e.count.days >= 0) {
-                    if (e.count.hours >= 2)
-                        e.trangThai = 4
-                    else if (e.count.hours > 0 || (e.count.hours === 0 && e.count.minutes > 0))
-                        e.trangThai = 3
+                if (!e.checkIn) {
+                    if (e.count.days >= 0) {
+                        if (e.count.hours >= 2)
+                            e.trangThai = 4
+                        else if (e.count.hours > 0 || (e.count.hours === 0 && e.count.minutes > 0))
+                            e.trangThai = 3
+                    }
+                } else {
+                    e.checkIn = moment(e.checkIn).format('DD-MM-YYYY HH:mm:ss')
                 }
                 e.ngayVao = moment(e.ngayVao).format('DD-MM-YYYY HH:mm:ss')
                 e.ngayRa = moment(e.ngayRa).format('DD-MM-YYYY HH:mm:ss')
-                if (e.checkIn)
-                    e.checkIn = moment(e.checkIn).format('DD-MM-YYYY HH:mm:ss')
 
                 if (e.chiTietPhieuThueList.length > 0) {
 
@@ -147,12 +149,14 @@ export default function ListBooking() {
 
     useEffect(() => {
         listBillByStatusShow.forEach((e) => {
-            e.count = countDate(e.ngayVao_old);
-            if (e.count.days >= 0) {
-                if (e.count.hours >= 2)
-                    dispatch(actions.updateStateOfBill(e.id, 4))
-                else if (e.count.hours > 0 || (e.count.hours === 0 && e.count.minutes > 0))
-                    dispatch(actions.updateStateOfBill(e.id, 3))
+            if (!e.CheckIn) {
+                e.count = countDate(e.ngayVao_old);
+                if (e.count.days >= 0) {
+                    if (e.count.hours >= 2)
+                        dispatch(actions.updateStateOfBill(e.id, 4))
+                    else if (e.count.hours > 0 || (e.count.hours === 0 && e.count.minutes > 0))
+                        dispatch(actions.updateStateOfBill(e.id, 3))
+                }
             }
         })
         // setListBillByStatusShow(listBillByStatusShow);
