@@ -1,13 +1,29 @@
 import { Button, Chip, Grid } from "@mui/material";
 import { IconPhone, IconSnowflake, IconToolsKitchen2, IconWifi } from "@tabler/icons"
 import { useNavigate } from "react-router";
+import { useSelector } from "react-redux";
+import { useState } from "react";
 import DetailsIcon from '@mui/icons-material/Details';
 import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import DialogCustom from '../../../DialogCustom'
 export default function RoomItem({ room }) {
     const navigate = useNavigate()
     const toDetail = () => {
         navigate("/list-room/room-detail", { state: room })
+    }
+    const account = useSelector((state) => state.account.userAuth);
+    const [open, setOpen] = useState(false);
+    const handleClose = () => {
+        setOpen(false)
+    }
+
+    const onAddBill = () => {
+        if (!account) {
+            setOpen(true)
+            return
+        }
+        navigate("/user-booking", { state: room })
     }
     return (
         <div className="body-room__list-room" style={{ borderBottom: '1px solid Chocolate', paddingBottom: 30, marginTop: 30 }}>
@@ -42,18 +58,10 @@ export default function RoomItem({ room }) {
                         <Button
                             variant="contained"
                             sx={{ backgroundColor: 'pubble', color: 'white' }}
-                            onClick={() => navigate("/user-booking", { state: room })}
+                            onClick={onAddBill}
                             startIcon={<ShoppingCartCheckoutIcon />}
                         >
                             Đặt phòng
-                        </Button>
-                        <br></br>
-                        <Button
-                            variant="contained"
-                            startIcon={<FavoriteIcon />}
-                            sx={{ backgroundColor: 'red', color: 'white' }}
-                            onClick={toDetail}>
-                            Yêu thích
                         </Button>
                         <br></br>
                         <Button
@@ -66,6 +74,7 @@ export default function RoomItem({ room }) {
                     </div>
                 </Grid>
             </Grid>
+            <DialogCustom open_dialog={open} handleClose={handleClose} />
         </div>
     );
 }

@@ -120,7 +120,7 @@ export default function CardContent(props) {
                             <Grid container alignItems="center">
                                 <Grid item>
                                     <Typography sx={{ fontSize: '1.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>
-                                        {new Intl.NumberFormat('en-Vn').format(tong) + " VND"}
+                                        {new Intl.NumberFormat('en-Vn').format(tong) + " Người"}
                                     </Typography>
                                 </Grid>
                                 <Grid item>

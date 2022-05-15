@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router'
+import { useSelector } from 'react-redux';
 import './NavBarHomePage.css'
-
+import DialogCustom from '../DialogCustom'
 export default function NavBarHomePage() {
     const navigate = useNavigate()
+    const account = useSelector((state) => state.account.userAuth);
     const [active, setActive] = useState({
         home: 'active',
         listRoom: null,
@@ -16,7 +18,19 @@ export default function NavBarHomePage() {
     const handleActive = (prop) => {
         setActive({ ...active, home: null, listRoom: null, view: null, about: null, contact: null, [prop]: 'active' });
     }
+    const [open, setOpen] = useState(false);
 
+    const handleClose = () => {
+        setOpen(false)
+    }
+
+    const onAddBill = () => {
+        if (!account) {
+            setOpen(true)
+            return
+        }
+        navigate("/user-booking")
+    }
     return (
         <>
             <div className='containerNav'>
@@ -33,27 +47,23 @@ export default function NavBarHomePage() {
                             </Link>
                         </li>
                         <li style={{ borderLeft: '1px solid #D0D0D0' }}>
-                            <Link to="#" style={{ textDecoration: 'none', color: 'white' }}>
+                            <Link to="/contact" style={{ textDecoration: 'none', color: 'white' }}>
                                 <p className={'title ' + active.view} onClick={() => handleActive('view')} >Về chúng tôi</p>
                             </Link>
                         </li>
                         <li style={{ borderLeft: '1px solid #D0D0D0' }}>
-                            <Link to="#" style={{ textDecoration: 'none', color: 'white' }}>
+                            <Link to="/contact" style={{ textDecoration: 'none', color: 'white' }}>
                                 <p className={'title ' + active.about} onClick={() => handleActive('about')}>Liên hệ</p>
-                            </Link>
-                        </li>
-                        <li style={{ borderLeft: '1px solid #D0D0D0' }}>
-                            <Link to="#" style={{ textDecoration: 'none', color: 'white' }}>
-                                <p className={'title ' + active.contact} onClick={() => handleActive('contact')}>Liên Hệ</p>
                             </Link>
                         </li>
                     </ul>
                 </nav>
 
             </div >
-            <div class="box" onClick={() => navigate("/user-booking")} >
+            <div class="box" onClick={onAddBill} >
                 <span>ĐẶT PHÒNG</span>
             </div>
+            <DialogCustom open_dialog={open} handleClose={handleClose} />
         </>
     );
 }

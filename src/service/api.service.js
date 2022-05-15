@@ -68,6 +68,7 @@ export default {
             getKhachHangByDay: (year, month, day) => axios.get(url + "thongke/" + year + "/" + month + "/" + day),
             topKhachHangByYear: (year) => axios.get(url + "topByYear/" + year),
             topKhachHangByMonth: (year, month) => axios.get(url + "topByMonth/" + year + "/" + month),
+            updateCustomer: (customer) => axios.put(url + "update-customer", customer),
         }
     },
     bill_detail(url = baseApi + 'bill-detail/') {
