@@ -3,6 +3,7 @@ import { ACTION_TYPES } from "../actions/manager.action";
 const initialState = {
     listManager: [],
     listManagerNone: [],
+    manager: null,
 };
 
 export const managerReducer = (state = initialState, action) => {
@@ -21,6 +22,11 @@ export const managerReducer = (state = initialState, action) => {
             return {
                 ...state,
                 listManager: [...action.payload],
+            };
+        case ACTION_TYPES.FIND_BY_ID:
+            return {
+                ...state,
+                manager: action.payload,
             };
         default:
             return state;

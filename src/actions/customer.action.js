@@ -5,7 +5,12 @@ export const ACTION_TYPES = {
     ADD_CUSTOMER: "ADD_CUSTOMER",
     GET_CUSTOMER_BY_ID: "GET_CUSTOMER_BY_ID",
     LIST_CUSTOMER_RENT: "LIST_CUSTOMER_RENT",
-    SAVE_CUSTOMER: "SAVE_CUSTOMER"
+    SAVE_CUSTOMER: "SAVE_CUSTOMER",
+    GET_CUSTOMER_BY_YEAR: "GET_CUSTOMER_BY_YEAR",
+    GET_CUSTOMER_BY_MONTH: "GET_CUSTOMER_BY_MONTH",
+    GET_CUSTOMER_BY_DAY: "GET_CUSTOMER_BY_DAY",
+    TOP_CUSTOMER_BY_YEAR: "TOP_CUSTOMER_BY_YEAR",
+    TOP_CUSTOMER_BY_MONTH: "TOP_CUSTOMER_BY_MONTH",
 };
 
 export const fetchAllCustomer = () => (dispatch) => {
@@ -70,4 +75,69 @@ export const register = (customer) => {
     return apiService
         .customer()
         .register(customer)
+};
+
+export const getKhachHangByYear = (year) => (dispatch) => {
+    apiService
+        .customer()
+        .getKhachHangByYear(year)
+        .then((response) => {
+            dispatch({
+                type: ACTION_TYPES.GET_CUSTOMER_BY_YEAR,
+                payload: response.data,
+            });
+        })
+        .catch((err) => console.log(err));
+};
+
+export const getKhachHangByMonth = (year, month) => (dispatch) => {
+    apiService
+        .customer()
+        .getKhachHangByMonth(year, month)
+        .then((response) => {
+            dispatch({
+                type: ACTION_TYPES.GET_CUSTOMER_BY_MONTH,
+                payload: response.data,
+            });
+        })
+        .catch((err) => console.log(err));
+};
+
+export const getKhachHangByDay = (year, month, Day) => (dispatch) => {
+    apiService
+        .customer()
+        .getKhachHangByDay(year, month, Day)
+        .then((response) => {
+            dispatch({
+                type: ACTION_TYPES.GET_CUSTOMER_BY_DAY,
+                payload: response.data,
+            });
+        })
+        .catch((err) => console.log(err));
+};
+
+export const topKhachHangByYear = (year) => (dispatch) => {
+    apiService
+        .customer()
+        .topKhachHangByYear(year)
+        .then((response) => {
+            dispatch({
+                type: ACTION_TYPES.TOP_CUSTOMER_BY_YEAR,
+                payload: response.data,
+            });
+        })
+        .catch((err) => console.log(err));
+};
+
+export const topKhachHangByMonth = (year, month) => (dispatch) => {
+    apiService
+        .customer()
+        .topKhachHangByMonth(year, month)
+        .then((response) => {
+            dispatch({
+                type: ACTION_TYPES.TOP_CUSTOMER_BY_MONTH,
+                payload: response.data,
+            });
+        })
+        .catch((err) => console.log(err));
 };

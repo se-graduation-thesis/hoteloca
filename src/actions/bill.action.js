@@ -4,6 +4,7 @@ export const ACTION_TYPES = {
     ADD_BILL: "ADD_BILL",
     FETCH_BILL_BY_STATUS_ACCEPT: "FETCH_BILL_BY_STATUS_ACCEPT",
     FETCH_BILL_BY_STATUS_FINISH: "FETCH_BILL_BY_STATUS_FINISH",
+    FETCH_BILL_BY_STATUS_CANCEL: "FETCH_BILL_BY_STATUS_CANCEL",
     FETCH_BY_ID: "FETCH_BY_ID",
     UPDATE_BILL: "UPDATE_BILL",
     UPDATE_STATE_OF_BILL: "UPDATE_STATE_OF_BILL",
@@ -40,6 +41,20 @@ export const fetchBillByStatusFinish = () => (dispatch) => {
         })
         .catch((err) => console.log(err));
 };
+
+export const fetchBillByStatusCancel = () => (dispatch) => {
+    apiService
+        .bill()
+        .fetchAllBillByStatusCancel()
+        .then((response) => {
+            dispatch({
+                type: ACTION_TYPES.FETCH_BILL_BY_STATUS_CANCEL,
+                payload: response.data,
+            });
+        })
+        .catch((err) => console.log(err));
+};
+
 export const fetchById = (id) => (dispatch) => {
     apiService
         .bill()

@@ -28,8 +28,14 @@ ChartJS.register(...registerables);
 
 export default function DayStatistics({ monthSelect, yearSelect }) {
     const dispatch = useDispatch();
-    const listCustomer = useSelector((state) => state.customer.customerByMonth);
-    const [listShow, setListShow] = useState([])
+    const listPayment = useSelector((state) => state.payment.all_payment);
+    const [listPaymentShow, setListPayment] = useState([])
+    const listMonth = [
+        "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"
+    ]
+    useEffect(() => {
+        dispatch(actions.get_all())
+    }, [])
 
     const getAllDaysInMonth = (year, month) => {
         const date = new Date(year, month, 1);
@@ -44,40 +50,40 @@ export default function DayStatistics({ monthSelect, yearSelect }) {
     }
     let day_in_month = getAllDaysInMonth(yearSelect, monthSelect - 1)
     useEffect(() => {
-        if (listCustomer) {
-            let counts = []
+        if (listPayment) {
+            let list_price = []
             day_in_month.forEach((e1) => {
-                let count = 0;
-                listCustomer.forEach((e) => {
-                    let day = moment(e.ngayThamGia).date();
-                    let month = moment(e.ngayThamGia).month() + 1;
-                    let year = moment(e.ngayThamGia).year();
+                let price = 0;
+                listPayment.forEach((e) => {
+                    let day = moment(e.ngayThanhToan).date();
+                    let month = moment(e.ngayThanhToan).month() + 1;
+                    let year = moment(e.ngayThanhToan).year();
                     let year_now = yearSelect
                     let month_now = monthSelect
                     if (year_now === year && month_now == month && e1 === day) {
-                        count += 1
+                        price += e.tongTienThanhToan
                     }
 
                 })
-                counts.push(count)
+                list_price.push(price)
             })
 
-            setListShow(counts)
+            setListPayment(list_price)
         }
-    }, [listCustomer, monthSelect, yearSelect])
+    }, [listPayment, monthSelect, yearSelect])
     return (
         <>
-            <h3>Biểu đồ số lượng khách hàng trong Tháng {monthSelect} / {yearSelect}</h3>
+            <h3>Biểu đồ doanh số theo ngày trong Tháng {monthSelect} / {yearSelect}</h3>
             <Bar
                 data={{
                     labels: day_in_month,
                     datasets: [
                         {
-                            label: "Số Người",
+                            label: "Doanh thu (VND)",
                             backgroundColor: [
                                 "#008810",
                             ],
-                            data: listShow
+                            data: listPaymentShow
                         }
                     ]
                 }}

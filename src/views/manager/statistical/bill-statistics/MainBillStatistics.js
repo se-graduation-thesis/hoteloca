@@ -10,14 +10,11 @@ import { useDispatch } from 'react-redux';
 import DayStatistics from './DayStatistics';
 import MonthStatistics from './MonthStatistics'
 import YearStatistics from './YearStatistics'
-// import CardDay from "./CardDay"
-// import CardWeek from "./CardWeek"
-// import CardYear from "./CardYear"
-// import MostCategoryRoom from "./MostCategoryRoom"
-import CardContent from "./CardContent"
-import MostCustomer from './MostCustomer';
-
-export default function MainCustomerStatistics() {
+import CardDay from "./CardDay"
+import CardWeek from "./CardWeek"
+import CardYear from "./CardYear"
+import MostCategoryRoom from "./MostCategoryRoom"
+export default function MainBillStatistics() {
     const [monthSelect, setMonth] = React.useState(new Date().getMonth() + 1);
     const [yearSelect, setYearSelect] = React.useState(new Date().getFullYear());
     const [daySelect, setDaySelect] = React.useState(new Date().getDate());
@@ -53,35 +50,17 @@ export default function MainCustomerStatistics() {
         <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }} style={{ padding: 20 }}>
             <Grid container spacing={3} style={{ marginTop: 10, padding: 10 }}>
                 <Grid item xs={12}>
-                    <h2>THỐNG KÊ KHÁCH HÀNG</h2>
+                    <h2>THỐNG KÊ DOANH THU</h2>
                 </Grid>
                 <Grid item xs={4}>
-                    {/* <CardDay monthSelect={monthSelect} yearSelect={yearSelect} daySelect={daySelect} /> */}
-                    <CardContent
-                        title={"Tổng khách hàng mới trong ngày " + daySelect + " / " + monthSelect + " / " + yearSelect}
-                        monthSelect={monthSelect} yearSelect={yearSelect} daySelect={daySelect}
-                        type={"day"}
-                    />
+                    <CardDay monthSelect={monthSelect} yearSelect={yearSelect} daySelect={daySelect} />
                 </Grid>
-
                 <Grid item xs={4}>
-                    {/* <CardDay monthSelect={monthSelect} yearSelect={yearSelect} daySelect={daySelect} /> */}
-                    <CardContent
-                        title={"Tổng khách hàng mới trong tháng " + monthSelect + " / " + yearSelect}
-                        monthSelect={monthSelect} yearSelect={yearSelect}
-                        type={"month"}
-                    />
+                    <CardWeek monthSelect={monthSelect} yearSelect={yearSelect} />
                 </Grid>
-
                 <Grid item xs={4}>
-                    {/* <CardDay monthSelect={monthSelect} yearSelect={yearSelect} daySelect={daySelect} /> */}
-                    <CardContent
-                        title={"Tổng khách hàng mới trong năm " + yearSelect}
-                        yearSelect={yearSelect}
-                        type={"year"}
-                    />
+                    <CardYear yearSelect={yearSelect} />
                 </Grid>
-
                 <Grid item xs={8}>
                     <Grid container spacing={2}>
                         <Grid item xs={3}>
@@ -157,13 +136,12 @@ export default function MainCustomerStatistics() {
                         </Grid>
                     </Grid>
                 </Grid>
-
                 <Grid item xs={4}>
                     <Grid container spacing={2}>
                         <Grid item xs={12} style={{ height: 55 }}>
                         </Grid>
                         <Grid item xs={12}>
-                            <MostCustomer monthSelect={monthSelect} yearSelect={yearSelect} />
+                            <MostCategoryRoom monthSelect={monthSelect} yearSelect={yearSelect} />
                         </Grid>
                     </Grid>
                 </Grid>

@@ -21,6 +21,7 @@ const UtilsTablerIcons = Loadable(lazy(() => import('views/utilities/TablerIcons
 const AdminManager = Loadable(lazy(() => import('views/manager/account-manager/AdminManager')));
 const NotFound404 = Loadable(lazy(() => import('views/NotFound404')));
 const AccountManager = Loadable(lazy(() => import('views/manager/account-manager/account-managerment/AccountManager')));
+const StaffInfo = Loadable(lazy(() => import('views/manager/account-manager/staff-info/StaffInfo')));
 const RoomManagement = Loadable(lazy(() => import('views/manager/hotel-management/room-management/Room')));
 const ServiceManagement = Loadable(lazy(() => import('views/manager/hotel-management/service-management/service')));
 
@@ -43,7 +44,7 @@ const ReceiptManagerment = Loadable(lazy(() => import('views/manager/receipt-man
 const BrandManager = Loadable(lazy(() => import('views/manager/hotel-manager/brand-manager/BrandManager')));
 const CategoryManager = Loadable(lazy(() => import('views/manager/hotel-manager/category-manager/CategoryManager')));
 const MainCustomerStatistics = Loadable(lazy(() => import('views/manager/statistical/customer-statistics/MainCustomerStatistics')));
-
+const MainBillStatistics = Loadable(lazy(() => import('views/manager/statistical/bill-statistics/MainBillStatistics')));
 
 // sample page routing
 const CustomerManagement = Loadable(lazy(() => import('views/manager/account-manager/customer-management/Customer')));
@@ -66,6 +67,10 @@ const MainRoutes = {
         {
             path: '/admin/account-manager',
             element: <AccountManager />
+        },
+        {
+            path: '/admin/staff-info',
+            element: <StaffInfo />
         },
         {
             path: '/admin/brand-manager',
@@ -154,6 +159,10 @@ const MainRoutes = {
         {
             path: '/admin/customer-management',
             element: <CustomerManagement />
+        },
+        {
+            path: '/admin/bill-statistics',
+            element: <MainBillStatistics />
         },
         {
             path: '/admin/customer-statistics',

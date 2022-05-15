@@ -3,6 +3,7 @@ import { address } from 'assets/address';
 import { nations } from "assets/nation"
 import { useEffect, useState } from "react";
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import * as actionCustomer from 'actions/customer.action';
 
 const er = {
     ho: null,
@@ -16,6 +17,33 @@ const er = {
 }
 
 export default function CustomerInfo({ customer, handleCustomer, complete, handleCompleteButton, handleComplete }) {
+
+    const listCus = useSelector((state) => state.customer.customers);
+    useEffect(() => {
+        dispatch(actionCustomer.fetchAllCustomer());
+    }, [])
+
+    const [cus, setCus] = useState({
+        ho: '',
+        ten: '',
+        cmnd: '',
+        diaChi: '',
+        dienThoai: '',
+        email: '',
+        quocTich: 'Viet Nam',
+        soHoChieu: '',
+        trangThai: 1,
+        ngayThamGia: moment_t.tz(new Date(), "Asia/Ho_Chi_Minh").format(),
+        password: ''
+    })
+
+    useEffect(() => {
+        const object = listCusCompare.filter(e => e.cmnd === cus.cmnd);
+        if (object.length)
+            setCus(object);
+        else
+            setCus({ ...cus, id: null });
+    }, [cus.cmnd])
 
     const [error, setError] = useState({
         ho: null,

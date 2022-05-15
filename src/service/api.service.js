@@ -20,6 +20,7 @@ export default {
             fetchAllManager: () => axios.get(url + 'get-all-manager'),
             getNvNoneAccount: () => axios.get(url + 'get-all-manager-not-account'),
             add_Employee: (employee) => axios.post(url, employee),
+            findById: (id) => axios.get(url + id),
         };
     },
     room(url = baseApi + 'room/') {
@@ -62,10 +63,16 @@ export default {
             listCustomerRent: () => axios.get(url + 'get-all-customer-rent'),
             register: (customer) => axios.put(url + "register", customer),
             save_customer: (customer) => axios.post(url + "add", customer),
+            getKhachHangByYear: (year) => axios.get(url + "thongke/" + year),
+            getKhachHangByMonth: (year, month) => axios.get(url + "thongke/" + year + "/" + month),
+            getKhachHangByDay: (year, month, day) => axios.get(url + "thongke/" + year + "/" + month + "/" + day),
+            topKhachHangByYear: (year) => axios.get(url + "topByYear/" + year),
+            topKhachHangByMonth: (year, month) => axios.get(url + "topByMonth/" + year + "/" + month),
         }
     },
     bill_detail(url = baseApi + 'bill-detail/') {
         return {
+            fetchAllBillDetail: () => axios.get(url + 'get-all-bill-detail'),
             fetchAllBillDetailByStatus: (id) => axios.get(url + 'get-all-bill-detail-by-status/' + id),
             add_bill_detail: (billDetail) => axios.post(url, billDetail),
             getBillDetailByBill: (id) => axios.get(url + 'get-all-bill-detail-by-bill/' + id),
@@ -83,6 +90,7 @@ export default {
             updateBill: (id) => axios.put(url + id),
             updateStateOfBill: (id, state) => axios.put(url + 'trangThai/' + id + "/" + state),
             fetchAllBillByStatusFinish: () => axios.get(url + 'get-all-bill-by-status-finish/'),
+            fetchAllBillByStatusCancel: () => axios.get(url + 'get-all-bill-by-status-cancel/')
         }
     },
     phongTN(url = baseApi + 'phongTN/') {
@@ -116,5 +124,15 @@ export default {
         return {
             findAll: () => axios.get(url),
         }
-    }
+    },
+    upload(url = baseApi + "storage/") {
+        return {
+            upload_file: (formData) =>
+                axios.post(url + "uploadFile/", formData, {
+                    headers: {
+                        "content-type": "multipart/form-data",
+                    },
+                }),
+        };
+    },
 }
