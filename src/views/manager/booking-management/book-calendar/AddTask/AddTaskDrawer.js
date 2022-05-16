@@ -159,37 +159,36 @@ function AddTaskDrawer(props) {
   const submit = () => {
     actionCustomer.addCustomer(customer).then((response) => {
       reservation.khachHangid = response.data.id;
-      console.log(reservation)
-      actionBill.addBill(reservation).then((response) => {
-        const phieuThueid = response.data;
-        const billDetail = {
-          phieuThueid: phieuThueid.id,
-          phongId: token,
-          ngayVao: phieuThueid.ngayVao,
-          ngayRa: phieuThueid.ngayRa,
-          trangThai: 1
-        }
-        dispatch(actionBillDetail.addBillDetail(billDetail));
-
-        if (serviceSelect.length) {
-          const billService = {
-            ngayLap: moment(new Date()).format('YYYY-MM-DDTHH:mm:ss'),
-            tongTien: 0,
-            ghiChu: "",
-            phieuThueid: phieuThueid
+      reservation.maHoaDon = "PThoteloca" + String(moment.tz(new Date(), "Asia/Ho_Chi_Minh").format("DDMMYYhhmmss")),
+        actionBill.addBill(reservation).then((response) => {
+          const phieuThueid = response.data;
+          const billDetail = {
+            phieuThueid: phieuThueid.id,
+            phongId: token,
+            ngayVao: phieuThueid.ngayVao,
+            ngayRa: phieuThueid.ngayRa,
+            trangThai: 1
           }
-          console.log(billService)
-          actionBillService.add_bill_service(billService).then((response) => {
-            serviceSelect.map((item) => {
-              dispatch(actionBillDetailService.add_bill_service_detail({
-                dichVuid: item.id,
-                hoaDonDichVuid: response.data.id,
-                soLuong: item.soLuong
-              }))
+          dispatch(actionBillDetail.addBillDetail(billDetail));
+
+          if (serviceSelect.length) {
+            const billService = {
+              ngayLap: moment(new Date()).format('YYYY-MM-DDTHH:mm:ss'),
+              tongTien: 0,
+              ghiChu: "",
+              phieuThueid: phieuThueid
+            }
+            actionBillService.add_bill_service(billService).then((response) => {
+              serviceSelect.map((item) => {
+                dispatch(actionBillDetailService.add_bill_service_detail({
+                  dichVuid: item.id,
+                  hoaDonDichVuid: response.data.id,
+                  soLuong: item.soLuong
+                }))
+              })
             })
-          })
-        }
-      })
+          }
+        })
     }).then();
     setSnackbarState(true);
     setTimeout(function () {

@@ -192,6 +192,7 @@ export default function Payment() {
 
     const handleSubmit = (e) => {
         const booking_info = {
+            maHoaDon: "PThoteloca" + String(moment.tz(new Date(), "Asia/Ho_Chi_Minh").format("DDMMYYhhmmss")),
             list_room_hotel: roomSelect,
             list_service: serviceSelect,
             nhanVienid: idNv,

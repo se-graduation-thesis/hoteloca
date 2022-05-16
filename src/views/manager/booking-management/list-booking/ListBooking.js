@@ -9,12 +9,8 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { Button, Chip, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip, Typography } from '@mui/material';
 import IconButton from "@mui/material/IconButton";
-import InputAdornment from "@mui/material/InputAdornment";
-import SearchIcon from "@mui/icons-material/Search";
-import Edit from '@mui/icons-material/Edit';
 import Payment from '@mui/icons-material/Payment';
 import AddTaskIcon from '@mui/icons-material/AddTask';
-import InsertBrandDialog from './InsertBrandDialog'
 import UpdateBrand from './UpdateBrand'
 import RoomServiceIcon from '@mui/icons-material/RoomService';
 import { useState, useEffect } from 'react';
@@ -24,9 +20,9 @@ import * as actions from "actions/bill.action"
 import { Link, useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import CheckIn from './CheckIn';
-import { da } from 'date-fns/locale';
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
+    { id: 'maHoaDon', label: 'Mã phiếu thuê', minWidth: 100 },
     { id: 'khachhang', label: 'Thông tin khách hàng', minWidth: 100 },
     { id: 'ngayVao', label: 'Ngày đến', minWidth: 100 },
     { id: 'ngayRa', label: 'Ngày đi', minWidth: 100 },
@@ -36,7 +32,7 @@ const columns = [
     { id: 'trangThai', label: 'trangThai', minWidth: 100 },
 ];
 
-export default function ListBooking() {
+export default function ListBooking({ daySelect, monthSelect, yearSelect }) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [page, setPage] = useState(0);
@@ -105,6 +101,7 @@ export default function ListBooking() {
     }, [])
 
     useEffect(() => {
+
         if (listBillByStatus.length > 0 && listBillByStatus !== undefined) {
             listBillByStatus.forEach((e, i) => {
                 e.stt = i + 1;
