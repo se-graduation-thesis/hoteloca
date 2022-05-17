@@ -17,7 +17,7 @@ import { useState, useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import * as actions from "actions/bill.action"
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import CheckIn from './CheckIn';
 const columns = [
@@ -48,17 +48,17 @@ export default function ListBooking({ daySelect, monthSelect, yearSelect }) {
     const [openUpdate, setOpenUpdate] = useState(false);
 
     const [id_brand, setId] = useState(0);
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
+    // const handleClickOpen = () => {
+    //     setOpen(true);
+    // };
 
-    const handleClickOpenUpdate = (id) => {
-        setOpenUpdate(true);
-        setId(id)
-    };
-    const handleClose = () => {
-        setOpen(false);
-    };
+    // const handleClickOpenUpdate = (id) => {
+    //     setOpenUpdate(true);
+    //     setId(id)
+    // };
+    // const handleClose = () => {
+    //     setOpen(false);
+    // };
     const handleCloseUpdate = () => {
         setOpenUpdate(false);
     };

@@ -7,7 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Button, Chip, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip, Typography } from '@mui/material';
+import { Button, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip, Typography } from '@mui/material';
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as actions from "actions/bill.action"
 import { Link, useNavigate } from 'react-router-dom';
 import moment from 'moment';
+import PositionedSnackbar from '../cus-info/PositionedSnackbar';
 const columns = [
     { id: 'khachhang', label: 'Thông tin khách hàng', minWidth: 100 },
     { id: 'ngayVao', label: 'Ngày đến', minWidth: 100 },
@@ -38,6 +39,9 @@ export default function ListBill() {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const listBillByStatus = useSelector((state) => state.bill.listBillByStatusAccept);
     const [listBillByStatusShow, setListBillByStatusShow] = useState([])
+    const [snackbarState, setSnackbarState] = useState(false);
+    const [confirm, setConfirm] = useState(false);
+    const [billCancelId, setBillCancelId] = useState(null);
 
     const account = useSelector((state) => state.account.userAuth);
 
@@ -87,6 +91,18 @@ export default function ListBill() {
         }
         return true;
     }
+    const submit = () => {
+        dispatch(actions.updateStateOfBill(billCancelId, 5))
+        setListBillByStatusShow(listBillByStatusShow.filter(e => e.id !== billCancelId))
+
+        setConfirm(false);
+
+        setSnackbarState(true);
+        setTimeout(function () {
+            setSnackbarState(false);
+        }, 3000);
+    }
+
     return (
         <div style={{ justifyContent: 'center', display: 'flex', height: 700 }}>
             <Paper sx={{ width: '70%', overflow: 'hidden', height: '100%' }}>
@@ -136,12 +152,17 @@ export default function ListBill() {
                                 <TableCell
                                     key={"action"}
                                 >
+                                    {"Hủy"}
+                                </TableCell>
+                                <TableCell
+                                    key={"action"}
+                                >
                                     {"Hành động"}
                                 </TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {listBillByStatusShow
+                            {listBillByStatusShow.filter(e => e.trangThai !== 5)
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, i) => {
                                     return (
@@ -159,6 +180,9 @@ export default function ListBill() {
                                                     </TableCell>
                                                 );
                                             })}
+                                            <TableCell>
+                                                <Button variant="contained" color="error" onClick={() => { setConfirm(true); setBillCancelId(row["id"]) }}>Hủy</Button>
+                                            </TableCell>
                                             <TableCell key={row.stt}>
                                                 <Tooltip title="Xem thông tin đơn đặt">
                                                     <IconButton key={row.stt} onClick={() => navigate(`/bill-info/${row.id}`)} aria-label="add-service" color="secondary">
@@ -192,6 +216,35 @@ export default function ListBill() {
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
             </Paper >
+
+            <div>
+                <div>
+                    <Dialog
+                        open={confirm}
+                        onClose={() => setConfirm(false)}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                    >
+                        <DialogTitle id="alert-dialog-title" sx={{ fontSize: 16 }}>
+                            {"Bạn chắc chắn muốn hủy phiếu thuê này?"}
+                        </DialogTitle>
+                        <DialogContent>
+                            <DialogContentText id="alert-dialog-description">
+                                phiếu thuê sẽ được hủy và cập nhật lại toàn bộ trong hệ thống.
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button variant="outlined" onClick={() => setConfirm(false)}>Hủy</Button>
+                            <Button variant="contained" onClick={submit} autoFocus>
+                                Đồng ý
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                </div>
+            </div>
+            <div>
+                <PositionedSnackbar open={snackbarState} message={"Hủy Thành Công."} />
+            </div>
         </div>
     );
 }

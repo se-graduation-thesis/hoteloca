@@ -11,9 +11,6 @@ import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typ
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
-import Edit from '@mui/icons-material/Edit';
-
-import InsertBrandDialog from './InsertBrandDialog'
 import UpdateBrand from './UpdateBrand'
 
 import { useState, useEffect } from 'react';
@@ -29,15 +26,15 @@ const columns = [
     // { id: 'loaiphong', label: 'Loại Phòng', minWidth: 100 },
     { id: 'soluongphong', label: 'Số Lượng Phòng', minWidth: 100 },
     { id: 'tenPhong', label: 'Tên Phòng', minWidth: 100 },
-    { id: 'trangThai', label: 'Ghi chú', minWidth: 100 },
+    // { id: 'trangThai', label: 'Ghi chú', minWidth: 100 },
 ];
 
-export default function BookingPendingApprove(props) {
+export default function BookingLate(props) {
     const dispatch = useDispatch();
     const [page, setPage] = useState(0);
     const rows = []
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const listBillByStatus = useSelector((state) => state.bill.listBillByStatusFinish);
+    const listBillByStatus = useSelector((state) => state.bill.listBillByStatusLate);
     const [listInit, setListInit] = useState([])
     const [listBillByStatusShow, setListBillByStatusShow] = useState([])
 
@@ -45,17 +42,17 @@ export default function BookingPendingApprove(props) {
     const [openUpdate, setOpenUpdate] = useState(false);
 
     const [id_brand, setId] = useState(0);
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
+    // const handleClickOpen = () => {
+    //     setOpen(true);
+    // };
 
-    const handleClickOpenUpdate = (id) => {
-        setOpenUpdate(true);
-        setId(id)
-    };
-    const handleClose = () => {
-        setOpen(false);
-    };
+    // const handleClickOpenUpdate = (id) => {
+    //     setOpenUpdate(true);
+    //     setId(id)
+    // };
+    // const handleClose = () => {
+    //     setOpen(false);
+    // };
     const handleCloseUpdate = () => {
         setOpenUpdate(false);
     };
@@ -70,7 +67,7 @@ export default function BookingPendingApprove(props) {
     };
 
     useEffect(() => {
-        dispatch(actions.fetchBillByStatusFinish())
+        dispatch(actions.fetchBillByStatusLate())
     }, [])
     useEffect(() => {
         if (listBillByStatus.length > 0 && listBillByStatus !== undefined) {
@@ -112,12 +109,11 @@ export default function BookingPendingApprove(props) {
     useEffect(() => {
         setListBillByStatusShow(filterListByDay(listInit))
     }, [props.yearSelect, props.monthSelect, props.daySelect])
-
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }}>
             <Grid container spacing={1} style={{ padding: 10 }}>
                 <Grid item xs={12}>
-                    <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN CÁC ĐƠN ĐẶT HÀNG HIỆN CÓ</h3>
+                    <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN CÁC ĐƠN ĐẶT HÀNG ĐÃ QUÁ HẠN</h3>
                 </Grid>
                 <Grid item xs={6}>
                     {/* <Button onClick={handleClickOpen} variant="contained" color="secondary">Thêm chi nhánh</Button>
@@ -176,11 +172,6 @@ export default function BookingPendingApprove(props) {
                                                 </TableCell>
                                             );
                                         })}
-                                        {/* <TableCell key={row.stt}>
-                                            <IconButton key={row.stt} onClick={() => handleClickOpenUpdate(row.id)} aria-label="delete" color="primary">
-                                                <Edit />
-                                            </IconButton>
-                                        </TableCell> */}
                                     </TableRow>
                                 );
                             })}

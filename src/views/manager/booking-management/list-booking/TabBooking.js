@@ -11,9 +11,11 @@ import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
 import ListBooking from './ListBooking'
 import BookingFinish from './BookingFinish';
-import BookingCancellation from './BookingCancellation';
 import { useEffect, useState } from "react"
 import { Grid, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import BookingLate from './BookingLate';
+import { AssignmentLate } from '@mui/icons-material';
+import BookingCancellation from './BookingCancellation';
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -112,15 +114,18 @@ export default function FullWidthTabs() {
 
                     <Tab style={{ padding: 20 }}
                         className={classes.wrapper}
-                        icon={<PlaylistRemoveIcon />}
+                        icon={<ReceiptLongIcon />} AssignmentLate
+                        label="Danh sách đơn đặt đã hoàn thành" {...a11yProps(1)} />
+
+                    <Tab style={{ padding: 20 }}
+                        className={classes.wrapper}
+                        icon={<AssignmentLate />}
                         label="Danh sách đơn đặt đã quá hạn" {...a11yProps(2)} />
 
                     <Tab style={{ padding: 20 }}
                         className={classes.wrapper}
-                        icon={<ReceiptLongIcon />}
-                        label="Danh sách đơn đặt đã hoàn thành" {...a11yProps(1)} />
-
-
+                        icon={<PlaylistRemoveIcon />}
+                        label="Danh sách đơn đặt đã hủy" {...a11yProps(3)} />
                 </Tabs>
             </Box>
             <Grid container spacing={2} style={{ margin: 20 }}>
@@ -199,6 +204,9 @@ export default function FullWidthTabs() {
                     <BookingFinish monthSelect={monthSelect} yearSelect={yearSelect} daySelect={daySelect} />
                 </TabPanel>
                 <TabPanel value={value} index={2} dir={theme.direction}>
+                    <BookingLate monthSelect={monthSelect} yearSelect={yearSelect} daySelect={daySelect} />
+                </TabPanel>
+                <TabPanel value={value} index={3} dir={theme.direction}>
                     <BookingCancellation monthSelect={monthSelect} yearSelect={yearSelect} daySelect={daySelect} />
                 </TabPanel>
             </SwipeableViews>
