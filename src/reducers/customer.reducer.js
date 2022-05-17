@@ -63,6 +63,11 @@ export const customerReducer = (state = initialState, action) => {
                 ...state,
                 topByMonth: [...action.payload],
             }
+        case ACTION_TYPES.UPDATE_CUSTOMNER:
+            return {
+                ...state,
+                customer: action.payload,
+            }
         default:
             return state;
     }

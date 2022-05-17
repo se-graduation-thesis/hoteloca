@@ -11,6 +11,7 @@ export const ACTION_TYPES = {
     GET_CUSTOMER_BY_DAY: "GET_CUSTOMER_BY_DAY",
     TOP_CUSTOMER_BY_YEAR: "TOP_CUSTOMER_BY_YEAR",
     TOP_CUSTOMER_BY_MONTH: "TOP_CUSTOMER_BY_MONTH",
+    UPDATE_CUSTOMNER: "UPDATE_CUSTOMNER"
 };
 
 export const fetchAllCustomer = () => (dispatch) => {
@@ -70,7 +71,18 @@ export const save_customer = (cus) => (dispatch) => {
         })
         .catch((err) => console.log(err));
 };
-
+export const updateCustomer = (cus) => (dispatch) => {
+    apiService
+        .customer()
+        .updateCustomer(cus)
+        .then((response) => {
+            dispatch({
+                type: ACTION_TYPES.UPDATE_CUSTOMNER,
+                payload: response.data,
+            });
+        })
+        .catch((err) => console.log(err));
+};
 export const register = (customer) => {
     return apiService
         .customer()

@@ -88,6 +88,12 @@ export default function Room() {
                 e.soNguoi = loaiPhong.soNguoi;
                 e.soGiuong = loaiPhong.soGiuong;
                 e.donGia = loaiPhong.donGia;
+                try {
+                    let hinhAnh = JSON.parse(e.hinhAnh);
+                    e.hinhAnh = hinhAnh[0];
+                } catch {
+                    console.log("err")
+                }
                 e.trangThai === 1 ?
                     e.trangThai = "Hoạt động" :
                     e.trangThai = "Ngừng hoạt động";

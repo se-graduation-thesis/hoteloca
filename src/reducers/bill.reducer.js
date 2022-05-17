@@ -4,6 +4,7 @@ const initialState = {
     listBillByStatusAccept: [],
     listBillByStatusFinish: [],
     listBillByStatusCancel: [],
+    listBillByStatusLate: [],
     bill: null,
     bill_by_id: null,
 };
@@ -25,7 +26,11 @@ export const billReducer = (state = initialState, action) => {
                 ...state,
                 listBillByStatusCancel: [...action.payload],
             };
-
+        case ACTION_TYPES.FETCH_BILL_BY_STATUS_LATE:
+            return {
+                ...state,
+                listBillByStatusLate: [...action.payload],
+            };
         case ACTION_TYPES.ADD_BILL:
             return {
                 ...state,

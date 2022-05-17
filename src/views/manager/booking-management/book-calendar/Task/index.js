@@ -50,6 +50,14 @@ const sliderMarks = [
     value: 4,
     label: "Cancel",
   },
+  {
+    value: 5,
+    label: "Cancel",
+  },
+  {
+    value: 6,
+    label: "Cancel",
+  },
 ];
 
 function Icon({ trangThai, fontSizeValue }) {
@@ -73,13 +81,7 @@ function Icon({ trangThai, fontSizeValue }) {
         style={{ fontSize: fontSizeValue ? fontSizeValue : null }}
       />
     );
-  if (trangThai === 2)
-    return (
-      <RadioButtonUncheckedIcon
-        className={className}
-        style={{ fontSize: fontSizeValue ? fontSizeValue : null }}
-      />
-    );
+
   if (trangThai === 3)
     return (
       <BlockIcon

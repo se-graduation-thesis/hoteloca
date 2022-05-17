@@ -13,6 +13,7 @@ import * as actionPhongTN from 'actions/phongTN.action';
 
 import * as actionCustomer from 'actions/customer.action';
 import * as actionService from 'actions/service.action';
+import * as actionCategory from 'actions/category.action'
 import moment from "moment-timezone";
 import { DateTimePicker, LocalizationProvider } from "@mui/lab";
 import { nations } from "assets/nation"
@@ -52,11 +53,15 @@ export default function Payment() {
     const navigate = useNavigate();
     const account = useSelector((state) => state.account.userAuth);
     const tienNghiList = useSelector(state => state.phongTN.tienNghiList);
+    const [textAlert, setTextAlert] = useState("");
+    const listCategory = useSelector((state) => state.category.listCategory);
     const services = useSelector(state => state.service.services);
     const room = useSelector((state) => state.room.empty_room);
     const [checkin, setCheckIn] = useState(new Date)
     const [checkout, setCheckOut] = useState(new Date((new Date()).valueOf() + 1000 * 3600 * 24))
     const [list_room_hotel, setListRoomHotel] = useState([]);
+    const [listCategoryShow, setListCategory] = useState([])
+    const [lp, setCategory] = useState(1);
     const [disabled, setDisabled] = useState(false)
     const [idCustomer, setIdCustomer] = useState(0)
     const [idNv, setIdNv] = useState(0)
@@ -66,13 +71,26 @@ export default function Payment() {
     const [open, setOpen] = useState(false);
     const [listService, setListService] = useState([])
     const [open1, setOpen1] = React.useState(false);
-
+    const [phiDv, setPhiDv] = React.useState(0)
+    const [phiPhong, setPhiPhong] = React.useState(0)
+    const [count, setCount] = React.useState(0)
+    useEffect(() => {
+        dispatch(actionCategory.fetchAllCategory())
+    }, [])
+    useEffect(() => {
+        if (listCategory) {
+            setListCategory(listCategory)
+        }
+    }, [listCategory])
     const handleClickOpen = () => {
         setOpen1(true);
     };
 
     const handleClose = () => {
         setOpen1(false);
+    };
+    const handleChange = (event) => {
+        setCategory(event.target.value);
     };
     useEffect(() => {
         let room_find = {
@@ -90,9 +108,14 @@ export default function Payment() {
                     set_list_room.push(e)
                 }
             })
-            setListRoomHotel(set_list_room)
+            if (lp === 0) {
+                setListRoomHotel(set_list_room.filter(({ trangThaiHomNay }) => trangThaiHomNay === 1))
+            }
+            else {
+                setListRoomHotel(set_list_room.filter(({ trangThaiHomNay, loaiPhongid }) => trangThaiHomNay === 1 && loaiPhongid.id === lp))
+            }
         }
-    }, [room])
+    }, [room, lp])
     const listCus = useSelector((state) => state.customer.customers);
     useEffect(() => {
         dispatch(cus_actions.fetchAllCustomer());
@@ -157,9 +180,7 @@ export default function Payment() {
             // }
         }
         if ("ten" in fieldValues) {
-            if (fieldValues.ten === "") {
-                temp.ten = fieldValues.ten ? "" : "Tên không được để trống";
-            }
+            temp.ten = fieldValues.ten ? "" : "Tên không được để trống";
         }
         setErrors({
             ...temp,
@@ -192,6 +213,7 @@ export default function Payment() {
 
     const handleSubmit = (e) => {
         const booking_info = {
+            maHoaDon: "PThoteloca" + String(moment.tz(new Date(), "Asia/Ho_Chi_Minh").format("DDMMYYhhmmss")),
             list_room_hotel: roomSelect,
             list_service: serviceSelect,
             nhanVienid: idNv,
@@ -206,9 +228,22 @@ export default function Payment() {
         }
         if (validate()) {
             if (roomSelect.length === 0) {
+                setTextAlert("Vui lòng chọn ít nhất 1 phòng")
+                console.log("jaajja")
                 handleClickOpen()
                 return
             }
+            if (checkin < new Date(new Date().getTime() - 10 * 60000)) {
+                setTextAlert("Ngày vào phải lớn hơn ngày hiện tại")
+                handleClickOpen()
+                return
+            }
+            if (checkout < checkin) {
+                setTextAlert("Ngày ra không được nhỏ hơn ngày vào")
+                handleClickOpen()
+                return
+            }
+
             if (booking_info.khachHangid === 0) {
                 actionCustomer.addCustomer(booking_info.bill).then((res) => {
                     booking_info.khachHangid = res.data.id
@@ -352,19 +387,41 @@ export default function Payment() {
             roomSelect.forEach((e) => {
                 depo += e.loaiPhongid.donGia
             })
+            setPhiPhong(depo)
         }
         if (serviceSelect.length > 0) {
             serviceSelect.forEach((e) => {
                 dv += e.donGia * e.soLuong
             })
+            setPhiDv(dv)
         }
-        let day = Math.round(DaysBetween(checkin, checkout))
-        setDeposit(depo * day + dv)
+        let numberDate = countDate();
+        let count = numberDate.days;
+        if (numberDate.days < 0)
+            count = 0
+        else if (numberDate.days === 0) {
+            if (numberDate.hours === 0 && numberDate.minutes === 0)
+                count = 0
+            else if (numberDate.hours < 12)
+                count = 0.5
+            else
+                count = 1
+        }
+        else {
+            if (numberDate.hours >= 18)
+                count += 1
+            else if (numberDate.hours >= 6)
+                count += 0.5
+        }
+        setCount(count)
+        setDeposit(depo * count + dv)
 
     }, [roomSelect][serviceSelect])
     console.log(serviceSelect)
     const onChangeCheckIn = (e) => {
         setCheckIn(e)
+        setRoomSelect([])
+        setDeposit(phiDv)
         let room_find = {
             ngayVao: moment.tz(e, "Asia/Ho_Chi_Minh").format(),
             ngayRa: moment.tz(checkout, "Asia/Ho_Chi_Minh").format()
@@ -372,21 +429,35 @@ export default function Payment() {
         dispatch(actions.get_empty_room(room_find))
     }
 
-    function DaysBetween(start, end) {
-        const oneDay = 1000 * 60 * 60 * 24;
-        let day = (treatAsUTC(end) - treatAsUTC(start)) / oneDay
-        if (day == 0) {
-            day = 1
+    const countDate = () => {
+
+        let offset = new Date(checkout).getTime() - new Date(checkin).getTime();
+
+        const days = Math.floor(offset / 1000 / 60 / 60 / 24);
+
+        offset -= days * 1000 * 60 * 60 * 24; // giảm offset đi
+
+        const hours = Math.floor(offset / 1000 / 60 / 60);
+
+        offset -= hours * 1000 * 60 * 60; // giảm offset đi
+
+        const minutes = Math.floor(offset / 1000 / 60);
+
+        offset -= minutes * 1000 * 60;
+
+        const seconds = Math.floor(offset / 1000);
+
+        return {
+            days,
+            hours,
+            minutes
         }
-        return day;
     }
-    function treatAsUTC(date) {
-        var result = new Date(date);
-        result.setMinutes(result.getMinutes() - result.getTimezoneOffset());
-        return result;
-    }
+
     const onChangeCheckOut = (e) => {
         setCheckOut(e)
+        setRoomSelect([])
+        setDeposit(phiDv)
         let room_find = {
             ngayVao: moment.tz(checkin, "Asia/Ho_Chi_Minh").format(),
             ngayRa: moment.tz(e, "Asia/Ho_Chi_Minh").format()
@@ -486,7 +557,7 @@ export default function Payment() {
                                         {...(errors.email && { error: true, helperText: errors.email })}
                                     />
                                 </Grid>
-                                <Grid item xs={4}>
+                                {/* <Grid item xs={4}>
                                     <FormControl fullWidth>
                                         <InputLabel id="qt">Quốc tịch</InputLabel>
                                         <Select
@@ -506,9 +577,7 @@ export default function Payment() {
                                             }
                                         </Select>
                                     </FormControl>
-
-                                </Grid>
-
+                                </Grid> */}
                             </Grid>
                         </Paper>
                     </Grid>
@@ -553,21 +622,9 @@ export default function Payment() {
                                         />
                                     </LocalizationProvider>
                                 </Grid>
-                                {/* <Grid item xs={4}>
-                                    <TextField
-                                        id="nhanVien"
-                                        label="Nhân viên đặt phòng *"
-                                        variant="outlined"
-                                        helperText=" "
-                                        name="nhanVien"
-                                        type="text"
-                                        fullWidth
-                                        autoComplete='off'
-                                        value={values.nhanVien}
-                                        onChange={handleInputChange}
-                                        {...(errors.nhanVien && { error: true, helperText: errors.nhanVien })}
-                                    />
-                                </Grid> */}
+                                <Grid item xs={12}>
+                                    <span style={{ marginLeft: 10, color: 'green', fontStyle: 'italic' }}>{countDate().days} ngày {countDate().hours} giờ {countDate().minutes} phút</span>
+                                </Grid>
                                 <Grid item xs={12}>
                                     <TextField
                                         id="yeuCau"
@@ -585,19 +642,46 @@ export default function Payment() {
                                         {...(errors.yeuCau && { error: true, helperText: errors.yeuCau })}
                                     />
                                 </Grid>
+
                                 <Grid item xs={12}>
                                     <h3>DANH SÁCH PHÒNG TRỐNG</h3>
                                 </Grid>
+                                <Grid xs={9} item>
+
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <FormControl fullWidth size="small" style={{ marginBottom: 30 }}>
+                                        <InputLabel id="demo-simple-select-label">Loại phòng</InputLabel>
+                                        <Select
+                                            labelId="demo-simple-select-label"
+                                            id="demo-simple-select"
+                                            value={lp}
+                                            label="Loại phòng"
+                                            onChange={handleChange}
+                                        >
+                                            <MenuItem value={0}>Tất cả các loại phòng</MenuItem>
+                                            {
+                                                listCategoryShow.map((e, i) => (
+                                                    <MenuItem key={i} value={e.id}>{e.ten}</MenuItem>
+                                                ))
+                                            }
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
                                 <Grid item xs={12}>
-                                    <Grid container spacing={8}>
+                                    <Grid container spacing={4} >
                                         {list_room_hotel.length > 0 ?
                                             list_room_hotel.map((e, i) => {
                                                 return (
-                                                    <Grid item xs={1} key={i}>
-                                                        <img src={imga} alt="bk" width={"100%"} />
-                                                        <p>{e.ten}</p>
+                                                    <Grid item xs={2} key={i} style={{ justifyContent: 'center', textAlign: 'center' }}>
+                                                        <img src={imga} alt="bk" width={"30%"} />
+                                                        <p style={{ color: 'black', fontWeight: 'bold' }}>{e.ten}</p>
+                                                        <Chip label={e.loaiPhongid.ten} color="secondary"></Chip>
                                                         <Checkbox
+                                                            style={{ position: 'absolute' }}
+                                                            key={i}
                                                             value={e.id} onChange={(el, checked) => handleRoom(el, checked)}
+                                                            checked={roomSelect.filter(({ id }) => id === e.id).length > 0 ? true : false}
                                                             inputProps={{ 'aria-label': 'controlled' }}
                                                         />
                                                     </Grid>
@@ -610,9 +694,6 @@ export default function Payment() {
                                         }
                                     </Grid>
                                 </Grid>
-
-
-
                             </Grid>
                         </Paper>
                     </Grid>
@@ -680,9 +761,33 @@ export default function Payment() {
                                         </div>
                                     }
                                 </Grid>
-                                <Grid item xs={12} style={{ textAlign: 'right' }}>
-                                    <span style={{ color: "black", fontSize: 18, fontWeight: 'bold' }}>TIỀN CỌC : </span>
-                                    <span style={{ color: "black", fontSize: 18, fontWeight: 'bold' }}>{new Intl.NumberFormat('en-Vn').format(deposit) + " VND"}</span>
+                                <Grid item xs={8} style={{ textAlign: 'right' }}></Grid>
+                                <Grid item xs={2} style={{ textAlign: 'right' }}>
+                                    <span style={{ color: "black", fontSize: 17, fontWeight: 'bold' }}>Số ngày ở : </span>
+                                </Grid>
+                                <Grid item xs={2} style={{ textAlign: 'right' }}>
+                                    <span style={{ color: "black", fontSize: 17, fontWeight: 'bold' }}>{count} Ngày</span>
+                                </Grid>
+                                <Grid item xs={8} style={{ textAlign: 'right' }}></Grid>
+                                <Grid item xs={2} style={{ textAlign: 'right' }}>
+                                    <span style={{ color: "black", fontSize: 17, fontWeight: 'bold' }}>Tiền phòng : </span>
+                                </Grid>
+                                <Grid item xs={2} style={{ textAlign: 'right' }}>
+                                    <span style={{ color: "black", fontSize: 17, fontWeight: 'bold' }}>{new Intl.NumberFormat('en-Vn').format(phiPhong) + " VND"}</span>
+                                </Grid>
+                                <Grid item xs={8} style={{ textAlign: 'right' }}></Grid>
+                                <Grid item xs={2} style={{ textAlign: 'right' }}>
+                                    <span style={{ color: "black", fontSize: 17, fontWeight: 'bold' }}>Phí dịch vụ : </span>
+                                </Grid>
+                                <Grid item xs={2} style={{ textAlign: 'right' }}>
+                                    <span style={{ color: "black", fontSize: 17, fontWeight: 'bold' }}>{new Intl.NumberFormat('en-Vn').format(phiDv) + " VND"}</span>
+                                </Grid>
+                                <Grid item xs={8} style={{ textAlign: 'right' }}></Grid>
+                                <Grid item xs={2} style={{ textAlign: 'right' }}>
+                                    <span style={{ color: "black", fontSize: 17, fontWeight: 'bold' }}>TỔNG TIỀN CỌC PHẢI TRẢ: </span>
+                                </Grid>
+                                <Grid item xs={2} style={{ textAlign: 'right' }}>
+                                    <span style={{ color: "black", fontSize: 17, fontWeight: 'bold' }}>{new Intl.NumberFormat('en-Vn').format(deposit) + " VND"}</span>
                                 </Grid>
                                 <Grid item xs={12} style={{ textAlign: 'right' }}>
                                     <Button type='submid' color="secondary" variant="contained">Hoàn thành</Button>
@@ -696,7 +801,7 @@ export default function Payment() {
                     <Alert variant="filled" severity="success"><AlertTitle>Thành công</AlertTitle>
                         Thông báo — <strong>Thanh toán thành công</strong></Alert>
                 </Snackbar> */}
-            </Formsy>
+            </Formsy >
             <Dialog
                 open={open1}
                 maxWidth={'xs'}
@@ -708,7 +813,7 @@ export default function Payment() {
             >
                 <DialogContent style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <CancelOutlinedIcon color='error' sx={{ fontSize: 70 }} />
-                    <span style={{ fontSize: 15, fontWeight: 'bold' }}>Vui lòng chọn ít nhất 1 phòng để tiến hành đặt phòng</span>
+                    <span style={{ fontSize: 15, fontWeight: 'bold' }}>{textAlert}</span>
                 </DialogContent>
                 <DialogActions>
                 </DialogActions>

@@ -168,7 +168,7 @@ export default function CategoryManager() {
                                             {row.moTa}
                                         </TableCell>
                                         <TableCell>
-                                            <img src="http://danlyhotel.com/upload/img/products/b178a1e4709a13e7f26ac2cd9ca79631.jpg" style={{ maxWidth: "100%" }} />
+                                            <img src={row.hinhAnh} style={{ maxWidth: "100%" }} />
                                             {/* {row.hinhAnh} */}
                                         </TableCell>
                                         <TableCell key={row.stt}>

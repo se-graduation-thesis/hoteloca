@@ -68,6 +68,7 @@ export default {
             getKhachHangByDay: (year, month, day) => axios.get(url + "thongke/" + year + "/" + month + "/" + day),
             topKhachHangByYear: (year) => axios.get(url + "topByYear/" + year),
             topKhachHangByMonth: (year, month) => axios.get(url + "topByMonth/" + year + "/" + month),
+            updateCustomer: (customer) => axios.put(url + "update-customer", customer),
         }
     },
     bill_detail(url = baseApi + 'bill-detail/') {
@@ -90,7 +91,8 @@ export default {
             updateBill: (id) => axios.put(url + id),
             updateStateOfBill: (id, state) => axios.put(url + 'trangThai/' + id + "/" + state),
             fetchAllBillByStatusFinish: () => axios.get(url + 'get-all-bill-by-status-finish/'),
-            fetchAllBillByStatusCancel: () => axios.get(url + 'get-all-bill-by-status-cancel/')
+            fetchAllBillByStatusCancel: () => axios.get(url + 'get-all-bill-by-status-cancel/'),
+            fetchAllBillByStatusLate: () => axios.get(url + 'get-all-bill-by-status-late/')
         }
     },
     phongTN(url = baseApi + 'phongTN/') {

@@ -151,6 +151,7 @@ export default function PrintPdf() {
                                 <TableRow>
                                     <TableCell>Số thứ tự</TableCell>
                                     <TableCell align="right">Tên dịch vụ</TableCell>
+                                    <TableCell align="right">Số lượng</TableCell>
                                     <TableCell align="right">Đơn giá (VND)</TableCell>
                                 </TableRow>
                             </TableHead>
@@ -166,7 +167,8 @@ export default function PrintPdf() {
                                                     {i + 1}
                                                 </TableCell>
                                                 <TableCell align="right">{row.dichVuid.ten}</TableCell>
-                                                <TableCell align="right">{new Intl.NumberFormat('en-Vn').format(row.dichVuid.donGia)}</TableCell>
+                                                <TableCell align="right">{row.soLuong}</TableCell>
+                                                <TableCell align="right">{new Intl.NumberFormat('en-Vn').format(row.dichVuid.donGia * row.soLuong)}</TableCell>
                                             </TableRow>
                                         ))
                                         : <></>

@@ -185,8 +185,10 @@ export default function NavbarMainLayout() {
                                 <Button variant="contained" color="secondary" onClick={() => navigate("/register")}>Đăng kí</Button>
                             </Box> :
                                 <Box style={{ display: 'flex', alignItems: 'center' }}>
-                                    <Avatar sx={{ width: 32, height: 32 }}>{customer?.ho}</Avatar>
-                                    <span style={{ color: 'black', fontWeight: 'bold', marginRight: 30, marginLeft: 10 }}>{customer?.ho + " " + customer?.ten}</span>
+                                    <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => navigate("/customer-info")}>
+                                        <Avatar sx={{ width: 32, height: 32 }} src={customer?.hinhAnh}></Avatar>
+                                        <span style={{ color: 'black', fontWeight: 'bold', marginRight: 30, marginLeft: 10 }}>{customer?.ho + " " + customer?.ten}</span>
+                                    </div>
                                     <IconButton onClick={() => navigate("/list-bill")} aria-label="delete" style={{ color: "black" }}>
                                         <Badge badgeContent={bill_show.length} color="secondary">
                                             <CalendarMonthIcon />

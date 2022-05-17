@@ -12,7 +12,7 @@ import * as pay_actions from "actions/payment.action";
 import * as ser_bill_action from "actions/bill-service-detail.action"
 import DescriptionIcon from '@mui/icons-material/Description';
 import { useNavigate } from 'react-router';
-import moment from "moment";
+import moment from "moment-timezone";
 
 import './payment.css';
 import NumberFormat from 'react-number-format';
@@ -69,46 +69,79 @@ export default function Payment() {
         if (billDetail !== null) {
             let gia = 0;
             let phiDv = 0;
-            let phong = []
+            let phong = ""
+            let numberDate = countDate(billDetail.ngayVao, billDetail.ngayRa);
+            let count = numberDate.days;
             billDetail.chiTietPhieuThueList.forEach((e) => {
                 gia += e.phongId.loaiPhongid.donGia
-                phong.push(e.phongId.ten)
+                phong += e.phongId.ten + " "
             });
             billServiceDetailShow.forEach((e) => {
-                phiDv += e.dichVuid.donGia
+                phiDv += e.dichVuid.donGia * e.soLuong
             })
             let data_bill_show = {};
             data_bill_show.tenKhachHang = billDetail.khachHangid.ho + " " + billDetail.khachHangid.ten
             data_bill_show.ngayRa = moment(billDetail.ngayRa).format('DD-MM-YYYY HH:mm:ss')
             data_bill_show.ngayVao = moment(billDetail.ngayVao).format('DD-MM-YYYY HH:mm:ss')
-            data_bill_show.phong = JSON.stringify(phong).replaceAll('["', '').replaceAll('"]', '')
+            data_bill_show.phong = phong
             // billDetail.tongDichvu = gia;
-            data_bill_show.giaCheckin = gia
-            data_bill_show.countDay = Math.round(DaysBetween(billDetail.ngayVao, billDetail.ngayRa))
-            data_bill_show.giaPhong = gia * Math.round(DaysBetween(billDetail.ngayVao, billDetail.ngayRa))
+            data_bill_show.giaCheckin = billDetail.tienCoc
+
+
+            if (numberDate.days < 0)
+                count = 0
+            else if (numberDate.days === 0) {
+                if (numberDate.hours === 0 && numberDate.minutes === 0)
+                    count = 0
+                else if (numberDate.hours < 12)
+                    count = 0.5
+                else
+                    count = 1
+            }
+            else {
+                if (numberDate.hours >= 18)
+                    count += 1
+                else if (numberDate.hours >= 6)
+                    count += 0.5
+            }
+            data_bill_show.countDay = count
+
+            data_bill_show.giaPhong = gia * count
             data_bill_show.tienCoc = billDetail.tienCoc
             data_bill_show.phiDv = phiDv
             data_bill_show.listDichvu = billServiceDetailShow
-            data_bill_show.tongChiPhi = gia * Math.round(DaysBetween(billDetail.ngayVao, billDetail.ngayRa)) + phiDv
+            data_bill_show.tongChiPhi = gia * count + phiDv
             data_bill_show.khachHang = billDetail.khachHangid
             data_bill_show.nhanVien = billDetail.nhanVienid
             setBillShow(data_bill_show)
         }
 
     }, [billDetail, billServiceDetailShow])
+    console.log(billDetail)
+    console.log(billServiceDetailShow)
+    const countDate = (checkin, checkout) => {
 
-    function DaysBetween(start, end) {
-        const oneDay = 1000 * 60 * 60 * 24;
-        let day = (treatAsUTC(end) - treatAsUTC(start)) / oneDay
-        if (day == 0) {
-            day = 1
+        let offset = new Date(checkout).getTime() - new Date(checkin).getTime();
+
+        const days = Math.floor(offset / 1000 / 60 / 60 / 24);
+
+        offset -= days * 1000 * 60 * 60 * 24; // giảm offset đi
+
+        const hours = Math.floor(offset / 1000 / 60 / 60);
+
+        offset -= hours * 1000 * 60 * 60; // giảm offset đi
+
+        const minutes = Math.floor(offset / 1000 / 60);
+
+        offset -= minutes * 1000 * 60;
+
+        const seconds = Math.floor(offset / 1000);
+
+        return {
+            days,
+            hours,
+            minutes
         }
-        return day;
-    }
-    function treatAsUTC(date) {
-        var result = new Date(date);
-        result.setMinutes(result.getMinutes() - result.getTimezoneOffset());
-        return result;
     }
     const Change = (e) => {
         let value_hoan = e.target.value.replaceAll(",", "")
@@ -126,9 +159,10 @@ export default function Payment() {
     const onSubmit = () => {
         if (billDetail !== null) {
             let payment = {
+                maThanhToan: "TThoteloca" + String(moment.tz(new Date(), "Asia/Ho_Chi_Minh").format("DDMMYYhhmmss")),
                 tongTienDichVu: billShow.phiDv,
                 tongTienThanhToan: billShow.tongChiPhi,
-                ngayThanhToan: new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString(),
+                ngayThanhToan: new Date(),
                 phieuThueid: bill
             }
             dispatch(pay_actions.addPay(payment))
@@ -248,7 +282,7 @@ export default function Payment() {
                                     <Grid item xs={12} className="chipDisplay">
                                         {
                                             billShow.listDichvu.map((e, i) => (
-                                                <Chip key={i} label={e.dichVuid.ten + " " + new Intl.NumberFormat('en-Vn').format(e.dichVuid.donGia) + " VND"} color={chipData[Math.floor(Math.random() * 6)].label} style={{ marginRight: 10 }} />
+                                                <Chip key={i} label={e.dichVuid.ten + " x" + e.soLuong + " " + new Intl.NumberFormat('en-Vn').format(e.dichVuid.donGia * e.soLuong) + " VND"} color={"secondary"} style={{ marginRight: 10 }} />
                                             ))
                                         }
                                     </Grid>
@@ -339,8 +373,19 @@ export default function Payment() {
                                         <p style={{ fontWeight: 'bold' }}>Đã trả trước</p>
                                     </Grid>
                                     <Grid item xs={6}>
-                                        <p style={{ fontWeight: 'bold', color: 'red' }}>{billShow !== null ? "- " + new Intl.NumberFormat('en-Vn').format(billShow.tienCoc) + " VND" : ""}</p>
+                                        <p style={{ fontWeight: 'bold', color: 'red' }}>{billShow !== null ? new Intl.NumberFormat('en-Vn').format(billShow.tienCoc) + " VND" : ""}</p>
                                     </Grid>
+                                    {
+                                        billShow.tienCoc > billShow.tongChiPhi ?
+                                            <>
+                                                <Grid item xs={6}>
+                                                    <p style={{ fontWeight: 'bold' }}>Tiền hoàn lại</p>
+                                                </Grid>
+                                                <Grid item xs={6}>
+                                                    <p style={{ fontWeight: 'bold', color: 'red' }}>{billShow !== null ? new Intl.NumberFormat('en-Vn').format(billShow.tienCoc - billShow.tongChiPhi) + " VND" : ""}</p>
+                                                </Grid> </> :
+                                            <></>
+                                    }
                                     <Grid item xs={6}>
                                         <p style={{ fontWeight: 'bold', fontSize: 20 }}>Tổng tiền</p>
                                     </Grid>

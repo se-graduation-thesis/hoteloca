@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Alert, AlertTitle, Button, FormControl, Grid, InputLabel, InputAdornment, Select, Snackbar, TextField } from '@mui/material';
+import { Alert, AlertTitle, Button, FormControl, Grid, InputLabel, InputAdornment, Select, Snackbar, TextField, IconButton } from '@mui/material';
 
 import Formsy from "formsy-react";
 //Dialog
@@ -16,6 +16,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as actions from "actions/category.action"
 import NumberFormat from 'react-number-format';
 import * as brandActions from "actions/brand.action"
+import { styled } from '@mui/material/styles';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import * as actionsUploadFile from 'actions/upload.action';
 
 
 const initialFieldValues = {
@@ -29,6 +32,10 @@ const initialFieldValues = {
     moTa: "",
     hinhAnh: "",
 };
+const Input = styled('input')({
+    display: 'none',
+});
+
 export default function InsertBrandDialog(props) {
     const dispatch = useDispatch();
     let vertical = 'top';
@@ -109,19 +116,60 @@ export default function InsertBrandDialog(props) {
 
     const { values, setValues, errors, setErrors, handleInputChange, resetForm } =
         useForm(initialFieldValues, validate, 0);
+    const [image, setImage] = useState(null);
+    const [file, setFile] = useState(null);
+
+    const handleIma = () => {
+        setImage(null);
+        setFile(null);
+    }
+
+    const handleImage = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            let reader = new FileReader();
+            let file1 = e.target.files[0];
+            setFile(file1)
+            reader.onloadend = () => {
+                setImage(reader.result);
+            };
+            reader.readAsDataURL(file1);
+        }
+    }
+
 
     const handleSubmit = (e) => {
 
         if (validate()) {
-            let dientich = {
-                chieudai: values.chieuDai,
-                chieurong: values.chieuRong
+            if (file) {
+                const formData = new FormData();
+                formData.append("file", file);
+                actionsUploadFile.upload(formData)
+                    .then((response) => {
+                        values.hinhAnh = response.data;
+                        let dientich = {
+                            chieudai: values.chieuDai,
+                            chieurong: values.chieuRong
+                        }
+                        values.dienTich = JSON.stringify(dientich)
+                        values.donGia = Number(values.donGia.replaceAll(',', ''))
+                        dispatch(actions.insertCategory(values))
+                        resetForm()
+                        setAlertOpen(true)
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            } else {
+                let dientich = {
+                    chieudai: values.chieuDai,
+                    chieurong: values.chieuRong
+                }
+                values.dienTich = JSON.stringify(dientich)
+                values.donGia = Number(values.donGia.replaceAll(',', ''))
+                dispatch(actions.insertCategory(values))
+                resetForm()
+                setAlertOpen(true)
             }
-            values.dienTich = JSON.stringify(dientich)
-            values.donGia = Number(values.donGia.replaceAll(',', ''))
-            dispatch(actions.insertCategory(values))
-            resetForm()
-            setAlertOpen(true)
         };
     }
 
@@ -240,6 +288,26 @@ export default function InsertBrandDialog(props) {
                                 {/* <TextField
                                    
                                 /> */}
+                            </Grid>
+                            <Grid item xs={12}>
+                                <label htmlFor="contained-button-file">
+                                    <Input accept="image/*" id="contained-button-file" onChange={handleImage} type="file" />
+                                    <Button variant="contained" component="span">
+                                        Thêm Ảnh
+                                    </Button>
+                                </label>
+
+                                {image &&
+                                    <IconButton onClick={handleIma}>
+                                        <DeleteForeverIcon sx={{ fontSize: 40 }} />
+                                    </IconButton>
+                                }
+
+                            </Grid>
+                            <Grid item xs={12}>
+                                {image && <div style={{ display: 'block' }}>
+                                    <img src={image} alt="" style={{ width: 490, height: 350 }} />
+                                </div>}
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField

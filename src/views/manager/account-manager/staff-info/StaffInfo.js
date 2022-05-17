@@ -15,6 +15,7 @@ import PositionedSnackbar from "../components/PositionedSnackbar";
 import UpdatePhone from "./component/UpdatePhone";
 import UpdateEmail from "./component/UpdateEmail";
 import * as actionsUploadFile from 'actions/upload.action';
+import { vi } from "date-fns/locale";
 
 const marginTop = 3;
 
@@ -326,7 +327,7 @@ export default function StaffInfo() {
                                                 {error.ngaySinh && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.ngaySinh}</span></>}
                                             </Grid>
                                             <Grid item xs={3}>
-                                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                <LocalizationProvider locale={vi} dateAdapter={AdapterDateFns}>
                                                     <DatePicker
                                                         views={['month']}
                                                         label="Tháng"
@@ -492,9 +493,9 @@ export default function StaffInfo() {
                                                 <Typography sx={{ fontSize: 18 }}>Số điện thoại</Typography>
                                                 <Typography sx={{ fontSize: 18 }}>{data?.dienThoai}</Typography>
                                             </Grid>
-                                            <Grid item xs={3}>
+                                            {/* <Grid item xs={3}>
                                                 <Button variant="outlined" onClick={() => handleOpenPhone(true)}>Cập nhật</Button>
-                                            </Grid>
+                                            </Grid> */}
                                         </Grid>
                                     </Grid>
 
@@ -512,9 +513,9 @@ export default function StaffInfo() {
                                                 <Typography sx={{ fontSize: 18 }}>Địa chỉ Email</Typography>
                                                 <Typography sx={{ fontSize: 18 }}>{data?.email}</Typography>
                                             </Grid>
-                                            <Grid item xs={3}>
+                                            {/* <Grid item xs={3}>
                                                 <Button variant="outlined" onClick={() => handleOpenEmail(true)}>Cập nhật</Button>
-                                            </Grid>
+                                            </Grid> */}
                                         </Grid>
                                     </Grid>
                                 </Grid>

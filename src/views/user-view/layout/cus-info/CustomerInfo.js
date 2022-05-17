@@ -8,11 +8,11 @@ import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
 import { useEffect, useState } from "react";
 import { address } from 'assets/address';
-import * as actions from "actions/manager.action"
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import UpdatePhone from "./component/UpdatePhone";
-
+import * as actionsUploadFile from 'actions/upload.action';
+import * as actions from "actions/customer.action"
+import PositionedSnackbar from "./PositionedSnackbar"
 const marginTop = 3;
 
 const Input = styled('input')({
@@ -33,14 +33,14 @@ export default function StaffInfo() {
         }
         return true;
     }
-    const manager = useSelector(state => state.manager.manager)
+    const manager = useSelector(state => state.customer.customer)
     useEffect(() => {
-        dispatch(actions.findById(employeeId))
+        dispatch(actions.getCustomerById(employeeId))
+        console.log("nnn")
     }, [])
 
-    const [value, setValue] = useState();
     const [data, setData] = useState({
-        gioiTinh: true
+        gioiTinh: true,
     })
     const [district, setDistrict] = useState([])
     const [wards, setWards] = useState([])
@@ -51,12 +51,41 @@ export default function StaffInfo() {
     const [ten, setTen] = useState('')
     const [confirm, setConfirm] = useState(false);
     const [snackbarState, setSnackbarState] = useState(false);
+    const [image, setImage] = useState("/broken-image.jpg")
+    const [file, setFile] = useState(null);
+
+    const handleImage = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            let reader = new FileReader();
+            let file1 = e.target.files[0];
+            setFile(file1)
+            reader.onloadend = () => {
+                setImage(reader.result);
+            };
+            reader.readAsDataURL(file1);
+        }
+    }
 
     // -------------------- component
     const [openPhone, setOpenPhone] = useState(false);
     const [openEmail, setOpenEmail] = useState(false);
     const handleOpenPhone = value => setOpenPhone(value);
     const handleOpenEmail = value => setOpenEmail(value);
+    // -------------------------------------------------
+
+    address.sort(function (a, b) {
+        const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+        const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+        if (nameA < nameB) {
+            return -1;
+        }
+        if (nameA > nameB) {
+            return 1;
+        }
+
+        // names must be equal
+        return 0;
+    })
 
     const getDistrict = (a) => {
         setDistrict(a.districts)
@@ -64,10 +93,42 @@ export default function StaffInfo() {
         setWards([])
     }
 
+    useEffect(() => {
+        district.sort(function (a, b) {
+            const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+            const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+            if (nameA < nameB) {
+                return -1;
+            }
+            if (nameA > nameB) {
+                return 1;
+            }
+
+            // names must be equal
+            return 0;
+        })
+    }, [district])
+
     const getWards = (a) => {
         setWards(a.wards)
         setXa('');
     }
+
+    useEffect(() => {
+        wards.sort(function (a, b) {
+            const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+            const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+            if (nameA < nameB) {
+                return -1;
+            }
+            if (nameA > nameB) {
+                return 1;
+            }
+
+            // names must be equal
+            return 0;
+        })
+    }, [wards])
 
     useEffect(() => {
         if (huyen !== '' && district.length)
@@ -86,10 +147,11 @@ export default function StaffInfo() {
             }
 
             setTen(manager.ho + ' ' + manager.ten)
+            setImage(manager.hinhAnh)
             setData(manager)
+            console.log(manager)
         }
     }, [manager])
-
     const [error, setError] = useState({
         cmnd: null,
         ten: null,
@@ -162,19 +224,42 @@ export default function StaffInfo() {
     }
 
     const submit = () => {
-        dispatch(actions.add_Employee(data))
+        if (file) {
+            const formData = new FormData();
+            formData.append("file", file);
+            actionsUploadFile.upload(formData)
+                .then((response) => {
+                    console.log(">", response);
+                    data.hinhAnh = response.data;
+                    console.log(">>", data)
+                    dispatch(actions.updateCustomer(data))
 
-        setConfirm(false);
+                    setConfirm(false);
 
-        setSnackbarState(true);
-        setTimeout(function () {
-            setSnackbarState(false);
-        }, 3000);
+                    setSnackbarState(true);
+                    setTimeout(function () {
+                        setSnackbarState(false);
+                    }, 3000);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        } else {
+            dispatch(actions.updateCustomer(data))
+
+            setConfirm(false);
+
+            setSnackbarState(true);
+            setTimeout(function () {
+                setSnackbarState(false);
+            }, 3000);
+        }
     }
 
     return (
-        <div>
-            <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%', pl: 5, pr: 5 }}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Paper sx={{ width: '75%', overflow: 'hidden', height: '100%', pl: 5, pr: 5, border: '1px solid #dedede', mt: 5 }}>
+
                 <Grid container spacing={1} style={{ marginTop: 10, padding: 20 }}>
                     <Grid item xs={7} style={{ borderRight: "1px solid LightGray", paddingRight: 50 }}>
                         <Grid container spacing={2}>
@@ -185,10 +270,10 @@ export default function StaffInfo() {
                                 <Grid container spacing={2}>
                                     <Grid item xs={3}>
                                         <label htmlFor="icon-button-file">
-                                            <Input accept="image/*" id="icon-button-file" type="file" />
+                                            <Input accept="image/*" onChange={handleImage} id="icon-button-file" type="file" />
                                             <IconButton color="primary" aria-label="upload picture" component="span">
                                                 <Avatar
-                                                    src="/broken-image.jpg"
+                                                    src={image}
                                                     sx={{ width: 130, height: 130 }}
                                                 />
                                             </IconButton>
@@ -210,7 +295,9 @@ export default function StaffInfo() {
                                                 <p style={{ fontSize: 16 }}>CMND/CCCD</p>
                                             </Grid>
                                             <Grid item xs={8.5} sx={{ marginTop }}>
-                                                <TextField id="outlined-basic" value={data?.cmnd} name="cmnd" fullWidth variant="outlined" onChange={handleData} />
+                                                <TextField
+                                                    inputProps={{ readOnly: true }}
+                                                    id="outlined-basic" value={data?.cmnd} name="cmnd" fullWidth variant="outlined" onChange={handleData} />
                                                 {error.cmnd && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.cmnd}</span></>}
                                             </Grid>
                                         </Grid>
@@ -227,7 +314,9 @@ export default function StaffInfo() {
                                                     <DatePicker
                                                         views={['day']}
                                                         label="Ngày"
+                                                        mask="__"
                                                         inputFormat="dd"
+                                                        format="dd"
                                                         value={data?.ngaySinh}
                                                         onChange={(newValue) => {
                                                             setData({ ...data, ngaySinh: newValue })
@@ -242,6 +331,8 @@ export default function StaffInfo() {
                                                     <DatePicker
                                                         views={['month']}
                                                         label="Tháng"
+                                                        format="MM"
+                                                        mask="__"
                                                         inputFormat="MM"
                                                         value={data?.ngaySinh}
                                                         onChange={(newValue) => {
@@ -256,7 +347,7 @@ export default function StaffInfo() {
                                                     <DatePicker
                                                         views={['year']}
                                                         label="Năm"
-                                                        inputFormat="yyyy"
+                                                        format="yyyy"
                                                         value={data?.ngaySinh}
                                                         onChange={(newValue) => {
                                                             setData({ ...data, ngaySinh: newValue })
@@ -404,9 +495,6 @@ export default function StaffInfo() {
                                                 <Typography sx={{ fontSize: 18 }}>Số điện thoại</Typography>
                                                 <Typography sx={{ fontSize: 18 }}>{data?.dienThoai}</Typography>
                                             </Grid>
-                                            <Grid item xs={3}>
-                                                <Button variant="outlined" onClick={() => handleOpenPhone(true)}>Cập nhật</Button>
-                                            </Grid>
                                         </Grid>
                                     </Grid>
 
@@ -423,9 +511,6 @@ export default function StaffInfo() {
                                             <Grid item xs={8}>
                                                 <Typography sx={{ fontSize: 18 }}>Địa chỉ Email</Typography>
                                                 <Typography sx={{ fontSize: 18 }}>{data?.email}</Typography>
-                                            </Grid>
-                                            <Grid item xs={3}>
-                                                <Button variant="outlined" onClick={() => handleOpenEmail(true)}>Cập nhật</Button>
                                             </Grid>
                                         </Grid>
                                     </Grid>
@@ -484,11 +569,8 @@ export default function StaffInfo() {
                         </DialogActions>
                     </Dialog>
                 </div>
-
-                <div>
-                    <UpdatePhone open={openPhone} handleOpenPhone={handleOpenPhone} object={data} />
-                </div>
             </div>
+            <PositionedSnackbar open={snackbarState} message={"Cập nhật Thành Công."} />
         </div>
     )
 }

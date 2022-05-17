@@ -9,33 +9,30 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { Button, Chip, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip, Typography } from '@mui/material';
 import IconButton from "@mui/material/IconButton";
-import InputAdornment from "@mui/material/InputAdornment";
-import SearchIcon from "@mui/icons-material/Search";
-import Edit from '@mui/icons-material/Edit';
 import Payment from '@mui/icons-material/Payment';
 import AddTaskIcon from '@mui/icons-material/AddTask';
-import InsertBrandDialog from './InsertBrandDialog'
 import UpdateBrand from './UpdateBrand'
 import RoomServiceIcon from '@mui/icons-material/RoomService';
 import { useState, useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import * as actions from "actions/bill.action"
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import CheckIn from './CheckIn';
-import { da } from 'date-fns/locale';
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
+    { id: 'maHoaDon', label: 'Mã phiếu thuê', minWidth: 100 },
     { id: 'khachhang', label: 'Thông tin khách hàng', minWidth: 100 },
     { id: 'ngayVao', label: 'Ngày đến', minWidth: 100 },
     { id: 'ngayRa', label: 'Ngày đi', minWidth: 100 },
     { id: 'soluongphong', label: 'Số Lượng Phòng', minWidth: 100 },
     { id: 'tenPhong', label: 'Tên Phòng', minWidth: 100 },
     { id: 'checkIn', label: 'Check-In', minWidth: 100 },
+    { id: 'trangThai', label: 'trangThai', minWidth: 100 },
 ];
 
-export default function ListBooking() {
+export default function ListBooking({ daySelect, monthSelect, yearSelect }) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [page, setPage] = useState(0);
@@ -51,17 +48,17 @@ export default function ListBooking() {
     const [openUpdate, setOpenUpdate] = useState(false);
 
     const [id_brand, setId] = useState(0);
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
+    // const handleClickOpen = () => {
+    //     setOpen(true);
+    // };
 
-    const handleClickOpenUpdate = (id) => {
-        setOpenUpdate(true);
-        setId(id)
-    };
-    const handleClose = () => {
-        setOpen(false);
-    };
+    // const handleClickOpenUpdate = (id) => {
+    //     setOpenUpdate(true);
+    //     setId(id)
+    // };
+    // const handleClose = () => {
+    //     setOpen(false);
+    // };
     const handleCloseUpdate = () => {
         setOpenUpdate(false);
     };
@@ -104,22 +101,25 @@ export default function ListBooking() {
     }, [])
 
     useEffect(() => {
+
         if (listBillByStatus.length > 0 && listBillByStatus !== undefined) {
             listBillByStatus.forEach((e, i) => {
                 e.stt = i + 1;
                 e.khachhang = e.khachHangid.ho + " " + e.khachHangid.ten
                 e.ngayVao_old = e.ngayVao
                 e.count = countDate(e.ngayVao_old);
-                if (e.count.days >= 0) {
-                    if (e.count.hours >= 2)
-                        e.trangThai = 4
-                    else if (e.count.hours > 0 || (e.count.hours === 0 && e.count.minutes > 0))
-                        e.trangThai = 3
+                if (!e.checkIn) {
+                    if (e.count.days >= 0) {
+                        if (e.count.hours >= 2)
+                            e.trangThai = 4
+                        else if (e.count.hours > 0 || (e.count.hours === 0 && e.count.minutes > 0))
+                            e.trangThai = 3
+                    }
+                } else {
+                    e.checkIn = moment(e.checkIn).format('DD-MM-YYYY HH:mm:ss')
                 }
                 e.ngayVao = moment(e.ngayVao).format('DD-MM-YYYY HH:mm:ss')
                 e.ngayRa = moment(e.ngayRa).format('DD-MM-YYYY HH:mm:ss')
-                if (e.checkIn)
-                    e.checkIn = moment(e.checkIn).format('DD-MM-YYYY HH:mm:ss')
 
                 if (e.chiTietPhieuThueList.length > 0) {
 
@@ -147,12 +147,14 @@ export default function ListBooking() {
 
     useEffect(() => {
         listBillByStatusShow.forEach((e) => {
-            e.count = countDate(e.ngayVao_old);
-            if (e.count.days >= 0) {
-                if (e.count.hours >= 2)
-                    dispatch(actions.updateStateOfBill(e.id, 4))
-                else if (e.count.hours > 0 || (e.count.hours === 0 && e.count.minutes > 0))
-                    dispatch(actions.updateStateOfBill(e.id, 3))
+            if (!e.checkIn) {
+                e.count = countDate(e.ngayVao_old);
+                if (e.count.days >= 0) {
+                    if (e.count.hours >= 2)
+                        dispatch(actions.updateStateOfBill(e.id, 4))
+                    else if (e.count.hours > 0 || (e.count.hours === 0 && e.count.minutes > 0))
+                        dispatch(actions.updateStateOfBill(e.id, 3))
+                }
             }
         })
         // setListBillByStatusShow(listBillByStatusShow);

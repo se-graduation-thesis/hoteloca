@@ -16,7 +16,7 @@ import { useNavigate, useLocation } from 'react-router';
 import * as cus_actions from "actions/customer.action"
 import * as actionBillDetail from 'actions/bill-detail.action';
 import * as actionBill from 'actions/bill.action';
-
+import emailjs from 'emailjs-com';
 
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -55,7 +55,7 @@ export default function HorizontalLinearStepper() {
     const [listCategoryShow, setListCategory] = useState([])
     const [lp, setCategory] = useState(0);
     const [success, onSuccess] = useState(false)
-
+    const form = React.useRef();
     const increment = () => {
         onSuccess(true)
     }
@@ -226,6 +226,7 @@ export default function HorizontalLinearStepper() {
 
     const onSubmit = () => {
         const booking_info = {
+            maHoaDon: "PThoteloca" + String(moment.tz(new Date(), "Asia/Ho_Chi_Minh").format("DDMMYYhhmmss")),
             list_room_hotel: roomSelect,
             nhanVienid: 1,
             khachHangid: customer,
@@ -236,6 +237,7 @@ export default function HorizontalLinearStepper() {
             ngayRa: moment.tz(checkout, "Asia/Ho_Chi_Minh").format(),
             yeuCau: "Khong"
         }
+
         actionBill.addBill(booking_info).then((response) => {
             const phieuThueid = response.data;
             booking_info.list_room_hotel.forEach((e) => {
@@ -252,6 +254,26 @@ export default function HorizontalLinearStepper() {
             }, 3000)
         }
         )
+        sendEmail()
+    }
+
+    const sendEmail = (e) => {
+        //This is important, i'm not sure why, but the email won't send without it
+
+        let emailInfo = {
+            from_email: "Hoteloca",
+            to_name: "ABC",
+            to_email: "khanhletuan098@gmail.com",
+            // message: "aa"
+
+        }
+        emailjs.sendForm('service_qfo28md', 'template_e7usng6', form.current, '6HZxwoiw6Kc0MZ_nH')
+            .then((result) => {
+                console.log(result)
+                // window.location.reload()  //This is if you still want the page to reload (since e.preventDefault() cancelled that behavior) 
+            }, (error) => {
+                console.log("hahah");
+            });
     }
 
     useEffect(() => {
@@ -297,7 +319,6 @@ export default function HorizontalLinearStepper() {
     }, []);
     let limit = Math.max(document.body.scrollHeight, document.body.offsetHeight,
         document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight);
-
     return (
         <div style={{ alignContent: "center", display: 'flex', justifyContent: 'center', marginTop: 10 }}>
             <Box sx={{ width: '70%', mt: 10 }}>
@@ -505,6 +526,13 @@ export default function HorizontalLinearStepper() {
                     <DialogActions>
                     </DialogActions>
                 </Dialog>
+                <form ref={form}>
+                    <input type="hidden" name="to_name" value={customer?.ho + " " + customer?.ten} />
+                    <input type="hidden" name="checkin" value={moment.tz(checkin, "Asia/Ho_Chi_Minh").format("DD/MM/yyy hh:mm:ss a")} />
+                    <input type="hidden" name="checkout" value={moment.tz(checkout, "Asia/Ho_Chi_Minh").format("DD/MM/yyy hh:mm:ss a")} />
+                    <input type="hidden" name="deposit" value={deposit} />
+                    <input type="hidden" name="to_email" value={customer?.email} />
+                </form>
             </Box>
         </div>
     );
