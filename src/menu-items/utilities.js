@@ -40,10 +40,25 @@ const utilities = {
         {
             id: 'loaiphong',
             title: 'Phòng',
-            type: 'item',
-            url: '/admin/hotel-management/room',
+            type: 'collapse',
             icon: icons.IconBuildingWarehouse,
-            breadcrumbs: false
+            // breadcrumbs: false,
+            children: [
+                {
+                    id: 'danhsachphong',
+                    title: 'Danh Sách Phòng',
+                    type: 'item',
+                    url: '/admin/hotel-management/room',
+                    breadcrumbs: false
+                },
+                {
+                    id: 'datphong',
+                    title: 'Sơ đồ phòng',
+                    type: 'item',
+                    url: '/admin/booking',
+                    breadcrumbs: false
+                },
+            ]
         },
         {
             id: 'dchvu',
@@ -72,22 +87,44 @@ const utilities = {
         {
             id: 'kh',
             title: 'Khách Hàng',
-            type: 'item',
-            url: '/admin/customer-management',
+            type: 'collapse',
+
             icon: icons.IconUsers,
-            breadcrumbs: false
+            children: [
+                {
+                    id: 'listCustomerRent',
+                    title: 'Danh sách khách hàng',
+                    type: 'item',
+                    url: '/admin/customer-management',
+                    breadcrumbs: false
+                },
+                {
+                    id: 'listCustomerRent',
+                    title: 'Danh sách khách hàng đang thuê phòng',
+                    type: 'item',
+                    url: '/admin/list-customer-rent',
+                    breadcrumbs: false
+                },
+                {
+                    id: 'tkhd',
+                    title: 'Thống kê khách hàng',
+                    type: 'item',
+                    url: '/admin/customer-statistics',
+                    breadcrumbs: false
+                },
+            ]
         },
         {
             id: 'booking',
-            title: 'Đặt Phòng',
+            title: 'Phiếu thuê',
             type: 'collapse',
             icon: icons.IconReceipt,
             children: [
                 {
-                    id: 'datphong',
+                    id: 'add',
                     title: 'Đặt phòng',
                     type: 'item',
-                    url: '/admin/booking',
+                    url: '/admin/add-booking',
                     breadcrumbs: false
                 },
                 {
@@ -109,23 +146,15 @@ const utilities = {
         {
             id: 'hoadon',
             title: 'Hóa Đơn',
-            type: 'item',
-            url: '/admin/receipt-managerment',
-            icon: icons.IconReceipt2,
-            breadcrumbs: false
-        },
-        {
-            id: 'thongke',
-            title: 'Thống kê',
             type: 'collapse',
-            url: '/utils/util-typography',
-            icon: icons.IconChartInfographic,
+            icon: icons.IconReceipt2,
+            breadcrumbs: false,
             children: [
                 {
-                    id: 'tkhd',
-                    title: 'Thống kê khách hàng',
+                    id: 'ds',
+                    title: 'Danh sách hóa đơn',
                     type: 'item',
-                    url: '/admin/customer-statistics',
+                    url: '/admin/receipt-managerment',
                     breadcrumbs: false
                 },
                 {
@@ -136,7 +165,7 @@ const utilities = {
                     breadcrumbs: false
                 }
             ]
-        },
+        }
         // {
         //     id: 'util-shadow',
         //     title: 'Shadow',

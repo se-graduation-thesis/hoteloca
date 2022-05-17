@@ -53,7 +53,7 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 
 // ===========================|| DASHBOARD DEFAULT - EARNING CARD ||=========================== //
 
-const CardDay = ({ isLoading }) => {
+const CardDay = ({ isLoading, monthSelect, yearSelect }) => {
     const theme = useTheme();
     const dispatch = useDispatch();
     const listPayment = useSelector((state) => state.payment.pay_month);
@@ -64,8 +64,8 @@ const CardDay = ({ isLoading }) => {
     const [tong, setTong] = useState(0);
 
     useEffect(() => {
-        dispatch(actions.get_all_month(month, year))
-    }, [])
+        dispatch(actions.get_all_month(monthSelect, yearSelect))
+    }, [monthSelect, yearSelect])
     useEffect(() => {
         if (listPayment) {
             setListShow(listPayment)
@@ -96,7 +96,7 @@ const CardDay = ({ isLoading }) => {
                                         color: "white"
                                     }}
                                 >
-                                    Tổng doanh thu trong tháng {month} / {year}
+                                    Tổng doanh thu trong tháng {monthSelect} / {yearSelect}
                                 </Typography>
                             </Grid>
                             <Grid item>

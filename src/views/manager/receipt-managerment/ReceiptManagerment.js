@@ -7,12 +7,13 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Button, Chip, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip } from '@mui/material';
+import { Button, Typography, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip } from '@mui/material';
 import IconButton from "@mui/material/IconButton";
-import InputAdornment from "@mui/material/InputAdornment";
-import SearchIcon from "@mui/icons-material/Search";
-import Edit from '@mui/icons-material/Edit';
-import moment from "moment";
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormLabel from '@mui/material/FormLabel';
+import moment from "moment-timezone";
 // import InsertBrandDialog from './InsertDialog'
 // import UpdateBrand from './UpdateDialog'
 
@@ -26,7 +27,7 @@ import CardYear from "./CardYear"
 import { ReceiptLong } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 const columns = [
-    { id: 'stt', label: 'STT', minWidth: 1 },
+    { id: 'maThanhToan', label: 'Mã Thanh Toán', minWidth: 100 },
     { id: 'ten', label: 'Họ Tên Khách Hàng', minWidth: 100 },
     { id: 'ngayThue', label: 'Ngày Thuê', minWidth: 100 },
     { id: 'ngayThanhToan', label: 'Ngày Thanh Toán', minWidth: 100 },
@@ -41,26 +42,8 @@ export default function PaymentManager() {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const listPayment = useSelector((state) => state.payment.all_payment);
     const [listPaymentShow, setListPayment] = useState([])
-    const account = useSelector((state) => state.account.userAuth);
-    const [open, setOpen] = useState(false);
-    const [openUpdate, setOpenUpdate] = useState(false);
-
-    const [id_brand, setId] = useState(0);
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClickOpenUpdate = (id) => {
-        setOpenUpdate(true);
-        setId(id)
-    };
-    const handleClose = () => {
-        setOpen(false);
-    };
-    const handleCloseUpdate = () => {
-        setOpenUpdate(false);
-    };
-
+    const [checkRadio, setCheckRadio] = useState("1")
+    const [textSearch, setTextSearch] = useState("")
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -73,18 +56,106 @@ export default function PaymentManager() {
         dispatch(actions.get_all())
     }, [])
 
+    ///DAy 
+    const [monthSelect, setMonth] = React.useState(new Date().getMonth() + 1);
+    const [yearSelect, setYearSelect] = React.useState(new Date().getFullYear());
+    const [daySelect, setDaySelect] = React.useState(new Date().getDate());
+    const [list_year, setListYear] = React.useState([]);
+    const [list_day, setListDay] = React.useState([]);
+
+    const list_month = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    useEffect(() => {
+        const year = new Date().getFullYear();
+        const years = [];
+        for (let i = 2021; i <= year; i++) {
+            years.push(i)
+        }
+        setListYear(years)
+    }, [])
+
+    const setNow = () => {
+        setMonth(new Date().getMonth() + 1);
+        setYearSelect(new Date().getFullYear());
+        setDaySelect(new Date().getDate())
+    }
+    useEffect(() => {
+        let month_find = monthSelect - 1
+        const date = new Date(yearSelect, month_find, 1);
+        const dates = [];
+        while (date.getMonth() === month_find) {
+            dates.push(new Date(date).getDate());
+            date.setDate(date.getDate() + 1);
+        }
+        setListDay(dates)
+    }, [yearSelect, monthSelect])
+
     useEffect(() => {
         if (listPayment) {
-            listPayment.forEach((e, i) => {
-                e.stt = i + 1
-                e.ten = e.phieuThueid.khachHangid.ho + " " + e.phieuThueid.khachHangid.ten
-                e.ngayThanhToan = moment(e.ngayThanhToan).format('DD-MM-YYYY HH:mm:ss')
-                e.ngayThue = moment(e.phieuThueid.ngayVao).format('DD-MM-YYYY HH:mm:ss')
-                e.tienThu = new Intl.NumberFormat('en-Vn').format(e.tongTienThanhToan) + " VND"
-            })
-            setListPayment(listPayment)
+            if (checkRadio === "1") {
+                let payment = []
+                listPayment.forEach((e, i) => {
+                    let day = moment(e.ngayThanhToan).date();
+                    let month = moment(e.ngayThanhToan).month() + 1;
+                    let year = moment(e.ngayThanhToan).year();
+                    if (day === daySelect && month === monthSelect && year === yearSelect) {
+                        let pay = {
+                            id: e.id,
+                            phieuThueid: e.phieuThueid,
+                            maThanhToan: e.maThanhToan,
+                            ten: e.phieuThueid.khachHangid.ho + " " + e.phieuThueid.khachHangid.ten,
+                            ngayThanhToan: moment(e.ngayThanhToan).format('DD-MM-YYYY HH:mm:ss'),
+                            ngayThue: moment(e.phieuThueid.ngayVao).format('DD-MM-YYYY HH:mm:ss'),
+                            tienThu: new Intl.NumberFormat('en-Vn').format(e.tongTienThanhToan) + " VND"
+                        }
+                        payment.push(pay)
+                    }
+
+                })
+                setListPayment(payment)
+            }
+            if (checkRadio === "2") {
+                let payment = []
+                listPayment.forEach((e, i) => {
+                    let month = moment(e.ngayThanhToan).month() + 1;
+                    let year = moment(e.ngayThanhToan).year();
+                    if (month === monthSelect && year === yearSelect) {
+                        let pay = {
+                            id: e.id,
+                            phieuThueid: e.phieuThueid,
+                            maThanhToan: e.maThanhToan,
+                            ten: e.phieuThueid.khachHangid.ho + " " + e.phieuThueid.khachHangid.ten,
+                            ngayThanhToan: moment(e.ngayThanhToan).format('DD-MM-YYYY HH:mm:ss'),
+                            ngayThue: moment(e.phieuThueid.ngayVao).format('DD-MM-YYYY HH:mm:ss'),
+                            tienThu: new Intl.NumberFormat('en-Vn').format(e.tongTienThanhToan) + " VND"
+                        }
+                        payment.push(pay)
+                    }
+
+                })
+                setListPayment(payment)
+            }
+            if (checkRadio === "3") {
+                let payment = []
+                listPayment.forEach((e, i) => {
+                    let year = moment(e.ngayThanhToan).year();
+                    if (year === yearSelect) {
+                        let pay = {
+                            id: e.id,
+                            phieuThueid: e.phieuThueid,
+                            maThanhToan: e.maThanhToan,
+                            ten: e.phieuThueid.khachHangid.ho + " " + e.phieuThueid.khachHangid.ten,
+                            ngayThanhToan: moment(e.ngayThanhToan).format('DD-MM-YYYY HH:mm:ss'),
+                            ngayThue: moment(e.phieuThueid.ngayVao).format('DD-MM-YYYY HH:mm:ss'),
+                            tienThu: new Intl.NumberFormat('en-Vn').format(e.tongTienThanhToan) + " VND"
+                        }
+                        payment.push(pay)
+                    }
+                })
+                setListPayment(payment)
+            }
         }
-    }, [listPayment])
+    }, [listPayment, monthSelect, yearSelect, daySelect, checkRadio])
+    console.log(listPaymentShow)
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }} style={{ padding: 20 }}>
             <Grid container spacing={1} style={{ marginTop: 10, padding: 10 }}>
@@ -92,24 +163,130 @@ export default function PaymentManager() {
                     <h2 style={{ marginTop: 8 }}>QUẢN LÝ HÓA ĐƠN</h2>
                 </Grid>
                 <Grid item xs={4}>
-                    <CardDay />
+                    <CardDay monthSelect={monthSelect} yearSelect={yearSelect} daySelect={daySelect} />
                 </Grid>
                 <Grid item xs={4}>
-                    <CardWeek />
+                    <CardWeek monthSelect={monthSelect} yearSelect={yearSelect} />
                 </Grid>
                 <Grid item xs={4}>
-                    <CardYear />
+                    <CardYear yearSelect={yearSelect} />
                 </Grid>
             </Grid>
+            <Grid container spacing={2} style={{ margin: 0 }}>
+                <Grid item xs={2}>
+                    <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">Ngày</InputLabel>
+                        <Select
+                            labelId="ngay"
+                            id="demo-simple-select"
+                            value={daySelect}
+                            size='small'
+                            label="Ngày"
+                            onChange={(e) => setDaySelect(e.target.value)}
+                        >
+                            {
+                                list_day.map((e, i) => (
+                                    <MenuItem key={i} value={e}>Ngày {e}</MenuItem>
+                                ))
+                            }
+                        </Select>
+                    </FormControl>
+                </Grid>
+
+                <Grid item xs={2}>
+                    <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">Tháng</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={monthSelect}
+                            size='small'
+                            label="Tháng"
+                            onChange={(e) => setMonth(e.target.value)}
+                        >
+                            {
+                                list_month.map((e, i) => (
+                                    <MenuItem key={i} value={e}>Tháng {e}</MenuItem>
+                                ))
+                            }
+                        </Select>
+                    </FormControl>
+                </Grid>
+
+                <Grid item xs={2}>
+                    <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">Năm</InputLabel>
+                        <Select
+                            labelId="demo-simple"
+                            id="demo-simple"
+                            value={yearSelect}
+                            size='small'
+                            label="Năm"
+                            onChange={(e) => setYearSelect(e.target.value)}
+                        >
+                            {
+                                list_year.map((e, i) => (
+                                    <MenuItem key={i} value={e}>{e}</MenuItem>
+                                ))
+                            }
+                        </Select>
+                    </FormControl>
+                </Grid>
+
+                <Grid item xs={2}>
+                    <Button variant="contained" color='secondary' onClick={setNow}>Hiện tại</Button>
+                </Grid>
+                <Grid item xs={4} style={{ paddingRight: 30 }}>
+                    <TextField
+                        fullWidth
+                        size='small'
+                        id="outlined-basic"
+                        label="Nhập mã hoặc hóa đơn tên khách hàng cần tìm"
+                        variant="outlined"
+                        value={textSearch}
+                        onChange={(e) => setTextSearch(e.target.value)}
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <FormControl>
+                        <RadioGroup
+                            row
+                            aria-labelledby="demo-row-radio-buttons-group-label"
+                            name="row-radio-buttons-group"
+                            value={checkRadio}
+                            onChange={(e) => setCheckRadio(e.target.value)}
+                        >
+                            <FormControlLabel value="1" control={<Radio />} label="Ngày" />
+                            <FormControlLabel value="2" control={<Radio />} label="Tháng" />
+                            <FormControlLabel value="3" control={<Radio />} label="Năm" />
+                        </RadioGroup>
+                    </FormControl>
+                </Grid>
+            </Grid>
+
             <Grid container spacing={1} style={{ marginTop: 10, padding: 10 }}>
-                <Grid item xs={4}>
-                    <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN CÁC HÓA ĐƠN ĐÃ THANH TOÁN</h3>
+                <Grid item xs={12}>
+                    <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN CÁC HÓA ĐƠN ĐÃ THANH TOÁN TRONG
+                        {
+                            checkRadio === "1" ?
+                                " NGÀY " + daySelect + "/" + monthSelect + "/" + yearSelect :
+                                checkRadio === "2" ?
+                                    " THÁNG " + monthSelect + "/" + yearSelect :
+                                    " NĂM " + yearSelect
+                        }
+                    </h3>
                 </Grid>
             </Grid>
-            <TableContainer sx={{ height: '70%' }}>
+
+            <TableContainer>
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>
+                            <TableCell
+                                key={"id"}
+                            >
+                                {"STT"}
+                            </TableCell>
                             {columns.map((column) => (
                                 <TableCell
                                     key={column.id}
@@ -127,11 +304,14 @@ export default function PaymentManager() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {listPaymentShow
+                        {listPaymentShow.filter((e) => e.maThanhToan?.toLowerCase().includes(textSearch) || e.ten?.toLowerCase().includes(textSearch))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row) => {
+                            .map((row, i) => {
                                 return (
-                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.stt}>
+                                    <TableRow hover role="checkbox" tabIndex={-1} key={i + 1}>
+                                        <TableCell align={"center"}>
+                                            {i + 1}
+                                        </TableCell>
                                         {columns.map((column) => {
                                             const value = row[column.id];
                                             return (
@@ -154,9 +334,20 @@ export default function PaymentManager() {
                             })}
                     </TableBody>
                 </Table>
+                {
+                    listPaymentShow.length ?
+                        <div></div>
+                        :
+                        <div style={{ textAlign: "center" }}>
+                            <Typography style={{ padding: 30, fontSize: 16 }}>Không tìm thấy đơn nào đã thanh toán
+
+                            </Typography>
+                        </div>
+                }
             </TableContainer>
 
             <TablePagination
+                labelRowsPerPage='Số hàng'
                 rowsPerPageOptions={[10, 25, 100]}
                 component="div"
                 count={rows.length}

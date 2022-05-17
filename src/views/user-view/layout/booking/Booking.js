@@ -226,6 +226,7 @@ export default function HorizontalLinearStepper() {
 
     const onSubmit = () => {
         const booking_info = {
+            maHoaDon: "PThoteloca" + String(moment.tz(new Date(), "Asia/Ho_Chi_Minh").format("DDMMYYhhmmss")),
             list_room_hotel: roomSelect,
             nhanVienid: 1,
             khachHangid: customer,
