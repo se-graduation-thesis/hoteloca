@@ -32,7 +32,7 @@ const columns = [
     { id: 'trangThai', label: 'trangThai', minWidth: 100 },
 ];
 
-export default function ListBooking({ daySelect, monthSelect, yearSelect }) {
+export default function ListBooking() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [page, setPage] = useState(0);
@@ -40,6 +40,10 @@ export default function ListBooking({ daySelect, monthSelect, yearSelect }) {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const listBillByStatus = useSelector((state) => state.bill.listBillByStatusAccept);
     const [listBillByStatusShow, setListBillByStatusShow] = useState([])
+    const [stateBill, setStateBill] = useState(0);
+    const handleChangeStateBill = (event) => {
+        setStateBill(event.target.value);
+    };
 
     const [open, setOpen] = useState(false);
     const [checkInState, setCheckInState] = useState(false);
@@ -167,26 +171,26 @@ export default function ListBooking({ daySelect, monthSelect, yearSelect }) {
                 <Grid item xs={12}>
                     <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN CÁC ĐƠN ĐẶT HÀNG HIỆN CÓ</h3>
                 </Grid>
-                <Grid item xs={6}>
-                    {/* <Button onClick={handleClickOpen} variant="contained" color="secondary">Thêm chi nhánh</Button>
-                    <InsertBrandDialog open={open} isShowForm={handleClose} /> */}
+                <Grid item xs={10}>
+
                 </Grid>
 
-                {/* <Grid item xs={6} style={{ padding: 10, textAlign: "right" }}>
-                    <TextField
-                        label="Nhập nội dung tìm kiếm"
-                        size="small"
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="start">
-                                    <IconButton>
-                                        <SearchIcon />
-                                    </IconButton>
-                                </InputAdornment>
-                            )
-                        }}
-                    />
-                </Grid> */}
+                <Grid item xs={2}>
+                    <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">Trạng Thái</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={stateBill}
+                            label="Trạng Thái"
+                            onChange={handleChangeStateBill}
+                        >
+                            <MenuItem value={0}>Tất cả</MenuItem>
+                            <MenuItem value={1}>Chưa đến giờ</MenuItem>
+                            <MenuItem value={3}>Trễ Check - In</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Grid>
             </Grid>
             <TableContainer sx={{ height: '70%' }}>
                 <Table stickyHeader aria-label="sticky table">
@@ -210,6 +214,7 @@ export default function ListBooking({ daySelect, monthSelect, yearSelect }) {
                     </TableHead>
                     <TableBody>
                         {listBillByStatusShow.filter(e => e.trangThai !== 4)
+                            .filter(item => stateBill === 0 ? item : item.trangThai === stateBill)
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, i) => {
                                 return (

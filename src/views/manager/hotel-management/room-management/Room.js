@@ -136,15 +136,6 @@ export default function Room() {
                             size="small"
                             value={searchContent}
                             onChange={(e) => setSearchContent(e.target.value)}
-                        // InputProps={{
-                        //     endAdornment: (
-                        //         <InputAdornment position="start">
-                        //             <IconButton>
-                        //                 <SearchIcon />
-                        //             </IconButton>
-                        //         </InputAdornment>
-                        //     )
-                        // }}
                         />
                     </Grid>
 

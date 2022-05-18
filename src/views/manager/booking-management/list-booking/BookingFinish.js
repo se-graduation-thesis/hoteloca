@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -32,7 +31,7 @@ const columns = [
     { id: 'trangThai', label: 'Ghi chú', minWidth: 100 },
 ];
 
-export default function BookingPendingApprove(props) {
+export default function BookingPendingApprove() {
     const dispatch = useDispatch();
     const [page, setPage] = useState(0);
     const rows = []
@@ -40,6 +39,35 @@ export default function BookingPendingApprove(props) {
     const listBillByStatus = useSelector((state) => state.bill.listBillByStatusFinish);
     const [listInit, setListInit] = useState([])
     const [listBillByStatusShow, setListBillByStatusShow] = useState([])
+
+    const [searchContent, setSearchContent] = useState("");
+
+    const [monthSelect, setMonth] = useState(new Date().getMonth() + 1);
+    const [yearSelect, setYearSelect] = useState(new Date().getFullYear());
+    const [daySelect, setDaySelect] = useState(new Date().getDate());
+    const [list_year, setListYear] = useState([]);
+    const [list_day, setListDay] = useState([]);
+
+    const list_month = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    useEffect(() => {
+        const year = new Date().getFullYear();
+        const years = [];
+        for (let i = 2021; i <= year; i++) {
+            years.push(i)
+        }
+        setListYear(years)
+    }, [])
+
+    useEffect(() => {
+        let month_find = monthSelect - 1
+        const date = new Date(yearSelect, month_find, 1);
+        const dates = [];
+        while (date.getMonth() === month_find) {
+            dates.push(new Date(date).getDate());
+            date.setDate(date.getDate() + 1);
+        }
+        setListDay(dates)
+    }, [yearSelect, monthSelect])
 
     const [open, setOpen] = useState(false);
     const [openUpdate, setOpenUpdate] = useState(false);
@@ -104,14 +132,14 @@ export default function BookingPendingApprove(props) {
     }
 
     const filterListByDay = (list) => {
-        const dayFilter = new Date(props.yearSelect, props.monthSelect, props.daySelect).setHours(0, 0, 0);
+        const dayFilter = new Date(yearSelect, monthSelect, daySelect).setHours(0, 0, 0);
         const arr = list.filter(e => stringToDay(e.checkOut) === dayFilter);
         return arr;
     }
 
     useEffect(() => {
         setListBillByStatusShow(filterListByDay(listInit))
-    }, [props.yearSelect, props.monthSelect, props.daySelect])
+    }, [yearSelect, monthSelect, daySelect])
 
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }}>
@@ -120,23 +148,82 @@ export default function BookingPendingApprove(props) {
                     <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN CÁC ĐƠN ĐẶT HÀNG HIỆN CÓ</h3>
                 </Grid>
                 <Grid item xs={6}>
-                    {/* <Button onClick={handleClickOpen} variant="contained" color="secondary">Thêm chi nhánh</Button>
-                    <InsertBrandDialog open={open} isShowForm={handleClose} /> */}
+                    <Grid container spacing={2}>
+                        <Grid item xs={3}>
+                            <FormControl fullWidth>
+                                <InputLabel id="demo-simple-select-label">Ngày</InputLabel>
+                                <Select
+                                    labelId="ngay"
+                                    id="demo-simple-select"
+                                    value={daySelect}
+                                    size='small'
+                                    label="Ngày"
+                                    onChange={(e) => setDaySelect(e.target.value)}
+                                >
+                                    {
+                                        list_day.map((e, i) => (
+                                            <MenuItem key={i} value={e}>Ngày {e}</MenuItem>
+                                        ))
+                                    }
+                                </Select>
+                            </FormControl>
+                        </Grid>
+
+                        <Grid item xs={3}>
+                            <FormControl fullWidth>
+                                <InputLabel id="demo-simple-select-label">Tháng</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={monthSelect}
+                                    size='small'
+                                    label="Tháng"
+                                    onChange={(e) => setMonth(e.target.value)}
+                                >
+                                    {
+                                        list_month.map((e, i) => (
+                                            <MenuItem key={i} value={e}>Tháng {e}</MenuItem>
+                                        ))
+                                    }
+                                </Select>
+                            </FormControl>
+                        </Grid>
+
+                        <Grid item xs={3}>
+                            <FormControl fullWidth>
+                                <InputLabel id="demo-simple-select-label">Năm</InputLabel>
+                                <Select
+                                    labelId="demo-simple"
+                                    id="demo-simple"
+                                    value={yearSelect}
+                                    size='small'
+                                    label="Năm"
+                                    onChange={(e) => setYearSelect(e.target.value)}
+                                >
+                                    {
+                                        list_year.map((e, i) => (
+                                            <MenuItem key={i} value={e}>{e}</MenuItem>
+                                        ))
+                                    }
+                                </Select>
+                            </FormControl>
+                        </Grid>
+
+                        <Grid item xs={2}>
+                            <Button variant="contained" onClick={() => setListBillByStatusShow(listInit)}>Tất cả</Button>
+                        </Grid>
+                    </Grid>
                 </Grid>
 
-                <Grid item xs={6} style={{ padding: 10, textAlign: "right" }}>
+                <Grid item xs={2}>
+
+                </Grid>
+                <Grid item xs={4} style={{ padding: 10, textAlign: "right" }}>
                     <TextField
-                        label="Nhập nội dung tìm kiếm"
-                        size="small"
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="start">
-                                    <IconButton>
-                                        <SearchIcon />
-                                    </IconButton>
-                                </InputAdornment>
-                            )
-                        }}
+                        fullWidth
+                        label="Nhập tên Khách Hàng cần tìm"
+                        value={searchContent}
+                        onChange={(e) => setSearchContent(e.target.value)}
                     />
                 </Grid>
             </Grid>
@@ -162,6 +249,7 @@ export default function BookingPendingApprove(props) {
                     </TableHead>
                     <TableBody>
                         {listBillByStatusShow
+                            .filter(item => item.khachhang.toLowerCase().includes(searchContent.toLowerCase()))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, i) => {
                                 return (

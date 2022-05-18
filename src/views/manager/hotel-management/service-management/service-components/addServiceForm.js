@@ -165,7 +165,7 @@ export default function AddServiceForm(props) {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} variant="outlined">Hủy</Button>
-                    <Button onClick={submit} variant="outlined">Thêm</Button>
+                    <Button onClick={submit} variant="contained" autoFocus>Thêm</Button>
                 </DialogActions>
             </Dialog>
 

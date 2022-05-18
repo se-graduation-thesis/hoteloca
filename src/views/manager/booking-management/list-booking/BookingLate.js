@@ -29,7 +29,7 @@ const columns = [
     // { id: 'trangThai', label: 'Ghi chú', minWidth: 100 },
 ];
 
-export default function BookingLate(props) {
+export default function BookingLate() {
     const dispatch = useDispatch();
     const [page, setPage] = useState(0);
     const rows = []
@@ -37,6 +37,7 @@ export default function BookingLate(props) {
     const listBillByStatus = useSelector((state) => state.bill.listBillByStatusLate);
     const [listInit, setListInit] = useState([])
     const [listBillByStatusShow, setListBillByStatusShow] = useState([])
+    const [searchContent, setSearchContent] = React.useState("");
 
     const [open, setOpen] = useState(false);
     const [openUpdate, setOpenUpdate] = useState(false);
@@ -90,49 +91,28 @@ export default function BookingLate(props) {
                 }
 
             })
-            setListBillByStatusShow(filterListByDay(listBillByStatus))
+            setListBillByStatusShow(listBillByStatus)
             setListInit(listBillByStatus)
         }
     }, [listBillByStatus])
 
-    const stringToDay = (day) => {
-        const tamp = new Date(day);
-        return new Date(tamp.getFullYear(), tamp.getMonth() + 1, tamp.getDate()).setHours(0, 0, 0);
-    }
-
-    const filterListByDay = (list) => {
-        const dayFilter = new Date(props.yearSelect, props.monthSelect, props.daySelect).setHours(0, 0, 0);
-        const arr = list.filter(e => stringToDay(e.checkOut) === dayFilter);
-        return arr;
-    }
-
-    useEffect(() => {
-        setListBillByStatusShow(filterListByDay(listInit))
-    }, [props.yearSelect, props.monthSelect, props.daySelect])
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }}>
             <Grid container spacing={1} style={{ padding: 10 }}>
                 <Grid item xs={12}>
                     <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN CÁC ĐƠN ĐẶT HÀNG ĐÃ QUÁ HẠN</h3>
                 </Grid>
-                <Grid item xs={6}>
-                    {/* <Button onClick={handleClickOpen} variant="contained" color="secondary">Thêm chi nhánh</Button>
-                    <InsertBrandDialog open={open} isShowForm={handleClose} /> */}
+                <Grid item xs={8}>
+
                 </Grid>
 
-                <Grid item xs={6} style={{ padding: 10, textAlign: "right" }}>
+                <Grid item xs={4} style={{ padding: 10, textAlign: "right" }}>
                     <TextField
-                        label="Nhập nội dung tìm kiếm"
+                        fullWidth
+                        label="Nhập tên Khách hàng cần tìm"
                         size="small"
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="start">
-                                    <IconButton>
-                                        <SearchIcon />
-                                    </IconButton>
-                                </InputAdornment>
-                            )
-                        }}
+                        value={searchContent}
+                        onChange={(e) => setSearchContent(e.target.value)}
                     />
                 </Grid>
             </Grid>
@@ -158,6 +138,7 @@ export default function BookingLate(props) {
                     </TableHead>
                     <TableBody>
                         {listBillByStatusShow
+                            .filter(item => item.khachhang.toLowerCase().includes(searchContent.toLowerCase()))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, i) => {
                                 return (

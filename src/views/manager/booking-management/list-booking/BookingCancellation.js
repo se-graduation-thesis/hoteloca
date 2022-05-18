@@ -33,13 +33,15 @@ const columns = [
     // { id: 'trangThai', label: 'Ghi chú', minWidth: 100 },
 ];
 
-export default function BookingCancellation(props) {
+export default function BookingCancellation() {
     const dispatch = useDispatch();
     const [page, setPage] = useState(0);
     const rows = []
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const listBillByStatus = useSelector((state) => state.bill.listBillByStatusCancel);
     const [listBillByStatusShow, setListBillByStatusShow] = useState([])
+
+    const [searchContent, setSearchContent] = useState("");
 
     const [open, setOpen] = useState(false);
     const [openUpdate, setOpenUpdate] = useState(false);
@@ -124,19 +126,15 @@ export default function BookingCancellation(props) {
                     <InsertBrandDialog open={open} isShowForm={handleClose} /> */}
                     </Grid>
 
-                    <Grid item xs={6} style={{ padding: 10, textAlign: "right" }}>
+                    <Grid item xs={2}>
+
+                    </Grid>
+                    <Grid item xs={4} style={{ padding: 10, textAlign: "right" }}>
                         <TextField
-                            label="Nhập nội dung tìm kiếm"
-                            size="small"
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="start">
-                                        <IconButton>
-                                            <SearchIcon />
-                                        </IconButton>
-                                    </InputAdornment>
-                                )
-                            }}
+                            fullWidth
+                            label="Nhập tên Khách Hàng cần tìm"
+                            value={searchContent}
+                            onChange={(e) => setSearchContent(e.target.value)}
                         />
                     </Grid>
                 </Grid>
@@ -162,6 +160,7 @@ export default function BookingCancellation(props) {
                         </TableHead>
                         <TableBody>
                             {listBillByStatusShow.filter(e => e.trangThai === 5)
+                                .filter(item => item.khachhang.toLowerCase().includes(searchContent.toLowerCase()))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, i) => {
                                     return (
@@ -224,7 +223,7 @@ export default function BookingCancellation(props) {
                         </DialogContent>
                         <DialogActions>
                             <Button variant="outlined" onClick={() => setConfirm(false)}>Hủy</Button>
-                            <Button variant="outlined" onClick={submit} autoFocus>
+                            <Button variant="contained" onClick={submit} autoFocus>
                                 Đồng ý
                             </Button>
                         </DialogActions>

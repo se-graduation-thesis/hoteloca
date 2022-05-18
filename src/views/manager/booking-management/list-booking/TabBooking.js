@@ -66,37 +66,7 @@ export default function FullWidthTabs() {
     const handleChangeIndex = (index) => {
         setValue(index);
     };
-    const [monthSelect, setMonth] = React.useState(new Date().getMonth() + 1);
-    const [yearSelect, setYearSelect] = React.useState(new Date().getFullYear());
-    const [daySelect, setDaySelect] = React.useState(new Date().getDate());
-    const [list_year, setListYear] = React.useState([]);
-    const [list_day, setListDay] = React.useState([]);
 
-    const list_month = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-    useEffect(() => {
-        const year = new Date().getFullYear();
-        const years = [];
-        for (let i = 2021; i <= year; i++) {
-            years.push(i)
-        }
-        setListYear(years)
-    }, [])
-
-    const setNow = () => {
-        setMonth(new Date().getMonth() + 1);
-        setYearSelect(new Date().getFullYear());
-        setDaySelect(new Date().getDate())
-    }
-    useEffect(() => {
-        let month_find = monthSelect - 1
-        const date = new Date(yearSelect, month_find, 1);
-        const dates = [];
-        while (date.getMonth() === month_find) {
-            dates.push(new Date(date).getDate());
-            date.setDate(date.getDate() + 1);
-        }
-        setListDay(dates)
-    }, [yearSelect, monthSelect])
     return (
         <Box sx={{ bgcolor: 'background.paper', height: '100%' }}>
             <Box>
@@ -128,86 +98,25 @@ export default function FullWidthTabs() {
                         label="Danh sách đơn đặt đã hủy" {...a11yProps(3)} />
                 </Tabs>
             </Box>
-            <Grid container spacing={2} style={{ margin: 20 }}>
-                <Grid item xs={2}>
-                    <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label">Ngày</InputLabel>
-                        <Select
-                            labelId="ngay"
-                            id="demo-simple-select"
-                            value={daySelect}
-                            size='small'
-                            label="Ngày"
-                            onChange={(e) => setDaySelect(e.target.value)}
-                        >
-                            {
-                                list_day.map((e, i) => (
-                                    <MenuItem key={i} value={e}>Ngày {e}</MenuItem>
-                                ))
-                            }
-                        </Select>
-                    </FormControl>
-                </Grid>
-
-                <Grid item xs={2}>
-                    <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label">Tháng</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={monthSelect}
-                            size='small'
-                            label="Tháng"
-                            onChange={(e) => setMonth(e.target.value)}
-                        >
-                            {
-                                list_month.map((e, i) => (
-                                    <MenuItem key={i} value={e}>Tháng {e}</MenuItem>
-                                ))
-                            }
-                        </Select>
-                    </FormControl>
-                </Grid>
-
-                <Grid item xs={2}>
-                    <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label">Năm</InputLabel>
-                        <Select
-                            labelId="demo-simple"
-                            id="demo-simple"
-                            value={yearSelect}
-                            size='small'
-                            label="Năm"
-                            onChange={(e) => setYearSelect(e.target.value)}
-                        >
-                            {
-                                list_year.map((e, i) => (
-                                    <MenuItem key={i} value={e}>{e}</MenuItem>
-                                ))
-                            }
-                        </Select>
-                    </FormControl>
-                </Grid>
-            </Grid>
             <SwipeableViews
                 axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                 index={value}
                 onChangeIndex={handleChangeIndex}
             >
                 <TabPanel value={value} index={0} dir={theme.direction}>
-                    <ListBooking monthSelect={monthSelect} yearSelect={yearSelect} daySelect={daySelect} />
+                    <ListBooking />
                 </TabPanel>
                 {/* <TabPanel value={value} index={1} dir={theme.direction}>
                     
                 </TabPanel> */}
                 <TabPanel value={value} index={1} dir={theme.direction}>
-                    <BookingFinish monthSelect={monthSelect} yearSelect={yearSelect} daySelect={daySelect} />
+                    <BookingFinish />
                 </TabPanel>
                 <TabPanel value={value} index={2} dir={theme.direction}>
-                    <BookingLate monthSelect={monthSelect} yearSelect={yearSelect} daySelect={daySelect} />
+                    <BookingLate />
                 </TabPanel>
                 <TabPanel value={value} index={3} dir={theme.direction}>
-                    <BookingCancellation monthSelect={monthSelect} yearSelect={yearSelect} daySelect={daySelect} />
+                    <BookingCancellation />
                 </TabPanel>
             </SwipeableViews>
         </Box>
