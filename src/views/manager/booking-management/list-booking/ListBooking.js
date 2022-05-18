@@ -20,6 +20,8 @@ import * as actions from "actions/bill.action"
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import CheckIn from './CheckIn';
+import SearchIcon from "@mui/icons-material/Search";
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
     { id: 'maHoaDon', label: 'Mã phiếu thuê', minWidth: 100 },
@@ -207,9 +209,9 @@ export default function ListBooking() {
                             ))}
                             <TableCell
                                 key={"action"}
-                            >
-                                {"Hành động"}
-                            </TableCell>
+                                align="center"
+                                style={{ minWidth: 150 }}
+                            >Hành động</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -228,27 +230,35 @@ export default function ListBooking() {
                                                         column.id === 'checkIn' ?
                                                             value ?
                                                                 value :
-                                                                <Button variant="contained" color={row["trangThai"] === 3 ? "warning" : "primary"} onClick={() => { handleCheckInState(true); setCheckInObject(row); }} >{row["trangThai"] === 3 ? "Check - In trễ" : "Check - In"}</Button>
+                                                                <Button variant="contained" color={row["trangThai"] === 3 ? "primary" : "primary"} onClick={() => { handleCheckInState(true); setCheckInObject(row); }} >{row["trangThai"] === 3 ? "Check - In" : "Check - In"}</Button>
                                                             : value}
                                                 </TableCell>
                                             );
                                         })}
                                         <TableCell key={row.stt}>
+                                            <Tooltip title="Thanh toán">
+                                                <IconButton key={row.stt} disabled={!row["checkIn"] ? true : false} onClick={() => navigate(`/admin/booking-payment/${row.id}`)} aria-label="delete" color="primary">
+                                                    <Payment />
+                                                </IconButton>
+                                            </Tooltip>
                                             <Tooltip title="Thêm dịch vụ">
                                                 <IconButton key={row.stt} onClick={() => navigate(`/admin/update-booking/${row.id}`)} aria-label="add-service" color="secondary">
                                                     <RoomServiceIcon />
                                                 </IconButton>
                                             </Tooltip>
-                                            <Tooltip title="Thanh toán">
-                                                <IconButton key={row.stt} onClick={() => navigate(`/admin/booking-payment/${row.id}`)} aria-label="delete" color="primary">
-                                                    <Payment />
-                                                </IconButton>
-                                            </Tooltip>
-                                            <Tooltip title="Trả Phòng">
-                                                <IconButton key={row.stt} onClick={() => navigate(`/admin/booking-checkout/${row.id}`)} aria-label="delete" color="primary">
-                                                    <AddTaskIcon />
-                                                </IconButton>
-                                            </Tooltip>
+                                            {
+                                                !row["checkIn"] ?
+                                                    <Tooltip title="Hủy phòng">
+                                                        <IconButton disabled={row.trangThai === 2 ? true : false} key={row.stt} onClick={() => navigate(`/admin/booking-checkout/${row.id}`)} aria-label="delete" color="error">
+                                                            <HighlightOffIcon />
+                                                        </IconButton>
+                                                    </Tooltip> :
+                                                    <Tooltip title="Trả Phòng">
+                                                        <IconButton key={row.stt} onClick={() => navigate(`/admin/booking-checkout/${row.id}`)} style={{ color: 'green' }}>
+                                                            <AddTaskIcon />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                            }
                                         </TableCell>
                                     </TableRow>
                                 );

@@ -95,7 +95,7 @@ export default function FullWidthTabs() {
                     <Tab style={{ padding: 20 }}
                         className={classes.wrapper}
                         icon={<PlaylistRemoveIcon />}
-                        label="Danh sách đơn đặt đã hủy" {...a11yProps(3)} />
+                        label="Danh sách đơn đặt yêu cầu hủy" {...a11yProps(3)} />
                 </Tabs>
             </Box>
             <SwipeableViews
