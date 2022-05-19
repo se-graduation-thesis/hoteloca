@@ -99,7 +99,7 @@ const utilities = {
                     breadcrumbs: false
                 },
                 {
-                    id: 'listCustomerRent',
+                    id: 'thue',
                     title: 'Danh sách khách hàng đang thuê phòng',
                     type: 'item',
                     url: '/admin/list-customer-rent',
@@ -129,18 +129,11 @@ const utilities = {
                 },
                 {
                     id: 'material-icons',
-                    title: 'Danh sách đơn đặt',
+                    title: 'Danh sách phiếu thuê',
                     type: 'item',
                     url: '/admin/list-booking',
                     breadcrumbs: false
                 },
-                {
-                    id: 'listCustomerRent',
-                    title: 'Danh sách khách hàng đang thuê phòng',
-                    type: 'item',
-                    url: '/admin/list-customer-rent',
-                    breadcrumbs: false
-                }
             ]
         },
         {
@@ -166,36 +159,6 @@ const utilities = {
                 }
             ]
         }
-        // {
-        //     id: 'util-shadow',
-        //     title: 'Shadow',
-        //     type: 'item',
-        //     url: '/utils/util-shadow',
-        //     icon: icons.IconShadow,
-        //     breadcrumbs: false
-        // },
-        // {
-        //     id: 'icons',
-        //     title: 'Icons',
-        //     type: 'collapse',
-        //     icon: icons.IconWindmill,
-        //     children: [
-        //         {
-        //             id: 'tabler-icons',
-        //             title: 'Tabler Icons',
-        //             type: 'item',
-        //             url: '/icons/tabler-icons',
-        //             breadcrumbs: false
-        //         },
-        //         {
-        //             id: 'material-icons',
-        //             title: 'Material Icons',
-        //             type: 'item',
-        //             url: '/icons/material-icons',
-        //             breadcrumbs: false
-        //         }
-        //     ]
-        // }
     ]
 };
 

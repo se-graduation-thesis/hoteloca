@@ -63,10 +63,11 @@ const initialFieldValues = {
     trangthai: 1,
     cmnd: "",
     quocTich: "Viet Nam",
-    diaChi: "",
+    diaChi: "{}",
     city: "",
     district: "",
-    ward: ""
+    ward: "",
+    ngayThamGia: new Date,
 };
 
 const FirebaseRegister = () => {
@@ -317,6 +318,7 @@ const FirebaseRegister = () => {
                                 id: res.data.id
                             }
                             values.ngayThamGia = new Date()
+
                             actionsCustomer.register(values).then((response) => {
                                 console.log(response)
                             })

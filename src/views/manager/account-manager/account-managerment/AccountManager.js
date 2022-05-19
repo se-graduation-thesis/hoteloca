@@ -45,6 +45,7 @@ export default function Account() {
     const listAccount = useSelector((state) => state.account.listAccount);
     const [listAccountShow, setListAccount] = useState([])
     const account = useSelector((state) => state.account.userAuth);
+    const [idNv, setIdNv] = useState(0)
     const [open, setOpen] = useState(false);
     const [openUpdate, setOpenUpdate] = useState(false);
     const [accManage, setAccManage] = useState(0);
@@ -60,6 +61,26 @@ export default function Account() {
     const [accUp, setAccUp] = useState(null)
 
     const [alertOpen, setAlertOpen] = useState(false);
+
+    console.log(idNv)
+    function isJson(str) {
+        try {
+            JSON.parse(str);
+        } catch (e) {
+            return false;
+        }
+        return true;
+    }
+
+    useEffect(() => {
+        if (account) {
+            if (isJson(account)) {
+                setIdNv(JSON.parse(account).user_id);
+            } else {
+                setIdNv(account.user_id)
+            }
+        }
+    }, [account])
 
     const handleCloseN = (event, reason) => {
         if (reason === 'clickaway') {
@@ -350,7 +371,7 @@ export default function Account() {
                                             {
                                                 row.trangThai == 1 ?
                                                     <Tooltip title="Khóa tài khoản">
-                                                        <IconButton key={row.stt} onClick={() => handleClickOpen2(row)} aria-label="delete" color="primary">
+                                                        <IconButton disabled={idNv === row.id ? true : false} key={row.stt} onClick={() => handleClickOpen2(row)} aria-label="delete" color="primary">
                                                             < PublishedWithChangesIcon />
                                                         </IconButton>
                                                     </Tooltip>
