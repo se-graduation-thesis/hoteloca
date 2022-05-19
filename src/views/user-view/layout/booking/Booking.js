@@ -30,6 +30,7 @@ import PayPal from "./PayPal.js"
 import CustomerInfo from './CustomerInfo'
 import ListRoom from './ListRoom'
 import SuccessBooking from './SuccessBooking'
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 const steps = ['Thông tin đặt phòng', 'Chọn phòng', 'Thông tin khách hàng', 'Thanh toán'];
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -55,10 +56,22 @@ export default function HorizontalLinearStepper() {
     const [listCategoryShow, setListCategory] = useState([])
     const [lp, setCategory] = useState(0);
     const [success, onSuccess] = useState(false)
+    const [open1, setOpen1] = React.useState(false);
+    const [textAlert, setTextAlert] = useState("");
     const form = React.useRef();
     const increment = () => {
         onSuccess(true)
     }
+
+
+    const handleClickOpen1 = () => {
+        setOpen1(true);
+    };
+
+    const handleClose1 = () => {
+        setOpen1(false);
+    };
+
     const handleReset = () => {
         setActiveStep(0);
     };
@@ -101,10 +114,22 @@ export default function HorizontalLinearStepper() {
 
     const handleNext = () => {
         if (activeStep === 0) {
+            if (checkin < new Date(new Date().getTime() - 10 * 60000)) {
+                handleClickOpen1()
+                setTextAlert("Ngày vào phải lớn hơn hoặc bằng ngày hiện tại")
+                return
+            }
+            if (checkout < checkin) {
+                handleClickOpen1()
+                setTextAlert("Ngày ra phải lớn hơn ngày vào")
+                return
+            }
             setRoomSelect([])
             onFindTime()
         } else if (activeStep === 1) {
             if (roomSelect.length === 0) {
+                handleClickOpen1()
+                setTextAlert("Vui lòng chọn ít nhất 1 phòng")
                 return
             }
         } else if (activeStep === 2) {
@@ -453,11 +478,9 @@ export default function HorizontalLinearStepper() {
                                                     </Grid>
                                                     <Grid item xs={12} style={{ textAlign: 'center', marginBottom: 20 }}>
                                                         {
-                                                            scrollPosition < limit - 1500 ?
-                                                                <Button onClick={handleNext} variant='contained' style={{ backgroundColor: "chocolate" }}>
-                                                                    Tiếp theo
-                                                                </Button> :
-                                                                <CalendarMonthIcon color='secondary' />
+                                                            <Button onClick={handleNext} variant='contained' style={{ backgroundColor: "chocolate" }}>
+                                                                Tiếp theo
+                                                            </Button>
                                                         }
 
                                                     </Grid>
@@ -522,6 +545,22 @@ export default function HorizontalLinearStepper() {
                     <DialogContent style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <CheckCircleTwoToneIcon color='success' sx={{ fontSize: 70 }} />
                         <span style={{ fontSize: 18, fontWeight: 'bold' }}>Đặt phòng thành công</span>
+                    </DialogContent>
+                    <DialogActions>
+                    </DialogActions>
+                </Dialog>
+                <Dialog
+                    open={open1}
+                    maxWidth={'xs'}
+                    fullWidth={true}
+                    TransitionComponent={Transition}
+                    keepMounted
+                    onClose={handleClose1}
+                    aria-describedby="alert-dialog-slide-description"
+                >
+                    <DialogContent style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <CancelOutlinedIcon color='error' sx={{ fontSize: 70 }} />
+                        <span style={{ fontSize: 15, fontWeight: 'bold' }}>{textAlert}</span>
                     </DialogContent>
                     <DialogActions>
                     </DialogActions>

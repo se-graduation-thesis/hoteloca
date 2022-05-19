@@ -325,6 +325,7 @@ export default function Payment() {
                                     <Grid item xs={4}>
                                         <NumberFormat customInput={TextField}
                                             thousandSeparator={true}
+                                            disabled={billDetail?.trangThai === 2 ? true : false}
                                             InputProps={{
                                                 endAdornment: <InputAdornment position="end">VND</InputAdornment>,
                                                 inputProps: { min: 0 }
@@ -333,6 +334,7 @@ export default function Payment() {
                                     </Grid>
                                     <Grid item xs={4}>
                                         <TextField id="outlined-basic" variant="outlined"
+                                            disabled={billDetail?.trangThai === 2 ? true : false}
                                             InputProps={{
                                                 endAdornment: <InputAdornment position="end">VND</InputAdornment>,
                                                 inputProps: { min: 0, readOnly: true }
@@ -343,6 +345,7 @@ export default function Payment() {
                                     </Grid>
                                     <Grid item xs={12}>
                                         <TextField
+                                            disabled={billDetail?.trangThai === 2 ? true : false}
                                             placeholder="Nhập ghi chú"
                                             multiline
                                             rows={4}
