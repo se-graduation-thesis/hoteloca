@@ -7,11 +7,13 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
+import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip, Typography } from '@mui/material';
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
+import CancelBooking from './CancelBooking'
 import UpdateBrand from './UpdateBrand'
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 import { useState, useEffect } from 'react';
 
@@ -43,17 +45,16 @@ export default function BookingLate() {
     const [openUpdate, setOpenUpdate] = useState(false);
 
     const [id_brand, setId] = useState(0);
-    // const handleClickOpen = () => {
-    //     setOpen(true);
-    // };
+    const [cancelState, setCancelState] = useState(false);
+    const [cancelObject, setCancelObject] = useState({})
+    const handleCancelState = (value) => {
+        setCancelState(value);
+    }
 
-    // const handleClickOpenUpdate = (id) => {
-    //     setOpenUpdate(true);
-    //     setId(id)
-    // };
-    // const handleClose = () => {
-    //     setOpen(false);
-    // };
+    const handleFilter = (value) => {
+        setListBillByStatusShow(listBillByStatusShow.filter(e => e.id !== value));
+    }
+
     const handleCloseUpdate = () => {
         setOpenUpdate(false);
     };
@@ -129,11 +130,11 @@ export default function BookingLate() {
                                     {column.label}
                                 </TableCell>
                             ))}
-                            {/* <TableCell
+                            <TableCell
                                 key={"action"}
                             >
                                 {"Hành động"}
-                            </TableCell> */}
+                            </TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -153,6 +154,13 @@ export default function BookingLate() {
                                                 </TableCell>
                                             );
                                         })}
+                                        <TableCell key={row.stt}>
+                                            <Tooltip title="Hủy phòng">
+                                                <IconButton key={row.stt} onClick={() => { handleCancelState(true); setCancelObject(row); }} aria-label="delete" color="error">
+                                                    <HighlightOffIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </TableCell>
                                     </TableRow>
                                 );
                             })}
@@ -179,6 +187,7 @@ export default function BookingLate() {
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
             <UpdateBrand open={openUpdate} id={id_brand} isShowForm={handleCloseUpdate} />
+            <CancelBooking open={cancelState} handleCancelState={handleCancelState} cancelObject={cancelObject} handleFilter={handleFilter} />
         </Paper >
     );
 }

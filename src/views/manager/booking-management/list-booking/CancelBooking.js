@@ -96,7 +96,6 @@ export default function CheckIn(props) {
         setAdvanceFee(tong);
     }, [props.checkInObject])
 
-    console.log(props.cancelObject)
 
     const handleClose = () => {
         props.handleCancelState(false)
@@ -121,9 +120,9 @@ export default function CheckIn(props) {
 
     const submit = () => {
         console.log(props.cancelObject.id)
-        dispatch(actions.updateStateOfBill(props.cancelObject.id, 6))
+        dispatch(actions.updateStateOfBill(props.cancelObject.id, 2))
         // setListBillByStatusShow(listBillByStatusShow.filter(e => e.id !== billCancelId))
-
+        props.handleFilter(props.cancelObject.id)
         let payment = {
             maThanhToan: "TThoteloca" + String(moment.tz(new Date(), "Asia/Ho_Chi_Minh").format("DDMMYYhhmmss")),
             tongTienDichVu: 0,
@@ -135,7 +134,7 @@ export default function CheckIn(props) {
         console.log(payment)
         dispatch(pay_actions.addPay(payment))
 
-        // setConfirm(false);
+        handleClose()
 
         setSnackbarState(true);
         setTimeout(function () {

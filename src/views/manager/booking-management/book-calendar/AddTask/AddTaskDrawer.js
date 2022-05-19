@@ -93,11 +93,26 @@ function AddTaskDrawer(props) {
   const handleReset = () => {
     setActiveStep(0);
     setCompleted({});
+    setCustomer(customerInit)
   };
 
   // ===================================================================
 
   const [customer, setCustomer] = React.useState({
+    ho: '',
+    ten: '',
+    cmnd: '',
+    diaChi: '',
+    dienThoai: '',
+    email: '',
+    quocTich: 'Viet Nam',
+    soHoChieu: '',
+    trangThai: 1,
+    ngayThamGia: moment_t.tz(new Date(), "Asia/Ho_Chi_Minh").format(),
+    password: ''
+  })
+
+  const [customerInit, setCustomerInit] = React.useState({
     ho: '',
     ten: '',
     cmnd: '',
@@ -194,7 +209,9 @@ function AddTaskDrawer(props) {
     setTimeout(function () {
       setSnackbarState(false);
     }, 3000);
-    toggleDrawer(false)
+
+    props.handleStateForm(false)
+    handleReset()
   }
 
 

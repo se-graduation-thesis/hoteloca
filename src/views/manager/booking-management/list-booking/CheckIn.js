@@ -66,7 +66,6 @@ export default function CheckIn(props) {
         setAdvanceFee(tong);
     }, [props.checkInObject])
 
-    console.log(props.checkInObject?.chiTietPhieuThueList)
 
     const handleClose = () => {
         props.handleCheckInState(false)
