@@ -7,7 +7,8 @@ export const ACTION_TYPES = {
     ADD_ACCOUNT: "ADD_ACCOUNT",
     CHANGE_STATUS: "CHANGE_STATUS",
     RESET_PASS: "CHANGE_STATUS",
-    GET_BY_ID: "GET_BY_ID"
+    GET_BY_ID: "GET_BY_ID",
+    HASH_PASS: "HASH_PASS"
 
 };
 export const isAuthenticated = (userExitedid) => {
@@ -92,4 +93,11 @@ export const getById = (id) => (dispatch) => {
             });
         })
         .catch((err) => console.log(err));
+};
+
+export const hashPass = (taikhoan, pass) => {
+    return apiService
+        .account()
+        .hashPass(taikhoan, pass)
+
 };

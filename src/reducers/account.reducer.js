@@ -10,7 +10,8 @@ const initialState = {
     isAuthenticated: null,
     userAuth: userAuth,
     listAccount: [],
-    account: null
+    account: null,
+    hashPass: null,
 };
 
 export const accountReducer = (state = initialState, action) => {
@@ -67,6 +68,11 @@ export const accountReducer = (state = initialState, action) => {
             return {
                 ...state,
                 account: action.payload
+            }
+        case ACTION_TYPES.HASH_PASS:
+            return {
+                ...state,
+                hashPass: action.payload
             }
         default:
             return state;

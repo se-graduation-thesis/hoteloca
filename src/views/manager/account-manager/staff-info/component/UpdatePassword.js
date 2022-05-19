@@ -8,12 +8,16 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { Divider, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import * as actions from 'actions/account.action';
+import PositionedSnackbar from '../../components/PositionedSnackbar';
+
 
 export default function UpdatePassword(props) {
 
-    const account = useSelector((state) => state.account.userAuth);
-    const employeeId = isJson(account) ? JSON.parse(account).user_id : account.user_id;
+    const userAuth = useSelector((state) => state.account.userAuth);
+    const accountid = isJson(userAuth) ? JSON.parse(userAuth).account_id : userAuth.account_id;
     function isJson(str) {
         try {
             JSON.parse(str);
@@ -22,6 +26,19 @@ export default function UpdatePassword(props) {
         }
         return true;
     }
+
+    const dispatch = useDispatch()
+
+    const account = useSelector((state) => state.account.account);
+    useEffect(() => {
+        dispatch(actions.getById(accountid));
+    }, [])
+
+    const [error, setError] = useState({
+        oldPassE: null,
+        newPassE: null,
+        confirmPassE: null,
+    });
 
     const [oldPass, setOldPass] = useState({
         value: '',
@@ -38,8 +55,10 @@ export default function UpdatePassword(props) {
         showPassword: false
     })
 
+    const [snackbarState, setSnackbarState] = useState(false);
+
     const handleClose = () => {
-        props.handleOpenEmail(false);
+        props.handleOpenPass(false);
     };
 
     const handleClickShowPassword = (type) => {
@@ -57,10 +76,91 @@ export default function UpdatePassword(props) {
         event.preventDefault();
     };
 
+    const handleCheckValidation = () => {
+        const rePass = new RegExp(/^[A-Za-z0-9!@#$%^&*]{6,20}$/);
+
+        let newPassE = null;
+        let oldPassE = null;
+        let confirmPassE = null;
+
+        if (!rePass.test(newPass.value)) {
+            newPassE = 'Mật khẩu phải là 6 đến 20 kí tự gao bồm từ A-Z, 1-9';
+            setError({
+                oldPassE,
+                newPassE,
+                confirmPassE
+            })
+            return false;
+        }
+
+        if (newPass.value !== confirmPass.value) {
+            confirmPassE = 'Mật khẩu chưa trùng khớp';
+            setError({
+                oldPassE,
+                newPassE,
+                confirmPassE
+            })
+            return false;
+        }
+
+        if (!oldPass.value) {
+            oldPassE = "mật khẩu không đúng"
+            setError({
+                oldPassE,
+                newPassE,
+                confirmPassE
+            })
+            return false;
+        } else {
+            console.log(account)
+            let kt = actions.hashPass(account, oldPass.value).then((response) => {
+                if (!response.data) {
+                    oldPassE = "mật khẩu không đúng"
+                    setError({
+                        oldPassE,
+                        newPassE,
+                        confirmPassE
+                    })
+                    return false;
+                } else {
+                    setError({
+                        oldPassE,
+                        newPassE,
+                        confirmPassE
+                    })
+                    return true;
+                }
+            }).catch((err) => {
+                console.log(err);
+                return false;
+            }).then(data => {
+                if (data)
+                    submit()
+                else
+                    console.log(data)
+            });
+        }
+        return true;
+    }
+
+    const reset = () => {
+        setOldPass({ ...oldPass, value: '' })
+        setNewPass({ ...newPass, value: '' })
+        setConfirmPass({ ...confirmPass, value: '' })
+    }
+
     const submit = () => {
-        console.log(oldPass)
-        console.log(newPass)
-        console.log(confirmPass)
+        account.matKhau = newPass.value;
+        dispatch(actions.resetPass(account))
+
+        reset()
+        handleClose()
+        setSnackbarState(true);
+        setTimeout(function () {
+            setSnackbarState(false);
+        }, 3000);
+
+
     }
 
     return (
@@ -93,6 +193,8 @@ export default function UpdatePassword(props) {
                             }
                         />
                     </FormControl>
+                    <br />
+                    {error.oldPassE && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.oldPassE}</span></>}
 
                     <DialogContentText sx={{ fontSize: 18, color: 'black', marginTop: 2 }}>
                         Mật khẩu mới
@@ -118,7 +220,9 @@ export default function UpdatePassword(props) {
                             }
                         />
                     </FormControl>
-                    <p style={{ marginTop: -2 }}>Mật khẩu phải dài từ 8 đến 32 ký tự, bao gồm chữ và số</p>
+                    <br />
+                    {error.newPassE && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.newPassE}</span></>}
+                    {/* <p style={{ marginTop: -2 }}>Mật khẩu phải dài từ 8 đến 32 ký tự, bao gồm chữ và số</p> */}
 
                     <DialogContentText sx={{ fontSize: 18, color: 'black', marginTop: 2 }}>
                         Nhập lại mật khẩu mới
@@ -144,12 +248,16 @@ export default function UpdatePassword(props) {
                             }
                         />
                     </FormControl>
+                    <br />
+                    {error.confirmPassE && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.confirmPassE}</span></>}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} variant="outlined">Hủy</Button>
-                    <Button onClick={submit} autoFocus variant="contained">Lưu Thay Đổi</Button>
+                    <Button onClick={handleCheckValidation} autoFocus variant="contained">Lưu Thay Đổi</Button>
                 </DialogActions>
             </Dialog>
+
+            <PositionedSnackbar open={snackbarState} message={"cập nhật Thành Công."} />
         </div>
     );
 }

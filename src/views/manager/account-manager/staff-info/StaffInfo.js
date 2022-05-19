@@ -584,7 +584,7 @@ export default function StaffInfo() {
                 <div>
                     <UpdatePhone open={openPhone} handleOpenPhone={handleOpenPhone} object={data} />
                     <UpdateEmail open={openEmail} handleOpenEmail={handleOpenEmail} object={data} />
-                    <UpdatePassword open={openPass} handleOpenEmail={handleOpenPass} />
+                    <UpdatePassword open={openPass} handleOpenPass={handleOpenPass} />
                 </div>
             </div>
         </div>

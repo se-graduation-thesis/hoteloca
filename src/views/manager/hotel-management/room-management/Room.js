@@ -28,7 +28,7 @@ const columns = [
     { id: 'donGia', label: 'Đơn Giá', minWidth: 100 },
     { id: 'trangThai', label: 'Trạng Thái', minWidth: 100 },
     { id: 'dienTich', label: 'Diện Tích', minWidth: 100 },
-    { id: 'hinhAnh', label: 'Ảnh', minWidth: 100 },
+    { id: 'hinhAnh1', label: 'Ảnh', minWidth: 100 },
     { id: 'moTa', label: 'Mô Tả', minWidth: 100 },
 ];
 
@@ -90,7 +90,7 @@ export default function Room() {
                 e.donGia = loaiPhong.donGia;
                 try {
                     let hinhAnh = JSON.parse(e.hinhAnh);
-                    e.hinhAnh = hinhAnh[0];
+                    e.hinhAnh1 = hinhAnh[0];
                 } catch {
                     console.log("err")
                 }
@@ -115,6 +115,8 @@ export default function Room() {
     const handleChangeStateRoom = (event) => {
         setStateRoom(event.target.value);
     };
+
+
 
     return (
         <div>
@@ -207,7 +209,7 @@ export default function Room() {
                                                 const value = row[column.id];
                                                 return (
                                                     <TableCell key={column.id} align={column.align}>
-                                                        {column.id === 'hinhAnh' ?
+                                                        {column.id === 'hinhAnh1' ?
                                                             <img src={value} style={{ width: 70 }} /> :
                                                             column.id === "trangThai" ?
                                                                 <Chip label={value} color={value === "Hoạt động" ? "primary" : "warning"} /> :
