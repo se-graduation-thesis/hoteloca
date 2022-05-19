@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import Chip from '@mui/material/Chip';
-import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ButtonGroup, AlertTitle, FormControl, Snackbar, Grid, IconButton, InputLabel, MenuItem, Select, TextField, Typography, Checkbox } from '@mui/material';
+import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ButtonGroup, AlertTitle, FormControl, Snackbar, Grid, IconButton, InputLabel, MenuItem, Select, TextField, Typography, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { useState, useEffect } from 'react';
@@ -29,6 +29,7 @@ import DialogContent from '@mui/material/DialogContent';
 import Slide from '@mui/material/Slide';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import da from 'date-fns/locale/da/index';
+import { CheckBox } from '@mui/icons-material';
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -224,7 +225,10 @@ export default function Payment() {
             ngayLap: moment.tz(new Date, "Asia/Ho_Chi_Minh").format(),
             ngayVao: moment.tz(checkin, "Asia/Ho_Chi_Minh").format(),
             ngayRa: moment.tz(checkout, "Asia/Ho_Chi_Minh").format(),
-            yeuCau: values.yeuCau
+            yeuCau: values.yeuCau,
+            count: count,
+            phiDv: phiDv,
+            phiPhong: phiPhong
         }
         if (validate()) {
             if (roomSelect.length === 0) {
@@ -557,27 +561,6 @@ export default function Payment() {
                                         {...(errors.email && { error: true, helperText: errors.email })}
                                     />
                                 </Grid>
-                                {/* <Grid item xs={4}>
-                                    <FormControl fullWidth>
-                                        <InputLabel id="qt">Quốc tịch</InputLabel>
-                                        <Select
-                                            labelId="qt"
-                                            id="qt"
-                                            defaultValue="Viet Nam"
-                                            name="quocTich"
-                                            value={values.quocTich}
-                                            inputProps={{ readOnly: disabled }}
-                                            label="Quốc tịch"
-                                            onChange={handleInputChange}
-                                        >
-                                            {
-                                                nations.map((e, i) => (
-                                                    <MenuItem key={i} value={e.name}>{e.name}</MenuItem>
-                                                ))
-                                            }
-                                        </Select>
-                                    </FormControl>
-                                </Grid> */}
                             </Grid>
                         </Paper>
                     </Grid>
@@ -761,7 +744,7 @@ export default function Payment() {
                                         </div>
                                     }
                                 </Grid>
-                                <Grid item xs={8} style={{ textAlign: 'right' }}></Grid>
+                                <Grid item xs={8} style={{ textAlign: 'left' }}></Grid>
                                 <Grid item xs={2} style={{ textAlign: 'right' }}>
                                     <span style={{ color: "black", fontSize: 17, fontWeight: 'bold' }}>Số ngày ở : </span>
                                 </Grid>

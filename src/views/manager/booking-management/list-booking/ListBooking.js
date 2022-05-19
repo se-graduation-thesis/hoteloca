@@ -22,6 +22,7 @@ import moment from 'moment';
 import CheckIn from './CheckIn';
 import SearchIcon from "@mui/icons-material/Search";
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import CancelBooking from './CancelBooking'
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
     { id: 'maHoaDon', label: 'Mã phiếu thuê', minWidth: 100 },
@@ -51,6 +52,11 @@ export default function ListBooking() {
     const [checkInState, setCheckInState] = useState(false);
     const [checkInObject, setCheckInObject] = useState({})
     const handleCheckInState = (value) => setCheckInState(value);
+
+    const [cancelState, setCancelState] = useState(false);
+    const [cancelObject, setCancelObject] = useState({})
+    const handleCancelState = (value) => setCancelState(value);
+
     const [openUpdate, setOpenUpdate] = useState(false);
 
     const [id_brand, setId] = useState(0);
@@ -147,7 +153,7 @@ export default function ListBooking() {
     useEffect(() => {
         setInterval(() => {
             setAutoTime(new Date().getMinutes())
-        }, 1000)
+        }, 60000)
     })
 
 
@@ -166,7 +172,7 @@ export default function ListBooking() {
         // setListBillByStatusShow(listBillByStatusShow);
     }, [autoTime])
 
-
+    console.log(listBillByStatusShow)
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }}>
             <Grid container spacing={1} style={{ padding: 10 }}>
@@ -249,7 +255,7 @@ export default function ListBooking() {
                                             {
                                                 !row["checkIn"] ?
                                                     <Tooltip title="Hủy phòng">
-                                                        <IconButton disabled={row.trangThai === 2 ? true : false} key={row.stt} onClick={() => navigate(`/admin/booking-checkout/${row.id}`)} aria-label="delete" color="error">
+                                                        <IconButton key={row.stt} onClick={() => { handleCancelState(true); setCancelObject(row); }} aria-label="delete" color="error">
                                                             <HighlightOffIcon />
                                                         </IconButton>
                                                     </Tooltip> :
@@ -287,6 +293,7 @@ export default function ListBooking() {
             />
             <UpdateBrand open={openUpdate} id={id_brand} isShowForm={handleCloseUpdate} />
             <CheckIn open={checkInState} handleCheckInState={handleCheckInState} checkInObject={checkInObject} />
+            <CancelBooking open={cancelState} handleCancelState={handleCancelState} cancelObject={cancelObject} />
         </Paper >
     );
 }

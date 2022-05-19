@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import Chip from '@mui/material/Chip';
-import { Button, Table, TableBody, TableCell, TableHead, TableRow, Grid, MenuItem } from '@mui/material';
+import { Button, Table, TableBody, TableCell, TableHead, TableRow, Grid, MenuItem, FormControlLabel, Checkbox } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import './payment.css';
 import moment from "moment-timezone";
@@ -34,6 +34,7 @@ export default function BookingInfomation() {
     const { state } = useLocation()
     const [loading, setLoading] = React.useState(false);
     const [open, setOpen] = React.useState(false);
+    const [checked, setChecked] = useState(false)
     const navigate = useNavigate();
 
     const handleClose = () => {
@@ -53,12 +54,23 @@ export default function BookingInfomation() {
         nhanVienid: 0,
         yeuCau: "",
         tienCoc: 0,
+        phiPhong: 0
     })
+    // useEffect(() => {
+    //     if (state) {
+    //         setBookingInfo(state)
+    //     }
+    // }, [])
+
     useEffect(() => {
-        if (state) {
+        if (checked) {
+            let a = state;
+            a.tienCoc = a.phiPhong + a.tienCoc
+            setBookingInfo(a)
+        } else {
             setBookingInfo(state)
         }
-    }, [])
+    }, [checked])
     const listAccount = useSelector((state) => state.manager.listManager);
     useEffect(() => {
         dispatch(actionManager.fetchAllManager())
@@ -66,7 +78,6 @@ export default function BookingInfomation() {
     const nhanVien = listAccount.filter(e => e.id === state.nhanVienid)[0];
 
     const onSubmit = () => {
-
         actionBill.addBill(booking_info).then((response) => {
             const phieuThueid = response.data;
             booking_info.list_room_hotel.forEach((e) => {
@@ -104,8 +115,6 @@ export default function BookingInfomation() {
             }, 6000)
         }
         )
-
-
     }
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%', display: 'flex', alignItems: 'flex-start', justifyContent: 'center', backgroundColor: '#e3f2fd' }}>
@@ -269,11 +278,49 @@ export default function BookingInfomation() {
                 </Grid>
                 <Grid item xs={12}>
                     <Paper style={{ textAlign: "right", padding: 10 }}>
+                        <FormControlLabel control={<Checkbox checked={checked} onChange={() => { setChecked(!checked) }} />} label="Check In tại chỗ" />
+                    </Paper>
+                </Grid>
+
+                <Grid item xs={12}>
+
+                    <Paper style={{ textAlign: "right", padding: 10 }}>
+                        <Grid container spacing={1}>
+                            <Grid item xs={8} style={{ textAlign: 'left' }}></Grid>
+                            <Grid item xs={2} style={{ textAlign: 'right' }}>
+                                <span style={{ color: "black", fontSize: 17, fontWeight: 'bold' }}>Số ngày ở : </span>
+                            </Grid>
+                            <Grid item xs={2} style={{ textAlign: 'right' }}>
+                                <span style={{ color: "black", fontSize: 17, fontWeight: 'bold' }}>{booking_info.count} Ngày</span>
+                            </Grid>
+                            <Grid item xs={8} style={{ textAlign: 'right' }}></Grid>
+                            <Grid item xs={2} style={{ textAlign: 'right' }}>
+                                <span style={{ color: "black", fontSize: 17, fontWeight: 'bold' }}>Tiền phòng : </span>
+                            </Grid>
+                            <Grid item xs={2} style={{ textAlign: 'right' }}>
+                                <span style={{ color: "black", fontSize: 17, fontWeight: 'bold' }}>{new Intl.NumberFormat('en-Vn').format(booking_info.phiPhong) + " VND"}</span>
+                            </Grid>
+                            <Grid item xs={8} style={{ textAlign: 'right' }}></Grid>
+                            <Grid item xs={2} style={{ textAlign: 'right' }}>
+                                <span style={{ color: "black", fontSize: 17, fontWeight: 'bold' }}>Phí dịch vụ : </span>
+                            </Grid>
+                            <Grid item xs={2} style={{ textAlign: 'right' }}>
+                                <span style={{ color: "black", fontSize: 17, fontWeight: 'bold' }}>{new Intl.NumberFormat('en-Vn').format(booking_info.phiDv) + " VND"}</span>
+                            </Grid>
+                            <Grid item xs={8} style={{ textAlign: 'right' }}></Grid>
+                            <Grid item xs={2} style={{ textAlign: 'right' }}>
+                                <span style={{ color: "black", fontSize: 17, fontWeight: 'bold' }}>TỔNG TIỀN CỌC PHẢI TRẢ: </span>
+                            </Grid>
+                            <Grid item xs={2} style={{ textAlign: 'right' }}>
+                                <span style={{ color: "black", fontSize: 17, fontWeight: 'bold' }}>{new Intl.NumberFormat('en-Vn').format(booking_info.tienCoc) + " VND"}</span>
+                            </Grid>
+                        </Grid>
                         <LoadingButton
                             color="secondary"
                             onClick={onSubmit}
                             loading={loading}
                             loadingPosition="start"
+                            style={{ marginTop: 20, marginBottom: 20 }}
                             startIcon={<SaveIcon />}
                             variant="contained"
                         >
