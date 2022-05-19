@@ -10,6 +10,7 @@ const initialState = {
     isAuthenticated: null,
     userAuth: userAuth,
     listAccount: [],
+    account: null
 };
 
 export const accountReducer = (state = initialState, action) => {
@@ -61,6 +62,11 @@ export const accountReducer = (state = initialState, action) => {
             return {
                 ...state,
                 listAccount: [...action.payload]
+            }
+        case ACTION_TYPES.GET_BY_ID:
+            return {
+                ...state,
+                account: action.payload
             }
         default:
             return state;

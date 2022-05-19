@@ -16,6 +16,7 @@ import UpdatePhone from "./component/UpdatePhone";
 import UpdateEmail from "./component/UpdateEmail";
 import * as actionsUploadFile from 'actions/upload.action';
 import { vi } from "date-fns/locale";
+import UpdatePassword from "./component/UpdatePassword";
 
 const marginTop = 3;
 
@@ -72,8 +73,10 @@ export default function StaffInfo() {
     // -------------------- component
     const [openPhone, setOpenPhone] = useState(false);
     const [openEmail, setOpenEmail] = useState(false);
+    const [openPass, setOpenPass] = useState(false);
     const handleOpenPhone = value => setOpenPhone(value);
     const handleOpenEmail = value => setOpenEmail(value);
+    const handleOpenPass = value => setOpenPass(value);
     // -------------------------------------------------
 
     address.sort(function (a, b) {
@@ -538,7 +541,7 @@ export default function StaffInfo() {
                                                 <Typography sx={{ fontSize: 18 }}>Đổi mật khẩu</Typography>
                                             </Grid>
                                             <Grid item xs={3}>
-                                                <Button variant="outlined">Cập nhật</Button>
+                                                <Button variant="outlined" onClick={() => handleOpenPass(true)}>Cập nhật</Button>
                                             </Grid>
                                         </Grid>
                                     </Grid>
@@ -581,6 +584,7 @@ export default function StaffInfo() {
                 <div>
                     <UpdatePhone open={openPhone} handleOpenPhone={handleOpenPhone} object={data} />
                     <UpdateEmail open={openEmail} handleOpenEmail={handleOpenEmail} object={data} />
+                    <UpdatePassword open={openPass} handleOpenEmail={handleOpenPass} />
                 </div>
             </div>
         </div>

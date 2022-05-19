@@ -12,7 +12,8 @@ export default {
             login: (username, pass) => axios.post(url + "login/" + username + "&" + pass),
             add_admin: (admin) => axios.post(url + "add-admin", admin),
             resetPass: (acc) => axios.put(url + "reset-password", acc),
-            updateStatus: (acc) => axios.put(url + "update", acc)
+            updateStatus: (acc) => axios.put(url + "update", acc),
+            getById: (id) => axios.get(url, id)
         };
     },
     manager(url = baseApi + 'manager/') {

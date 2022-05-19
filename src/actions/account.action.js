@@ -6,7 +6,8 @@ export const ACTION_TYPES = {
     LOGOUT: 'LOGOUT',
     ADD_ACCOUNT: "ADD_ACCOUNT",
     CHANGE_STATUS: "CHANGE_STATUS",
-    RESET_PASS: "CHANGE_STATUS"
+    RESET_PASS: "CHANGE_STATUS",
+    GET_BY_ID: "GET_BY_ID"
 
 };
 export const isAuthenticated = (userExitedid) => {
@@ -78,4 +79,17 @@ export const addAdmin = (admin) => {
 };
 export const register = (account) => {
     return apiService.account().register(account);
+};
+
+export const getById = (id) => (dispatch) => {
+    apiService
+        .account()
+        .getById(id)
+        .then((response) => {
+            dispatch({
+                type: ACTION_TYPES.GET_BY_ID,
+                payload: response.data,
+            });
+        })
+        .catch((err) => console.log(err));
 };
