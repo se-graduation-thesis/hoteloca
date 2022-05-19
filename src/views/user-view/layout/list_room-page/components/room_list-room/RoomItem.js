@@ -2,7 +2,7 @@ import { Button, Chip, Grid } from "@mui/material";
 import { IconPhone, IconSnowflake, IconToolsKitchen2, IconWifi } from "@tabler/icons"
 import { useNavigate } from "react-router";
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DetailsIcon from '@mui/icons-material/Details';
 import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -25,11 +25,21 @@ export default function RoomItem({ room }) {
         }
         navigate("/user-booking", { state: room })
     }
+
+    const [hinh, setHinh] = useState('')
+    useEffect(() => {
+        try {
+            let hinhAnh = JSON.parse(room.hinhAnh);
+            setHinh(hinhAnh[0])
+        } catch {
+            console.log("err")
+        }
+    }, [])
     return (
         <div className="body-room__list-room" style={{ borderBottom: '1px solid Chocolate', paddingBottom: 30, marginTop: 30 }}>
             <Grid container spacing={2}>
                 <Grid item xs={4}>
-                    <img src={room.hinhAnh}
+                    <img src={hinh}
                         alt="image"
                         style={{ maxWidth: "100%" }} />
                 </Grid>

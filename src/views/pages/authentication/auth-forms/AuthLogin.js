@@ -68,11 +68,11 @@ const FirebaseLogin = ({ ...others }) => {
     const onLogin = (value) => {
         actions.login(value.email, value.password).then((res) => {
             console.log(res)
-            if (res && res.data.taiKhoanid.trangThai === 2) {
+            if (res && res.data.taiKhoanid?.trangThai === 2) {
                 console.log("ljb")
                 navigate("/block-account");
             }
-            else if (res && res.data.id && res.data.taiKhoanid.trangThai === 1) {
+            else if (res && res.data.id && res.data.taiKhoanid?.trangThai === 1) {
                 const permission = {
                     account_id: res.data.taiKhoanid.id,
                     user_id: res.data.id,
@@ -182,7 +182,7 @@ const FirebaseLogin = ({ ...others }) => {
                 {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
                     <form noValidate onSubmit={handleSubmit} {...others}>
                         <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
-                            <InputLabel htmlFor="outlined-adornment-email-login">Số điện thoại</InputLabel>
+                            <InputLabel htmlFor="outlined-adornment-email-login">Số điện thoại hoặc tài khoản</InputLabel>
                             <OutlinedInput
                                 id="outlined-adornment-email-login"
                                 type="email"

@@ -177,7 +177,7 @@ export default function ListBill() {
                                                 );
                                             })}
                                             <TableCell key={row.stt}>
-                                                <Tooltip title="Xem thông tin đơn đặt">
+                                                <Tooltip title="Hủy đơn">
                                                     <IconButton key={row.stt} onClick={() => { setConfirm(true); setBillCancelId(row["id"]) }} aria-label="add-service" style={{ color: 'chocolate' }}>
                                                         <CancelIcon />
                                                     </IconButton>

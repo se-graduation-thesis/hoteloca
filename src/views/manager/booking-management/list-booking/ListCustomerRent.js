@@ -10,7 +10,7 @@ const columns = [
     { id: 'ho', label: 'Họ', minWidth: 100 },
     { id: 'ten', label: 'Tên', minWidth: 100 },
     { id: 'cmnd', label: 'CMND/CCCD', minWidth: 100 },
-    { id: 'diaChi', label: 'Địa chỉ', minWidth: 100 },
+    // { id: 'diaChi', label: 'Địa chỉ', minWidth: 100 },
     { id: 'dienThoai', label: 'Điện thoại', minWidth: 100 },
     { id: 'quocTich', label: 'Quốc tịch', minWidth: 100 },
 ];
@@ -99,11 +99,11 @@ export default function ListCustomerRent() {
                                     {column.label}
                                 </TableCell>
                             ))}
-                            <TableCell
+                            {/* <TableCell
                                 key={"action"}
                             >
                                 {"Hành động"}
-                            </TableCell>
+                            </TableCell> */}
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -123,11 +123,11 @@ export default function ListCustomerRent() {
                                                 </TableCell>
                                             );
                                         })}
-                                        <TableCell key={"action"}>
+                                        {/* <TableCell key={"action"}>
                                             <IconButton aria-label="show" color="success">
                                                 <Visibility />
                                             </IconButton>
-                                        </TableCell>
+                                        </TableCell> */}
                                     </TableRow>
                                 );
                             })}

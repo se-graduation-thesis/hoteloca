@@ -39,7 +39,7 @@ const initialFieldValues = {
     ho: "",
     ten: "",
     cmnd: "",
-    diaChi: "{}",
+    diaChi: '{"diaChi":"Ấp khương bình","city":"Kiên Giang","district":"Gò Quao","ward":"Thới Quản"}',
     dienThoai: "",
     email: "",
     quocTich: "Viet Nam",

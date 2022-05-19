@@ -26,7 +26,7 @@ const columns = [
     { id: 'dienThoai', label: 'Số điện thoại', minWidth: 100 },
     { id: 'email', label: 'Email', minWidth: 100 },
     { id: 'diaChi', label: 'Địa chỉ', minWidth: 100 },
-    { id: 'boPhanid', label: 'Bộ phận', minWidth: 100 },
+    // { id: 'boPhanid', label: 'Bộ phận', minWidth: 100 },
     { id: 'ngayVaoLam', label: 'Ngày Vào Làm', minWidth: 100 },
 ];
 

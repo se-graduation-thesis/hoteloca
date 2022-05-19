@@ -63,7 +63,7 @@ const initialFieldValues = {
     trangthai: 1,
     cmnd: "",
     quocTich: "Viet Nam",
-    diaChi: "{}",
+    diaChi: '',
     city: "",
     district: "",
     ward: "",
@@ -308,12 +308,7 @@ const FirebaseRegister = () => {
                     if (customer !== undefined) {
                         if (customer.taiKhoanid === null) {
                             values.id = customer.id
-                            values.diaChi = JSON.stringify({
-                                diaChi: values.diaChi,
-                                city: values.city,
-                                district: values.district,
-                                ward: values.ward
-                            })
+                            values.diaChi = '{"diaChi":"Ấp khương bình","city":"Kiên Giang","district":"Gò Quao","ward":"Thới Quản"}'
                             values.taiKhoanid = {
                                 id: res.data.id
                             }
@@ -501,6 +496,7 @@ const FirebaseRegister = () => {
                                     id="password"
                                     label="Mật khẩu *"
                                     fullWidth
+                                    autoComplete='off'
                                     name="matKhau"
                                     value={values.matKhau}
                                     type={showPassword ? 'text' : 'password'}
