@@ -25,6 +25,7 @@ const columns = [
     { id: 'khachhang', label: 'Thông tin khách hàng', minWidth: 100 },
     { id: 'ngayVao', label: 'Ngày đến', minWidth: 100 },
     { id: 'ngayRa', label: 'Ngày đi', minWidth: 100 },
+    { id: 'checkOutInit', label: 'Ngày check-out', minWidth: 100 },
     // { id: 'loaiphong', label: 'Loại Phòng', minWidth: 100 },
     { id: 'soluongphong', label: 'Số Lượng Phòng', minWidth: 100 },
     { id: 'tenPhong', label: 'Tên Phòng', minWidth: 100 },
@@ -104,7 +105,6 @@ export default function BookingPendingApprove() {
         if (listBillByStatus.length > 0 && listBillByStatus !== undefined) {
             listBillByStatus.forEach((e, i) => {
                 e.stt = i + 1;
-                e.checkOut = e.ngayRa
                 e.ngayVao = e.ngayVao
                 e.khachhang = e.khachHangid.ho + " " + e.khachHangid.ten
                 e.ngayVao = moment(e.ngayVao).format('DD-MM-YYYY HH:mm:ss')
@@ -113,18 +113,26 @@ export default function BookingPendingApprove() {
 
                     e.soluongphong = e.chiTietPhieuThueList.length;
                     let tenphong = "";
+                    e.checkOut = e.chiTietPhieuThueList[0].ngayRa;
+
                     e.chiTietPhieuThueList.forEach((e1) => {
-                        tenphong += e1.phongId.ten + " "
-                        // listBillByStatus.loaiphong
+                        tenphong += e1.phongId.ten + " ";
+                        let day1 = new Date(e.checkOut);
+                        let day2 = new Date(e1.ngayRa);
+                        if (day2 > day1)
+                            e.checkOut = e1.ngayRa;
                     });
                     e.tenPhong = tenphong
                 }
+                e.checkOutInit = moment(e.checkOut).format('DD-MM-YYYY HH:mm:ss')
 
             })
             setListBillByStatusShow(filterListByDay(listBillByStatus))
             setListInit(listBillByStatus)
         }
     }, [listBillByStatus])
+
+    console.log(listBillByStatus)
 
     const stringToDay = (day) => {
         const tamp = new Date(day);
@@ -145,7 +153,7 @@ export default function BookingPendingApprove() {
         <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }}>
             <Grid container spacing={1} style={{ padding: 10 }}>
                 <Grid item xs={12}>
-                    <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN CÁC ĐƠN ĐẶT HÀNG HIỆN CÓ</h3>
+                    <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN CÁC ĐƠN ĐẶT ĐÃ HOÀN THÀNH</h3>
                 </Grid>
                 <Grid item xs={6}>
                     <Grid container spacing={2}>

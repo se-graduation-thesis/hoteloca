@@ -57,6 +57,10 @@ export default function ListBooking() {
     const [cancelObject, setCancelObject] = useState({})
     const handleCancelState = (value) => setCancelState(value);
 
+    const handleFilter = (value) => {
+        setListBillByStatusShow(listBillByStatusShow.filter(e => e.id !== value));
+    }
+
     const [openUpdate, setOpenUpdate] = useState(false);
 
     const [id_brand, setId] = useState(0);
@@ -120,12 +124,12 @@ export default function ListBooking() {
                 e.khachhang = e.khachHangid.ho + " " + e.khachHangid.ten
                 e.ngayVao_old = e.ngayVao
                 e.count = countDate(e.ngayVao_old);
-                if (!e.checkIn) {
+                if (!e.checkIn && e.trangThai === 1 || e.trangThai === 3) {
                     if (e.count.days >= 0) {
                         if (e.count.hours >= 2)
-                            e.trangThai = 4
+                            dispatch(actions.updateStateOfBill(e.id, 4))
                         else if (e.count.hours > 0 || (e.count.hours === 0 && e.count.minutes > 0))
-                            e.trangThai = 3
+                            dispatch(actions.updateStateOfBill(e.id, 3))
                     }
                 } else {
                     e.checkIn = moment(e.checkIn).format('DD-MM-YYYY HH:mm:ss')
@@ -153,26 +157,29 @@ export default function ListBooking() {
     useEffect(() => {
         setInterval(() => {
             setAutoTime(new Date().getMinutes())
-        }, 60000)
+        }, 1000)
     })
 
 
     useEffect(() => {
         listBillByStatusShow.forEach((e) => {
-            if (!e.checkIn) {
+            if (!e.checkIn && e.trangThai === 1 || e.trangThai === 3) {
                 e.count = countDate(e.ngayVao_old);
                 if (e.count.days >= 0) {
-                    if (e.count.hours >= 2)
+                    console.log(e.count.hours)
+                    if (e.count.hours >= 2) {
+                        setListBillByStatusShow(listBillByStatusShow.filter(x => x.id !== e.id))
                         dispatch(actions.updateStateOfBill(e.id, 4))
-                    else if (e.count.hours > 0 || (e.count.hours === 0 && e.count.minutes > 0))
+                    }
+                    else if (e.count.hours > 0 || (e.count.hours === 0 && e.count.minutes > 0)) {
                         dispatch(actions.updateStateOfBill(e.id, 3))
+                    }
                 }
             }
         })
         // setListBillByStatusShow(listBillByStatusShow);
     }, [autoTime])
 
-    console.log(listBillByStatusShow)
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }}>
             <Grid container spacing={1} style={{ padding: 10 }}>
@@ -236,7 +243,7 @@ export default function ListBooking() {
                                                         column.id === 'checkIn' ?
                                                             value ?
                                                                 value :
-                                                                <Button variant="contained" color={row["trangThai"] === 3 ? "primary" : "primary"} onClick={() => { handleCheckInState(true); setCheckInObject(row); }} >{row["trangThai"] === 3 ? "Check - In" : "Check - In"}</Button>
+                                                                <Button variant="contained" color={"primary"} onClick={() => { handleCheckInState(true); setCheckInObject(row); }} >{"Check - In"}</Button>
                                                             : value}
                                                 </TableCell>
                                             );
@@ -293,7 +300,7 @@ export default function ListBooking() {
             />
             <UpdateBrand open={openUpdate} id={id_brand} isShowForm={handleCloseUpdate} />
             <CheckIn open={checkInState} handleCheckInState={handleCheckInState} checkInObject={checkInObject} />
-            <CancelBooking open={cancelState} handleCancelState={handleCancelState} cancelObject={cancelObject} />
+            <CancelBooking open={cancelState} handleCancelState={handleCancelState} cancelObject={cancelObject} handleFilter={handleFilter} />
         </Paper >
     );
 }

@@ -11,6 +11,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
+import CancelBooking from './CancelBooking'
 import Edit from '@mui/icons-material/Edit';
 
 import InsertBrandDialog from './InsertBrandDialog'
@@ -50,17 +51,17 @@ export default function BookingCancellation() {
     const [billCancelId, setBillCancelId] = useState(null);
 
     const [id_brand, setId] = useState(0);
-    // const handleClickOpen = () => {
-    //     setOpen(true);
-    // };
 
-    // const handleClickOpenUpdate = (id) => {
-    //     setOpenUpdate(true);
-    //     setId(id)
-    // };
-    // const handleClose = () => {
-    //     setOpen(false);
-    // };
+    const [cancelState, setCancelState] = useState(false);
+    const [cancelObject, setCancelObject] = useState({})
+    const handleCancelState = (value) => {
+        setCancelState(value);
+    }
+
+    const handleFilter = (value) => {
+        setListBillByStatusShow(listBillByStatusShow.filter(e => e.id !== value));
+    }
+
     const handleCloseUpdate = () => {
         setOpenUpdate(false);
     };
@@ -102,17 +103,17 @@ export default function BookingCancellation() {
         }
     }, [listBillByStatus])
 
-    const submit = () => {
-        dispatch(actions.updateStateOfBill(billCancelId, 6))
-        setListBillByStatusShow(listBillByStatusShow.filter(e => e.id !== billCancelId))
+    // const submit = () => {
+    //     dispatch(actions.updateStateOfBill(billCancelId, 6))
+    //     setListBillByStatusShow(listBillByStatusShow.filter(e => e.id !== billCancelId))
 
-        setConfirm(false);
+    //     setConfirm(false);
 
-        setSnackbarState(true);
-        setTimeout(function () {
-            setSnackbarState(false);
-        }, 3000);
-    }
+    //     setSnackbarState(true);
+    //     setTimeout(function () {
+    //         setSnackbarState(false);
+    //     }, 3000);
+    // }
 
     return (
         <div>
@@ -176,7 +177,7 @@ export default function BookingCancellation() {
                                                 );
                                             })}
                                             <TableCell key={row.stt}>
-                                                <Button variant="contained" color="error" onClick={() => { setConfirm(true); setBillCancelId(row["id"]) }}>Hủy</Button>
+                                                <Button variant="contained" color="error" onClick={() => { handleCancelState(true); setCancelObject(row); }}>Hủy</Button>
                                             </TableCell>
                                         </TableRow>
                                     );
@@ -205,33 +206,10 @@ export default function BookingCancellation() {
                 />
                 <UpdateBrand open={openUpdate} id={id_brand} isShowForm={handleCloseUpdate} />
             </Paper >
+
             <div>
-                <div>
-                    <Dialog
-                        open={confirm}
-                        onClose={() => setConfirm(false)}
-                        aria-labelledby="alert-dialog-title"
-                        aria-describedby="alert-dialog-description"
-                    >
-                        <DialogTitle id="alert-dialog-title" sx={{ fontSize: 16 }}>
-                            {"Bạn chắc chắn muốn hủy phiếu thuê này?"}
-                        </DialogTitle>
-                        <DialogContent>
-                            <DialogContentText id="alert-dialog-description">
-                                phiếu thuê sẽ được hủy và cập nhật lại toàn bộ trong hệ thống.
-                            </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button variant="outlined" onClick={() => setConfirm(false)}>Hủy</Button>
-                            <Button variant="contained" onClick={submit} autoFocus>
-                                Đồng ý
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
-                </div>
-            </div>
-            <div>
-                <PositionedSnackbar open={snackbarState} message={"Hủy Thành Công."} />
+                <CancelBooking open={cancelState} handleCancelState={handleCancelState} cancelObject={cancelObject} handleFilter={handleFilter} />
+
             </div>
         </div>
     );

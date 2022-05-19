@@ -83,14 +83,6 @@ export default function ServiceInfo({ token, updateService, complete, handleComp
         <>
             <Grid container spacing={2}>
                 <Grid item xs={12} sx={{ marginTop: 5 }}>
-                    <Typography sx={{ fontWeight: 'bold', fontSize: 18 }}>Thông tin Tiện nghi</Typography>
-                    <p>Các Tiện nghi đang có sẵn tại phòng</p>
-                    {
-                        tienNghiList.map((e, index) => (
-                            <Chip style={{ margin: 5 }} key={e.id} color={colors[index]} label={e.tienNghiid.ten} />
-                        ))
-                    }
-                    <br></br>
                     <div className="div-add" style={{ marginTop: 30 }}>
                         <Typography sx={{ fontWeight: 'bold', fontSize: 18 }}>Thông tin Dịch vụ</Typography>
                         <div style={{ width: "100%" }}>
