@@ -68,8 +68,13 @@ const FirebaseLogin = ({ ...others }) => {
     const onLogin = (value) => {
         actions.login(value.email, value.password).then((res) => {
             console.log(res)
-            if (res && res.data.id) {
+            if (res && res.data.taiKhoanid.trangThai === 2) {
+                console.log("ljb")
+                navigate("/block-account");
+            }
+            else if (res && res.data.id && res.data.taiKhoanid.trangThai === 1) {
                 const permission = {
+                    account_id: res.data.taiKhoanid.id,
                     user_id: res.data.id,
                     role: res.data.taiKhoanid.quyen,
                 }

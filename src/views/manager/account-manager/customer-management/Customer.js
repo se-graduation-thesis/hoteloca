@@ -77,7 +77,8 @@ export default function Customer() {
                 e.stt = i + 1
                 try {
                     let object = JSON.parse(e.diaChi);
-                    e.diaChi = object.diaChi + ', ' + object.ward + ', ' + object.district + ', ' + object.city
+                    if (object)
+                        e.diaChi = object.diaChi ? object.diaChi + ', ' : "" + object.ward + ', ' ? object.ward : "" + object.district ? object.district + ', ' : "" + object.city ? object.city : ""
                 } catch {
                     console.log("error")
                 }

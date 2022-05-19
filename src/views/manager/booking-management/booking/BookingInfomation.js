@@ -25,7 +25,6 @@ import DialogContent from '@mui/material/DialogContent';
 import Slide from '@mui/material/Slide';
 import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
 
-
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -63,14 +62,19 @@ export default function BookingInfomation() {
     // }, [])
 
     useEffect(() => {
+        let tienCoc = state.tienCoc;
+        let tienPhong = state.phiPhong;
         if (checked) {
-            let a = state;
-            a.tienCoc = a.phiPhong + a.tienCoc
-            setBookingInfo(a)
-        } else {
-            setBookingInfo(state)
+            setBookingInfo({ ...state, tienCoc: tienCoc + tienPhong, checkIn: moment.tz(new Date(), "Asia/Ho_Chi_Minh").format() })
         }
-    }, [checked])
+        else {
+            setBookingInfo({ ...state, checkIn: null })
+            if (tienCoc !== 0) {
+                setBookingInfo({ ...state, tienCoc: tienCoc, checkIn: null })
+            }
+        }
+    }, [checked, state])
+    console.log(booking_info)
     const listAccount = useSelector((state) => state.manager.listManager);
     useEffect(() => {
         dispatch(actionManager.fetchAllManager())
@@ -85,7 +89,8 @@ export default function BookingInfomation() {
                     phieuThueid: phieuThueid.id,
                     phongId: e.id,
                     ngayVao: phieuThueid.ngayVao,
-                    ngayRa: phieuThueid.ngayRa
+                    ngayRa: phieuThueid.ngayRa,
+                    trangThai: 1
                 }
                 dispatch(actionBillDetail.addBillDetail(billDetail));
             })
@@ -278,7 +283,7 @@ export default function BookingInfomation() {
                 </Grid>
                 <Grid item xs={12}>
                     <Paper style={{ textAlign: "right", padding: 10 }}>
-                        <FormControlLabel control={<Checkbox checked={checked} onChange={() => { setChecked(!checked) }} />} label="Check In tại chỗ" />
+                        <FormControlLabel control={<Checkbox onChange={(e) => { setChecked(e.target.checked) }} />} label="Check In tại chỗ" />
                     </Paper>
                 </Grid>
 

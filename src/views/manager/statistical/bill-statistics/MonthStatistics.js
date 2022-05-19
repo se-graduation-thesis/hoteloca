@@ -36,6 +36,7 @@ export default function MonthStatistics({ yearSelect }) {
     useEffect(() => {
         dispatch(actions.get_all())
     }, [])
+
     useEffect(() => {
         if (listPayment) {
             let list_month = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]

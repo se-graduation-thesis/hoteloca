@@ -39,14 +39,12 @@ const initialFieldValues = {
     ho: "",
     ten: "",
     cmnd: "",
-    diaChi: "123",
+    diaChi: "{}",
     dienThoai: "",
     email: "",
     quocTich: "Viet Nam",
     yeuCau: "",
-    ngayLap: new Date,
-    ngayVao: new Date,
-    ngayRa: new Date((new Date()).valueOf() + 1000 * 3600 * 24)
+    ngayThamGia: new Date,
 };
 const colors = ["primary", "secondary", "info", "error", "success"]
 export default function Payment() {
@@ -142,6 +140,7 @@ export default function Payment() {
                         setValues({ ...values })
                         setDisabled(true)
                         setIdCustomer(e.id)
+                        setErrors({})
                     }
                 })
             } else if (fieldValues.cmnd.length !== 9 || fieldValues.cmnd.length !== 12) {
@@ -154,34 +153,79 @@ export default function Payment() {
                 setIdCustomer(0)
                 setDisabled(false)
             }
+        }
 
-            // let err = 0;
-            // listCategoryShow.map((u) => {
-            //     if (
-            //         u.ten.toLowerCase() === fieldValues.ten.toLowerCase()
-            //     ) {
-            //         err = err + 1;
-            //     }
-            // });
-            // if (err >= 1) {
-            //     err < 1
-            //         ? (temp.ten = "")
-            //         : (temp.ten = "Loại phòng này đã có");
-            // }
-            // else if (fieldValues.ten === "") {
-            //     temp.ten = fieldValues.ten ? "" : "Tên loại phòng không được để trống";
-            // }
-            // else if (fieldValues.ten !== "") {
-            //     temp.ten =
-            //         /^[a-zA-ZàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]{1,15}(?: [a-zA-ZàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]+){0,6}$/.test(
-            //             fieldValues.ten
-            //         )
-            //             ? ""
-            //             : "Tên khách sạn không chứa chữ số hoặc kí tự đặc biệt";
-            // }
+        if ("dienThoai" in fieldValues) {
+            let err = 0;
+            listCusCompare.map((user) => {
+                if (
+                    user.dienThoai.toLowerCase() === fieldValues.dienThoai.toLowerCase()
+                ) {
+                    err = err + 1;
+                }
+            });
+            if (fieldValues.dienThoai === "") {
+                temp.dienThoai = fieldValues.dienThoai ? "" : "Số điện thoại không được để trống";
+            }
+            if (fieldValues.dienThoai !== "") {
+                temp.dienThoai = /^[0-9]\w{9}$/.test(fieldValues.dienThoai)
+                    ? ""
+                    : "Số điện thoại chỉ chứa 10 chữ số";
+            }
+            if (err >= 1) {
+                err < 1
+                    ? (temp.dienThoai = "")
+                    : (temp.dienThoai = "Số điện thoại này đã được sử dụng");
+            }
+        }
+        if ("email" in fieldValues) {
+            let err = 0;
+            listCusCompare.map((user) => {
+                if (
+                    user.email.toLowerCase() === fieldValues.email.toLowerCase()
+                ) {
+                    err = err + 1;
+                }
+            });
+            if (fieldValues.email === "") {
+                temp.email = fieldValues.email ? "" : "Email không được để trống";
+            }
+            if (fieldValues.email !== "") {
+                temp.email = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(fieldValues.email)
+                    ? ""
+                    : "Định dạng email không đúng";
+            }
+            if (err >= 1) {
+                err < 1
+                    ? (temp.email = "")
+                    : (temp.email = "Email này đã tồn tại");
+            }
+        }
+        if ("ho" in fieldValues) {
+            if (fieldValues.ho === "") {
+                temp.ho = fieldValues.ho ? "" : "Họ không được để trống";
+            }
+            if (fieldValues.ho !== "") {
+                temp.ho =
+                    /^[a-zA-ZàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]{1,15}(?: [a-zA-ZàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]+){0,6}$/.test(
+                        fieldValues.ho
+                    )
+                        ? ""
+                        : "Vui lòng không nhập số hay kí tự đặc biệt";
+            }
         }
         if ("ten" in fieldValues) {
-            temp.ten = fieldValues.ten ? "" : "Tên không được để trống";
+            if (fieldValues.ten === "") {
+                temp.ten = fieldValues.ten ? "" : "Tên không được để trống";
+            }
+            if (fieldValues.ten !== "") {
+                temp.ten =
+                    /^[a-zA-ZàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]{1,15}(?: [a-zA-ZàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]+){0,6}$/.test(
+                        fieldValues.ten
+                    )
+                        ? ""
+                        : "Vui lòng không nhập số hay kí tự đặc biệt";
+            }
         }
         setErrors({
             ...temp,
