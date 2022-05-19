@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 export default function Payment({ onClick, deposit }) {
     const paypal = useRef();
 
-
+    // const value_de = deposit / 24000
 
     useEffect(() => {
         window.paypal
@@ -17,7 +17,7 @@ export default function Payment({ onClick, deposit }) {
                                 description: "Cool looking table",
                                 amount: {
                                     currency_code: "USD",
-                                    value: 1,
+                                    value: 100
                                 },
                             },
                         ],

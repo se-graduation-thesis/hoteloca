@@ -213,7 +213,7 @@ export default function Account() {
     }
     const onResetPassword = () => {
         if (accUp) {
-            accUp.matKhau = "123"
+            accUp.matKhau = "123456"
             dispatch(actions.resetPass(accUp))
             setAlertOpen(true)
             handleClose1()

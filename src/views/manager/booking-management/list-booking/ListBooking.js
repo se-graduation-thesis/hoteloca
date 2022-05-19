@@ -23,6 +23,16 @@ import CheckIn from './CheckIn';
 import SearchIcon from "@mui/icons-material/Search";
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import CancelBooking from './CancelBooking'
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
     { id: 'maHoaDon', label: 'Mã phiếu thuê', minWidth: 100 },
@@ -32,7 +42,7 @@ const columns = [
     { id: 'soluongphong', label: 'Số Lượng Phòng', minWidth: 100 },
     { id: 'tenPhong', label: 'Tên Phòng', minWidth: 100 },
     { id: 'checkIn', label: 'Check-In', minWidth: 100 },
-    { id: 'trangThai', label: 'trangThai', minWidth: 100 },
+    // { id: 'trangThai', label: 'trangThai', minWidth: 100 },
 ];
 
 export default function ListBooking() {
@@ -48,7 +58,15 @@ export default function ListBooking() {
         setStateBill(event.target.value);
     };
 
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
     const [checkInState, setCheckInState] = useState(false);
     const [checkInObject, setCheckInObject] = useState({})
     const handleCheckInState = (value) => setCheckInState(value);
@@ -166,7 +184,6 @@ export default function ListBooking() {
             if (!e.checkIn && e.trangThai === 1 || e.trangThai === 3) {
                 e.count = countDate(e.ngayVao_old);
                 if (e.count.days >= 0) {
-                    console.log(e.count.hours)
                     if (e.count.hours >= 2) {
                         setListBillByStatusShow(listBillByStatusShow.filter(x => x.id !== e.id))
                         dispatch(actions.updateStateOfBill(e.id, 4))
@@ -179,7 +196,17 @@ export default function ListBooking() {
         })
         // setListBillByStatusShow(listBillByStatusShow);
     }, [autoTime])
-
+    const onCheckIn = (row) => {
+        let checkInKt = new Date()
+        let checkKt = new Date(row.ngayVao_old)
+        if (checkKt > checkInKt) {
+            handleClickOpen(true)
+            return
+        } else {
+            handleCheckInState(true);
+            setCheckInObject(row);
+        }
+    }
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }}>
             <Grid container spacing={1} style={{ padding: 10 }}>
@@ -243,7 +270,7 @@ export default function ListBooking() {
                                                         column.id === 'checkIn' ?
                                                             value ?
                                                                 value :
-                                                                <Button variant="contained" color={"primary"} onClick={() => { handleCheckInState(true); setCheckInObject(row); }} >{"Check - In"}</Button>
+                                                                <Button variant="contained" color={"primary"} onClick={() => { onCheckIn(row) }} >{"Check - In"}</Button>
                                                             : value}
                                                 </TableCell>
                                             );
@@ -301,6 +328,23 @@ export default function ListBooking() {
             <UpdateBrand open={openUpdate} id={id_brand} isShowForm={handleCloseUpdate} />
             <CheckIn open={checkInState} handleCheckInState={handleCheckInState} checkInObject={checkInObject} />
             <CancelBooking open={cancelState} handleCancelState={handleCancelState} cancelObject={cancelObject} handleFilter={handleFilter} />
+            <Dialog
+                open={open}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={handleClose}
+                aria-describedby="alert-dialog-slide-description"
+            >
+                <DialogTitle>{"Thao tác này không thể thực hiện"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-slide-description">
+                        Chưa tới giờ Check In vui lòng thử lại sau
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Đã hiểu</Button>
+                </DialogActions>
+            </Dialog>
         </Paper >
     );
 }

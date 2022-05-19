@@ -40,7 +40,7 @@ export default function ListBill() {
     const [page, setPage] = useState(0);
     const rows = []
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const listBillByStatus = useSelector((state) => state.bill.listBillByStatusAccept);
+    const listBillByStatus = useSelector((state) => state.bill.listBillByStatusFinish);
     const [listBillByStatusShow, setListBillByStatusShow] = useState([])
     const [snackbarState, setSnackbarState] = useState(false);
     const [confirm, setConfirm] = useState(false);
@@ -58,7 +58,7 @@ export default function ListBill() {
     };
 
     useEffect(() => {
-        dispatch(actions.fetchBillByStatusAccept())
+        dispatch(actions.fetchBillByStatusFinish())
     }, [])
     useEffect(() => {
         if (listBillByStatus.length > 0 && listBillByStatus !== undefined) {
@@ -83,7 +83,7 @@ export default function ListBill() {
 
             })
             let id = isJson(account) ? JSON.parse(account).user_id : account.user_id
-            setListBillByStatusShow(listBillByStatus.filter(({ khachHangid, trangThai }) => khachHangid.id === id))
+            setListBillByStatusShow(listBillByStatus.filter(({ khachHangid }) => khachHangid.id === id))
         }
     }, [listBillByStatus])
     function isJson(str) {
@@ -111,7 +111,7 @@ export default function ListBill() {
             <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }}>
                 <Grid container spacing={1} >
                     <Grid item xs={12}>
-                        <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN CÁC PHIẾU THUÊ ĐANG ĐẶT</h3>
+                        <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN CÁC ĐƠN ĐẶT ĐÃ HOÀN THÀNH</h3>
                     </Grid>
                     <Grid item xs={6}>
                         {/* <Button onClick={handleClickOpen} variant="contained" color="secondary">Thêm chi nhánh</Button>
@@ -152,13 +152,14 @@ export default function ListBill() {
                                     </TableCell>
                                 ))}
                                 <TableCell
+                                    key={"action"}
                                 >
                                     {"Hành động"}
                                 </TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {listBillByStatusShow.filter(e => e.trangThai !== 5)
+                            {listBillByStatusShow
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, i) => {
                                     return (
@@ -178,11 +179,6 @@ export default function ListBill() {
                                             })}
                                             <TableCell key={row.stt}>
                                                 <Tooltip title="Xem thông tin đơn đặt">
-                                                    <IconButton key={row.stt} onClick={() => { setConfirm(true); setBillCancelId(row["id"]) }} aria-label="add-service" style={{ color: 'chocolate' }}>
-                                                        <CancelIcon />
-                                                    </IconButton>
-                                                </Tooltip>
-                                                <Tooltip title="Xem thông tin đơn đặt">
                                                     <IconButton key={row.stt} onClick={() => navigate(`/bill-info/${row.id}`)} aria-label="add-service" color="secondary">
                                                         <InfoIcon />
                                                     </IconButton>
@@ -198,7 +194,7 @@ export default function ListBill() {
                             <div></div>
                             :
                             <div style={{ textAlign: "center" }}>
-                                <Typography style={{ padding: 30, fontSize: 16 }}>Không có đơn nào được đặt</Typography>
+                                <Typography style={{ padding: 30, fontSize: 16 }}>Không có đơn nào đã hoàn thành</Typography>
                             </div>
                     }
                 </TableContainer>

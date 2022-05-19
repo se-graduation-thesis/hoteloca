@@ -13,7 +13,7 @@ import Select from '@mui/material/Select';
 import moment from "moment-timezone";
 import * as actionsCategory from "actions/category.action"
 import SearchOffIcon from '@mui/icons-material/SearchOff';
-export default function Rooms() {
+export default function Rooms({ checkTime }) {
     const dispatch = useDispatch();
     const rooms = useSelector((state) => state.room.empty_room);
     const listCategory = useSelector((state) => state.category.listCategory);
@@ -22,14 +22,26 @@ export default function Rooms() {
     const [checkOut, setCheckOut] = useState(new Date((new Date()).valueOf() + 1000 * 3600 * 24));
     const [lp, setCategory] = useState(0);
     const [list_room_hotel, setListRoomHotel] = useState([]);
-
+    console.log(checkTime)
     useEffect(() => {
-        let room_find = {
-            trangThai: 0,
-            ngayVao: moment.tz(new Date(), "Asia/Ho_Chi_Minh").format(),
-            ngayRa: moment.tz(new Date((new Date()).valueOf() + 1000 * 3600 * 24), "Asia/Ho_Chi_Minh").format()
+        if (checkTime) {
+            let room_find = {
+                trangThai: 0,
+                ngayVao: moment.tz(checkTime.checkin, "Asia/Ho_Chi_Minh").format(),
+                ngayRa: moment.tz(checkTime.checkout, "Asia/Ho_Chi_Minh").format()
+            }
+            setCheckIn(checkTime.checkin)
+            setCheckOut(checkTime.checkOut)
+            dispatch(actions.get_empty_room(room_find))
+        } else {
+            let room_find = {
+                trangThai: 0,
+                ngayVao: moment.tz(new Date(), "Asia/Ho_Chi_Minh").format(),
+                ngayRa: moment.tz(new Date((new Date()).valueOf() + 1000 * 3600 * 24), "Asia/Ho_Chi_Minh").format()
+            }
+            dispatch(actions.get_empty_room(room_find))
         }
-        dispatch(actions.get_empty_room(room_find))
+
     }, [])
 
     useEffect(() => {

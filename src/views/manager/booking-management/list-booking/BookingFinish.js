@@ -29,7 +29,7 @@ const columns = [
     // { id: 'loaiphong', label: 'Loại Phòng', minWidth: 100 },
     { id: 'soluongphong', label: 'Số Lượng Phòng', minWidth: 100 },
     { id: 'tenPhong', label: 'Tên Phòng', minWidth: 100 },
-    { id: 'trangThai', label: 'Ghi chú', minWidth: 100 },
+    // { id: 'trangThai', label: 'Ghi chú', minWidth: 100 },
 ];
 
 export default function BookingPendingApprove() {
