@@ -173,7 +173,7 @@ export default function Payment() {
                     : "Số điện thoại chỉ chứa 10 chữ số";
             }
             if (err >= 1) {
-                err < 1
+                disabled === true
                     ? (temp.dienThoai = "")
                     : (temp.dienThoai = "Số điện thoại này đã được sử dụng");
             }
@@ -196,7 +196,7 @@ export default function Payment() {
                     : "Định dạng email không đúng";
             }
             if (err >= 1) {
-                err < 1
+                disabled === true
                     ? (temp.email = "")
                     : (temp.email = "Email này đã tồn tại");
             }
@@ -236,7 +236,6 @@ export default function Payment() {
 
     const { values, setValues, errors, setErrors, handleInputChange, resetForm } =
         useForm(initialFieldValues, validate, 0);
-    console.log(account)
     useEffect(() => {
         if (account) {
             if (isJson(account)) {
@@ -615,14 +614,12 @@ export default function Payment() {
                                     <span className="numberTitle">2</span><span className='lableTitle'>THÔNG TIN ĐẶT PHÒNG</span>
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <LocalizationProvider dateAdapter={AdapterDateFns} >
                                         <DateTimePicker
                                             helperText=" "
                                             inputFormat="dd/MM/yyyy hh:mm a"
-                                            renderInput={(props) => <TextField {...props} fullWidth helperText=" " />}
+                                            renderInput={(props) => <TextField {...props} fullWidth helperText=" " disabled={true} />}
                                             label="Ngày lập"
-                                            value={values.ngayVao}
-                                            onChange={(newValue) => onChangeCheckIn(newValue)}
                                         />
                                     </LocalizationProvider>
                                 </Grid>

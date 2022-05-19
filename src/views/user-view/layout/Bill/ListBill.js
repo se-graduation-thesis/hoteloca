@@ -22,13 +22,15 @@ import * as actions from "actions/bill.action"
 import { Link, useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import PositionedSnackbar from '../cus-info/PositionedSnackbar';
+import CancelIcon from '@mui/icons-material/Cancel';
+import InfoIcon from '@mui/icons-material/Info';
 const columns = [
     { id: 'khachhang', label: 'Thông tin khách hàng', minWidth: 100 },
     { id: 'ngayVao', label: 'Ngày đến', minWidth: 100 },
     { id: 'ngayRa', label: 'Ngày đi', minWidth: 100 },
     { id: 'soluongphong', label: 'Số Lượng Phòng', minWidth: 100 },
     { id: 'tenPhong', label: 'Tên Phòng', minWidth: 100 },
-    { id: 'trangThai', label: 'Trạng thái', minWidth: 100 },
+    // { id: 'trangThai', label: 'Trạng thái', minWidth: 100 },
 ];
 
 export default function ListBill() {
@@ -152,11 +154,6 @@ export default function ListBill() {
                                 <TableCell
                                     key={"action"}
                                 >
-                                    {"Hủy"}
-                                </TableCell>
-                                <TableCell
-                                    key={"action"}
-                                >
                                     {"Hành động"}
                                 </TableCell>
                             </TableRow>
@@ -180,13 +177,15 @@ export default function ListBill() {
                                                     </TableCell>
                                                 );
                                             })}
-                                            <TableCell>
-                                                <Button variant="contained" color="error" onClick={() => { setConfirm(true); setBillCancelId(row["id"]) }}>Hủy</Button>
-                                            </TableCell>
                                             <TableCell key={row.stt}>
                                                 <Tooltip title="Xem thông tin đơn đặt">
+                                                    <IconButton key={row.stt} onClick={() => { setConfirm(true); setBillCancelId(row["id"]) }} aria-label="add-service" style={{ color: 'chocolate' }}>
+                                                        <CancelIcon />
+                                                    </IconButton>
+                                                </Tooltip>
+                                                <Tooltip title="Xem thông tin đơn đặt">
                                                     <IconButton key={row.stt} onClick={() => navigate(`/bill-info/${row.id}`)} aria-label="add-service" color="secondary">
-                                                        <RoomServiceIcon />
+                                                        <InfoIcon />
                                                     </IconButton>
                                                 </Tooltip>
                                             </TableCell>
@@ -200,7 +199,7 @@ export default function ListBill() {
                             <div></div>
                             :
                             <div style={{ textAlign: "center" }}>
-                                <Typography style={{ padding: 30, fontSize: 16 }}>Không có đơn nào đã thanh toán </Typography>
+                                <Typography style={{ padding: 30, fontSize: 16 }}>Không có đơn nào được đặt</Typography>
                             </div>
                     }
                 </TableContainer>
@@ -230,7 +229,7 @@ export default function ListBill() {
                         </DialogTitle>
                         <DialogContent>
                             <DialogContentText id="alert-dialog-description">
-                                phiếu thuê sẽ được hủy và cập nhật lại toàn bộ trong hệ thống.
+                                Tiên của bạn sẽ được chúng tôi hoàn lại theo thỏa thuận sau khi liên hệ bạn có chắc muốn hủy phiếu thuê này chứ.
                             </DialogContentText>
                         </DialogContent>
                         <DialogActions>

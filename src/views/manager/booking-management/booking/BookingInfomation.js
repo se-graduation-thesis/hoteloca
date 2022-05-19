@@ -55,11 +55,6 @@ export default function BookingInfomation() {
         tienCoc: 0,
         phiPhong: 0
     })
-    // useEffect(() => {
-    //     if (state) {
-    //         setBookingInfo(state)
-    //     }
-    // }, [])
 
     useEffect(() => {
         let tienCoc = state.tienCoc;
@@ -74,7 +69,6 @@ export default function BookingInfomation() {
             }
         }
     }, [checked, state])
-    console.log(booking_info)
     const listAccount = useSelector((state) => state.manager.listManager);
     useEffect(() => {
         dispatch(actionManager.fetchAllManager())

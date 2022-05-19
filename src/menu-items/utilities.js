@@ -129,7 +129,7 @@ const utilities = {
                 },
                 {
                     id: 'material-icons',
-                    title: 'Danh sách đơn đặt',
+                    title: 'Danh sách phiếu thuê',
                     type: 'item',
                     url: '/admin/list-booking',
                     breadcrumbs: false
