@@ -40,7 +40,7 @@ export default function ListBill() {
     const [page, setPage] = useState(0);
     const rows = []
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const listBillByStatus = useSelector((state) => state.bill.listBillByStatusAccept);
+    const listBillByStatus = useSelector((state) => state.bill.listBillByStatusCancel);
     const [listBillByStatusShow, setListBillByStatusShow] = useState([])
     const [snackbarState, setSnackbarState] = useState(false);
     const [confirm, setConfirm] = useState(false);
@@ -58,7 +58,7 @@ export default function ListBill() {
     };
 
     useEffect(() => {
-        dispatch(actions.fetchBillByStatusAccept())
+        dispatch(actions.fetchBillByStatusCancel())
     }, [])
     useEffect(() => {
         if (listBillByStatus.length > 0 && listBillByStatus !== undefined) {
@@ -83,7 +83,7 @@ export default function ListBill() {
 
             })
             let id = isJson(account) ? JSON.parse(account).user_id : account.user_id
-            setListBillByStatusShow(listBillByStatus.filter(({ khachHangid, trangThai }) => khachHangid.id === id))
+            setListBillByStatusShow(listBillByStatus.filter(({ khachHangid }) => khachHangid.id === id))
         }
     }, [listBillByStatus])
     function isJson(str) {
@@ -111,28 +111,9 @@ export default function ListBill() {
             <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }}>
                 <Grid container spacing={1} >
                     <Grid item xs={12}>
-                        <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN CÁC PHIẾU THUÊ ĐANG ĐẶT</h3>
+                        <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN CÁC PHIẾU THUÊ ĐANG CHỜ HỦY</h3>
                     </Grid>
-                    <Grid item xs={6}>
-                        {/* <Button onClick={handleClickOpen} variant="contained" color="secondary">Thêm chi nhánh</Button>
-                    <InsertBrandDialog open={open} isShowForm={handleClose} /> */}
-                    </Grid>
-
-                    {/* <Grid item xs={6} style={{ padding: 10, textAlign: "right" }}>
-                    <TextField
-                        label="Nhập nội dung tìm kiếm"
-                        size="small"
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="start">
-                                    <IconButton>
-                                        <SearchIcon />
-                                    </IconButton>
-                                </InputAdornment>
-                            )
-                        }}
-                    />
-                </Grid> */}
+                    <Grid item xs={6}></Grid>
                 </Grid>
                 <TableContainer sx={{ height: '70%' }}>
                     <Table stickyHeader aria-label="sticky table">
@@ -158,7 +139,7 @@ export default function ListBill() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {listBillByStatusShow.filter(e => e.trangThai !== 5)
+                            {listBillByStatusShow
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, i) => {
                                     return (
@@ -177,11 +158,6 @@ export default function ListBill() {
                                                 );
                                             })}
                                             <TableCell key={row.stt}>
-                                                <Tooltip title="Hủy đơn">
-                                                    <IconButton key={row.stt} onClick={() => { setConfirm(true); setBillCancelId(row["id"]) }} aria-label="add-service" style={{ color: 'chocolate' }}>
-                                                        <CancelIcon />
-                                                    </IconButton>
-                                                </Tooltip>
                                                 <Tooltip title="Xem thông tin đơn đặt">
                                                     <IconButton key={row.stt} onClick={() => navigate(`/bill-info/${row.id}`)} aria-label="add-service" color="secondary">
                                                         <InfoIcon />
@@ -198,7 +174,7 @@ export default function ListBill() {
                             <div></div>
                             :
                             <div style={{ textAlign: "center" }}>
-                                <Typography style={{ padding: 30, fontSize: 16 }}>Không có đơn nào được đặt</Typography>
+                                <Typography style={{ padding: 30, fontSize: 16 }}>Không có đơn nào chờ hủy</Typography>
                             </div>
                     }
                 </TableContainer>

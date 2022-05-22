@@ -258,8 +258,10 @@ export default function AddRoomForm(props) {
                                 </Grid>
 
                                 {/* File */}
-                                <Grid item xs={12}>
-                                    <TextField type="file" multiple accept="image/*" onChange={handleImage} inputProps={{ multiple: true, readOnly: props.isView }} id=" outlined-basic" variant="outlined" fullWidth />
+                                <Grid item xs={12} >
+                                    <div style={{ border: "1px solid gray", borderRadius: "5px", padding: "10px 10px" }}>
+                                        <input type="file" multiple accept="image/*" onChange={handleImage} inputProps={{ multiple: true, readOnly: props.isView }} id=" outlined-basic" variant="outlined" fullWidth />
+                                    </div>
                                 </Grid>
 
                                 {/* <Grid item xs={12}>
@@ -309,7 +311,7 @@ export default function AddRoomForm(props) {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} variant="outlined">Hủy</Button>
-                    <Button onClick={submit} variant="outlined">Thêm</Button>
+                    <Button onClick={submit} variant="contained" autoFocus>Thêm</Button>
                 </DialogActions>
             </Dialog>
 

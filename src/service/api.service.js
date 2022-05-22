@@ -12,7 +12,9 @@ export default {
             login: (username, pass) => axios.post(url + "login/" + username + "&" + pass),
             add_admin: (admin) => axios.post(url + "add-admin", admin),
             resetPass: (acc) => axios.put(url + "reset-password", acc),
-            updateStatus: (acc) => axios.put(url + "update", acc)
+            updateStatus: (acc) => axios.put(url + "update", acc),
+            getById: (id) => axios.get(url + id),
+            hashPass: (taikhoan, pass) => axios.post(url + 'hashPass/' + pass, taikhoan)
         };
     },
     manager(url = baseApi + 'manager/') {

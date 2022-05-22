@@ -7,11 +7,13 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
+import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip, Typography } from '@mui/material';
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
+import CancelBooking from './CancelBooking'
 import UpdateBrand from './UpdateBrand'
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 import { useState, useEffect } from 'react';
 
@@ -29,7 +31,7 @@ const columns = [
     // { id: 'trangThai', label: 'Ghi chú', minWidth: 100 },
 ];
 
-export default function BookingLate(props) {
+export default function BookingLate() {
     const dispatch = useDispatch();
     const [page, setPage] = useState(0);
     const rows = []
@@ -37,22 +39,22 @@ export default function BookingLate(props) {
     const listBillByStatus = useSelector((state) => state.bill.listBillByStatusLate);
     const [listInit, setListInit] = useState([])
     const [listBillByStatusShow, setListBillByStatusShow] = useState([])
+    const [searchContent, setSearchContent] = React.useState("");
 
     const [open, setOpen] = useState(false);
     const [openUpdate, setOpenUpdate] = useState(false);
 
     const [id_brand, setId] = useState(0);
-    // const handleClickOpen = () => {
-    //     setOpen(true);
-    // };
+    const [cancelState, setCancelState] = useState(false);
+    const [cancelObject, setCancelObject] = useState({})
+    const handleCancelState = (value) => {
+        setCancelState(value);
+    }
 
-    // const handleClickOpenUpdate = (id) => {
-    //     setOpenUpdate(true);
-    //     setId(id)
-    // };
-    // const handleClose = () => {
-    //     setOpen(false);
-    // };
+    const handleFilter = (value) => {
+        setListBillByStatusShow(listBillByStatusShow.filter(e => e.id !== value));
+    }
+
     const handleCloseUpdate = () => {
         setOpenUpdate(false);
     };
@@ -90,49 +92,28 @@ export default function BookingLate(props) {
                 }
 
             })
-            setListBillByStatusShow(filterListByDay(listBillByStatus))
+            setListBillByStatusShow(listBillByStatus)
             setListInit(listBillByStatus)
         }
     }, [listBillByStatus])
 
-    const stringToDay = (day) => {
-        const tamp = new Date(day);
-        return new Date(tamp.getFullYear(), tamp.getMonth() + 1, tamp.getDate()).setHours(0, 0, 0);
-    }
-
-    const filterListByDay = (list) => {
-        const dayFilter = new Date(props.yearSelect, props.monthSelect, props.daySelect).setHours(0, 0, 0);
-        const arr = list.filter(e => stringToDay(e.checkOut) === dayFilter);
-        return arr;
-    }
-
-    useEffect(() => {
-        setListBillByStatusShow(filterListByDay(listInit))
-    }, [props.yearSelect, props.monthSelect, props.daySelect])
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }}>
             <Grid container spacing={1} style={{ padding: 10 }}>
                 <Grid item xs={12}>
                     <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN CÁC ĐƠN ĐẶT HÀNG ĐÃ QUÁ HẠN</h3>
                 </Grid>
-                <Grid item xs={6}>
-                    {/* <Button onClick={handleClickOpen} variant="contained" color="secondary">Thêm chi nhánh</Button>
-                    <InsertBrandDialog open={open} isShowForm={handleClose} /> */}
+                <Grid item xs={8}>
+
                 </Grid>
 
-                <Grid item xs={6} style={{ padding: 10, textAlign: "right" }}>
+                <Grid item xs={4} style={{ padding: 10, textAlign: "right" }}>
                     <TextField
-                        label="Nhập nội dung tìm kiếm"
+                        fullWidth
+                        label="Nhập tên Khách hàng cần tìm"
                         size="small"
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="start">
-                                    <IconButton>
-                                        <SearchIcon />
-                                    </IconButton>
-                                </InputAdornment>
-                            )
-                        }}
+                        value={searchContent}
+                        onChange={(e) => setSearchContent(e.target.value)}
                     />
                 </Grid>
             </Grid>
@@ -149,15 +130,16 @@ export default function BookingLate(props) {
                                     {column.label}
                                 </TableCell>
                             ))}
-                            {/* <TableCell
+                            <TableCell
                                 key={"action"}
                             >
                                 {"Hành động"}
-                            </TableCell> */}
+                            </TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {listBillByStatusShow
+                            .filter(item => item.khachhang.toLowerCase().includes(searchContent.toLowerCase()))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, i) => {
                                 return (
@@ -172,6 +154,13 @@ export default function BookingLate(props) {
                                                 </TableCell>
                                             );
                                         })}
+                                        <TableCell key={row.stt}>
+                                            <Tooltip title="Hủy phòng">
+                                                <IconButton key={row.stt} onClick={() => { handleCancelState(true); setCancelObject(row); }} aria-label="delete" color="error">
+                                                    <HighlightOffIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </TableCell>
                                     </TableRow>
                                 );
                             })}
@@ -198,6 +187,7 @@ export default function BookingLate(props) {
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
             <UpdateBrand open={openUpdate} id={id_brand} isShowForm={handleCloseUpdate} />
+            <CancelBooking open={cancelState} handleCancelState={handleCancelState} cancelObject={cancelObject} handleFilter={handleFilter} />
         </Paper >
     );
 }

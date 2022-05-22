@@ -153,7 +153,7 @@ export default function CustomerInfo({ customer, handleCustomer, complete, handl
     const [diaChi, setDiaChi] = useState('');
 
     useEffect(() => {
-        if (data.diaChi !== '' && data.diaChi != undefined) {
+        if (data.diaChi !== '' && data.diaChi != undefined && data.diaChi != "{}") {
             const object = JSON.parse(data.diaChi);
             setTinh(object.city);
             setDistrict(address.filter(e => e.name === object.city)[0].districts);

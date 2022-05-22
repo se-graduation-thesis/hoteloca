@@ -518,14 +518,14 @@ export default function StaffInfo() {
                             </Grid>
 
                             {/* SECURIRY TITLE */}
-                            <Grid item xs={12} sx={{ marginTop: 5 }}>
+                            {/* <Grid item xs={12} sx={{ marginTop: 5 }}>
                                 <Grid container spacing={2}>
                                     <Grid item xs={12}>
                                         <h3 style={{ marginTop: 8 }}>BẢO MẬT</h3>
-                                    </Grid>
+                                    </Grid> */}
 
-                                    {/* SECURIRY*/}
-                                    <Grid item xs={12}>
+                            {/* SECURIRY*/}
+                            {/* <Grid item xs={12}>
                                         <Grid container spacing={2}>
                                             <Grid item xs={1}>
                                                 <LockIcon />
@@ -539,7 +539,7 @@ export default function StaffInfo() {
                                         </Grid>
                                     </Grid>
                                 </Grid>
-                            </Grid>
+                            </Grid> */}
                         </Grid>
                     </Grid>
                 </Grid>

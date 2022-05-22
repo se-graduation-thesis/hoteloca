@@ -59,6 +59,7 @@ export default function Payment() {
             data_bill_show.ngayVao = billDetail.ngayVao
             data_bill_show.phong = phong
             // billDetail.tongDichvu = gia;
+            data_bill_show.maPhieuThue = billDetail.maHoaDon
             data_bill_show.giaCheckin = gia
             data_bill_show.countDay = Math.round(DaysBetween(billDetail.ngayVao, billDetail.ngayRa))
             data_bill_show.giaPhong = gia * Math.round(DaysBetween(billDetail.ngayVao, billDetail.ngayRa))
@@ -99,6 +100,7 @@ export default function Payment() {
                         <h2>Chi tiết thuê phòng</h2>
                     </Grid>
                     <Grid item xs={12} style={{ backgroundColor: "#fafafa", padding: 20, border: "1px solid #c7c7c7" }}>
+                        <p><b>Mã phiếu thuê: </b> {billShow?.maPhieuThue}</p>
                         <p><b>Nhận phòng: </b> {moment(billShow?.ngayVao).format("DD/MM/yyy hh:mm a")}</p>
                         <p><b>Trả phòng: </b>{moment(billShow?.ngayRa).format("DD/MM/yyy hh:mm a")}</p>
                     </Grid>

@@ -201,7 +201,8 @@ export default function InsertBrandDialog(props) {
                         </Table>
                     </TableContainer>
                     <TablePagination
-                        rowsPerPageOptions={[10, 25, 100]}
+                        labelRowsPerPage='Số hàng'
+                        rowsPerPageOptions={[5, 25, 100]}
                         component="div"
                         count={rows.length}
                         rowsPerPage={rowsPerPage}
@@ -214,11 +215,6 @@ export default function InsertBrandDialog(props) {
                     <Button onClick={() => { props.isShowForm() }}>Đóng</Button>
                 </DialogActions>
             </Dialog>
-            {/* <Snackbar autoHideDuration={2000} open={alertOpen} anchorOrigin={{ vertical, horizontal }} onClose={handleClose} >
-                <Alert severity="success"><AlertTitle>Thành công</AlertTitle>
-                    Thông báo — <strong>Thêm chi nhánh thành công</strong></Alert>
-            </Snackbar> */}
-
             <Dialog
                 open={open}
                 onClose={handleClose}

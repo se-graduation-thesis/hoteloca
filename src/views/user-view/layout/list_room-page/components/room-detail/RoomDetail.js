@@ -5,12 +5,13 @@ import { IconArrowNarrowLeft, IconPhone, IconSnowflake, IconToolsKitchen2, IconW
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import CarouselRoomDetail from "./carousel_room-detail/CarouselRoomDetail";
-import { useLocation } from "react-router";
+import { Navigate, useLocation, useNavigate } from "react-router";
 import DialogCustom from '../../../DialogCustom'
 import { useSelector } from "react-redux";
 import './RoomDetail.css';
 
 export default function RoomDetail() {
+    const navigate = useNavigate()
     const [checkIn, setCheckIn] = useState(null);
     const [checkOut, setCheckOut] = useState(null);
     const { state } = useLocation()
@@ -25,7 +26,7 @@ export default function RoomDetail() {
             setOpen(true)
             return
         }
-        navigate("/user-booking", { state: room })
+        navigate("/user-booking", { state: state })
     }
     return (
         <div className="room-detail">

@@ -14,7 +14,7 @@ const ListRoom = Loadable(lazy(() => import('views/user-view/layout/list_room-pa
 const RoomDetail = Loadable(lazy(() => import('views/user-view/layout/list_room-page/components/room-detail/RoomDetail')));
 const FooterLayout = Loadable(lazy(() => import('views/user-view/layout/FooterLayout')));
 const Booking = Loadable(lazy(() => import('views/user-view/layout/booking/Booking')));
-const ListBill = Loadable(lazy(() => import('views/user-view/layout/Bill/ListBill')));
+const ListBill = Loadable(lazy(() => import('views/user-view/layout/Bill/TabBooking')));
 const Billinfo = Loadable(lazy(() => import('views/user-view/layout/Bill/Billinfo')));
 const CustomerInfo = Loadable(lazy(() => import('views/user-view/layout/cus-info/CustomerInfo')));
 const Contact = Loadable(lazy(() => import('views/user-view/layout/Contact/Contact')));

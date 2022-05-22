@@ -1,11 +1,22 @@
 import { Chip, Grid } from "@mui/material";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 export default function RoomItem({ room }) {
     const navigate = useNavigate()
+
+    const [hinh, setHinh] = useState('')
+    useEffect(() => {
+        try {
+            let hinhAnh = JSON.parse(room.hinhAnh);
+            setHinh(hinhAnh[0])
+        } catch {
+            console.log("err")
+        }
+    }, [])
     return (
         <Grid container style={{ border: '2px solid purple', padding: 20 }} >
             <Grid item xs={4}>
-                <img src={room.hinhAnh}
+                <img src={hinh}
                     alt="image"
                     style={{ maxWidth: "100%" }} />
             </Grid>

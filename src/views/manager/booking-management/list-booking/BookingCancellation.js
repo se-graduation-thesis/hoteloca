@@ -11,6 +11,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
+import CancelBooking from './CancelBooking'
 import Edit from '@mui/icons-material/Edit';
 
 import InsertBrandDialog from './InsertBrandDialog'
@@ -33,13 +34,15 @@ const columns = [
     // { id: 'trangThai', label: 'Ghi chú', minWidth: 100 },
 ];
 
-export default function BookingCancellation(props) {
+export default function BookingCancellation() {
     const dispatch = useDispatch();
     const [page, setPage] = useState(0);
     const rows = []
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const listBillByStatus = useSelector((state) => state.bill.listBillByStatusCancel);
     const [listBillByStatusShow, setListBillByStatusShow] = useState([])
+
+    const [searchContent, setSearchContent] = useState("");
 
     const [open, setOpen] = useState(false);
     const [openUpdate, setOpenUpdate] = useState(false);
@@ -48,17 +51,17 @@ export default function BookingCancellation(props) {
     const [billCancelId, setBillCancelId] = useState(null);
 
     const [id_brand, setId] = useState(0);
-    // const handleClickOpen = () => {
-    //     setOpen(true);
-    // };
 
-    // const handleClickOpenUpdate = (id) => {
-    //     setOpenUpdate(true);
-    //     setId(id)
-    // };
-    // const handleClose = () => {
-    //     setOpen(false);
-    // };
+    const [cancelState, setCancelState] = useState(false);
+    const [cancelObject, setCancelObject] = useState({})
+    const handleCancelState = (value) => {
+        setCancelState(value);
+    }
+
+    const handleFilter = (value) => {
+        setListBillByStatusShow(listBillByStatusShow.filter(e => e.id !== value));
+    }
+
     const handleCloseUpdate = () => {
         setOpenUpdate(false);
     };
@@ -100,17 +103,17 @@ export default function BookingCancellation(props) {
         }
     }, [listBillByStatus])
 
-    const submit = () => {
-        dispatch(actions.updateStateOfBill(billCancelId, 6))
-        setListBillByStatusShow(listBillByStatusShow.filter(e => e.id !== billCancelId))
+    // const submit = () => {
+    //     dispatch(actions.updateStateOfBill(billCancelId, 6))
+    //     setListBillByStatusShow(listBillByStatusShow.filter(e => e.id !== billCancelId))
 
-        setConfirm(false);
+    //     setConfirm(false);
 
-        setSnackbarState(true);
-        setTimeout(function () {
-            setSnackbarState(false);
-        }, 3000);
-    }
+    //     setSnackbarState(true);
+    //     setTimeout(function () {
+    //         setSnackbarState(false);
+    //     }, 3000);
+    // }
 
     return (
         <div>
@@ -124,19 +127,15 @@ export default function BookingCancellation(props) {
                     <InsertBrandDialog open={open} isShowForm={handleClose} /> */}
                     </Grid>
 
-                    <Grid item xs={6} style={{ padding: 10, textAlign: "right" }}>
+                    <Grid item xs={2}>
+
+                    </Grid>
+                    <Grid item xs={4} style={{ padding: 10, textAlign: "right" }}>
                         <TextField
-                            label="Nhập nội dung tìm kiếm"
-                            size="small"
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="start">
-                                        <IconButton>
-                                            <SearchIcon />
-                                        </IconButton>
-                                    </InputAdornment>
-                                )
-                            }}
+                            fullWidth
+                            label="Nhập tên Khách Hàng cần tìm"
+                            value={searchContent}
+                            onChange={(e) => setSearchContent(e.target.value)}
                         />
                     </Grid>
                 </Grid>
@@ -162,6 +161,7 @@ export default function BookingCancellation(props) {
                         </TableHead>
                         <TableBody>
                             {listBillByStatusShow.filter(e => e.trangThai === 5)
+                                .filter(item => item.khachhang.toLowerCase().includes(searchContent.toLowerCase()))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, i) => {
                                     return (
@@ -177,7 +177,7 @@ export default function BookingCancellation(props) {
                                                 );
                                             })}
                                             <TableCell key={row.stt}>
-                                                <Button variant="contained" color="error" onClick={() => { setConfirm(true); setBillCancelId(row["id"]) }}>Hủy</Button>
+                                                <Button variant="contained" color="error" onClick={() => { handleCancelState(true); setCancelObject(row); }}>Hủy</Button>
                                             </TableCell>
                                         </TableRow>
                                     );
@@ -206,33 +206,10 @@ export default function BookingCancellation(props) {
                 />
                 <UpdateBrand open={openUpdate} id={id_brand} isShowForm={handleCloseUpdate} />
             </Paper >
+
             <div>
-                <div>
-                    <Dialog
-                        open={confirm}
-                        onClose={() => setConfirm(false)}
-                        aria-labelledby="alert-dialog-title"
-                        aria-describedby="alert-dialog-description"
-                    >
-                        <DialogTitle id="alert-dialog-title" sx={{ fontSize: 16 }}>
-                            {"Bạn chắc chắn muốn hủy phiếu thuê này?"}
-                        </DialogTitle>
-                        <DialogContent>
-                            <DialogContentText id="alert-dialog-description">
-                                phiếu thuê sẽ được hủy và cập nhật lại toàn bộ trong hệ thống.
-                            </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button variant="outlined" onClick={() => setConfirm(false)}>Hủy</Button>
-                            <Button variant="outlined" onClick={submit} autoFocus>
-                                Đồng ý
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
-                </div>
-            </div>
-            <div>
-                <PositionedSnackbar open={snackbarState} message={"Hủy Thành Công."} />
+                <CancelBooking open={cancelState} handleCancelState={handleCancelState} cancelObject={cancelObject} handleFilter={handleFilter} />
+
             </div>
         </div>
     );

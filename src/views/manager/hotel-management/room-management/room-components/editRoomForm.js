@@ -1,9 +1,10 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { Button, Card, CardActionArea, CardMedia, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import * as actionCategory from 'actions/category.action';
 import * as actions from 'actions/room.action';
+import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
 import PositionedSnackbar from "../../components/PositionedSnackbar";
 
 
@@ -25,6 +26,9 @@ export default function EditRoomForm(props) {
     const [snackbarState, setSnackbarState] = useState(false);
     const [confirm, setConfirm] = useState(false);
     const [phong, setPhong] = useState({});
+    const [listHinh, setListHinh] = useState([]);
+    const [images, setImages] = useState([]);
+
 
     useEffect(() => {
         setPhong({
@@ -35,7 +39,13 @@ export default function EditRoomForm(props) {
             moTa: props.item?.moTa,
             hinhAnh: props.item?.hinhAnh
         })
+        if (props.item?.hinhAnh)
+            setListHinh(JSON.parse(props.item?.hinhAnh))
     }, [props.item])
+
+    useEffect(() => {
+        setImages(listHinh);
+    }, [listHinh])
 
     const [error, setError] = useState({
         ten: null,
@@ -91,11 +101,18 @@ export default function EditRoomForm(props) {
             setSnackbarState(false);
         }, 3000);
     }
+    const width = images.length ? 1000 : 500;
 
+
+    const handleIma = (index) => {
+        console.log(images)
+        setImages(images.splice(index, 1));
+        console.log(index)
+    }
 
     return (
         <>
-            <Dialog open={props.open} onClose={handleClose}>
+            <Dialog open={props.open} onClose={handleClose} maxWidth="100000px">
                 <DialogTitle sx={{ fontSize: 18 }}>
                     {props.isView ?
                         <>
@@ -112,87 +129,106 @@ export default function EditRoomForm(props) {
                 <Divider />
 
                 <DialogContent>
-                    <Grid container spacing={2} sx={{ width }}>
-                        {/* Tên Phòng */}
-                        <Grid item xs={12}>
-                            <TextField
-                                value={phong.ten}
-                                inputProps={{ readOnly: props.isView, }}
-                                autoFocus={!props.isView}
-                                id="outlined-basic"
-                                label="Tên Phòng"
-                                variant="outlined"
-                                fullWidth
-
-                                onChange={handleTen}
-                            />
-                            {error.ten && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.ten}</span></>}
-                        </Grid>
-
-                        {/* Loại Phòng - Trạng Thái */}
-                        <Grid item xs={6}>
-                            <FormControl fullWidth>
-                                <InputLabel id="demo-simple-select-label">Loại Phòng</InputLabel>
-                                <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={phong.loaiPhongid}
-                                    label="Loại Phòng"
-                                    inputProps={{ readOnly: props.isView, }}
-
-                                    onChange={(e) => setPhong({ ...phong, loaiPhongid: e.target.value })}
-                                >
-                                    {categories.map((item) => <MenuItem key={item.id} value={item.id}>{item.ten}</MenuItem>)}
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <FormControl fullWidth>
-                                <InputLabel id="demo-simple-select-label">Trạng Thái</InputLabel>
-                                <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={phong.trangThai}
-                                    label="Trạng Thái"
-                                    onChange={(e) => setPhong({ ...phong, trangThai: e.target.value })}
-                                    inputProps={{ readOnly: props.isView, }}
-                                >
-                                    <MenuItem value={1}>Hoạt động</MenuItem>
-                                    <MenuItem value={0}>Ngừng hoạt động</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
-
-                        {/* File */}
-                        {
-                            !props.isView ?
+                    <Grid container spacing={2} sx={{ width, marginTop: 1 }}>
+                        <Grid item xs={images.length ? 6 : 12}>
+                            <Grid container spacing={2}>
+                                {/* Tên Phòng */}
                                 <Grid item xs={12}>
-                                    <TextField type="file" inputProps={{ multiple: true, readOnly: props.isView }} id=" outlined-basic" variant="outlined" fullWidth />
-                                </Grid> : <></>
-                        }
+                                    <TextField
+                                        value={phong.ten}
+                                        inputProps={{ readOnly: props.isView, }}
+                                        autoFocus={!props.isView}
+                                        id="outlined-basic"
+                                        label="Tên Phòng"
+                                        variant="outlined"
+                                        fullWidth
 
-                        {/* Mô Tả */}
-                        <Grid item xs={12}>
-                            <TextField
-                                value={phong.moTa}
-                                inputProps={{ readOnly: props.isView, }}
-                                id="outlined-basic"
-                                label="Mô tả"
-                                variant="outlined"
-                                fullWidth
-                                multiline
-                                rows={4}
+                                        onChange={handleTen}
+                                    />
+                                    {error.ten && <><WarningAmberIcon fontSize='small' color='error' style={{ marginBottom: -5 }} /> <span style={{ color: 'red' }}>{error.ten}</span></>}
+                                </Grid>
 
-                                onChange={(e) => setPhong({ ...phong, moTa: e.target.value })}
-                            />
-                        </Grid>
+                                {/* Loại Phòng - Trạng Thái */}
+                                <Grid item xs={6}>
+                                    <FormControl fullWidth>
+                                        <InputLabel id="demo-simple-select-label">Loại Phòng</InputLabel>
+                                        <Select
+                                            labelId="demo-simple-select-label"
+                                            id="demo-simple-select"
+                                            value={phong.loaiPhongid}
+                                            label="Loại Phòng"
+                                            inputProps={{ readOnly: props.isView, }}
 
-                        {
-                            props.isView ?
+                                            onChange={(e) => setPhong({ ...phong, loaiPhongid: e.target.value })}
+                                        >
+                                            {categories.map((item) => <MenuItem key={item.id} value={item.id}>{item.ten}</MenuItem>)}
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <FormControl fullWidth>
+                                        <InputLabel id="demo-simple-select-label">Trạng Thái</InputLabel>
+                                        <Select
+                                            labelId="demo-simple-select-label"
+                                            id="demo-simple-select"
+                                            value={phong.trangThai}
+                                            label="Trạng Thái"
+                                            onChange={(e) => setPhong({ ...phong, trangThai: e.target.value })}
+                                            inputProps={{ readOnly: props.isView, }}
+                                        >
+                                            <MenuItem value={1}>Hoạt động</MenuItem>
+                                            <MenuItem value={0}>Ngừng hoạt động</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+
+                                {/* File */}
+                                {
+                                    !props.isView ?
+                                        <Grid item xs={12}>
+                                            <TextField type="file" inputProps={{ multiple: true, readOnly: props.isView }} id=" outlined-basic" variant="outlined" fullWidth />
+                                        </Grid> : <></>
+                                }
+
+                                {/* Mô Tả */}
                                 <Grid item xs={12}>
-                                    <img src={phong.hinhAnh} style={{ width: 490 }} />
-                                </Grid> : <></>
-                        }
+                                    <TextField
+                                        value={phong.moTa}
+                                        inputProps={{ readOnly: props.isView, }}
+                                        id="outlined-basic"
+                                        label="Mô tả"
+                                        variant="outlined"
+                                        fullWidth
+                                        multiline
+                                        rows={4}
+
+                                        onChange={(e) => setPhong({ ...phong, moTa: e.target.value })}
+                                    />
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid item xs={6} sx={{ paddingLeft: 3 }}>
+                            <Grid container spacing={2}>
+                                {
+                                    images.length ? images.map((ima, index) => (
+                                        <Card sx={{ maxWidth: 140, marginLeft: 1, marginTop: 2 }} key={index} >
+                                            <CardActionArea>
+                                                {/* <span >abc</span> */}
+                                                <IconButton onClick={() => handleIma(index)} style={{ position: "absolute", top: 0, right: 0 }}>
+                                                    <CancelPresentationIcon />
+                                                </IconButton>
+                                                <CardMedia
+                                                    component="img"
+                                                    height="140"
+                                                    image={ima}
+                                                    alt="green iguana"
+                                                />
+                                            </CardActionArea>
+                                        </Card>
+                                    )) : <></>
+                                }
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </DialogContent>
                 <DialogActions>

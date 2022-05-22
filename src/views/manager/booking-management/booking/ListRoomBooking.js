@@ -76,6 +76,8 @@ export default function BrandManager() {
             ngayVao: moment.tz(new Date(), "Asia/Ho_Chi_Minh").format(),
             ngayRa: moment.tz(new Date((new Date()).valueOf() + 1000 * 3600 * 24), "Asia/Ho_Chi_Minh").format()
         }
+        setCheckIn(new Date())
+        setCheckOut(new Date((new Date()).valueOf() + 1000 * 3600 * 24))
         setTextTitle("Phòng đang sử dụng")
         dispatch(actions.get_empty_room(room_find))
     }
@@ -86,6 +88,8 @@ export default function BrandManager() {
             ngayVao: moment.tz(new Date(), "Asia/Ho_Chi_Minh").format(),
             ngayRa: moment.tz(new Date((new Date()).valueOf() + 1000 * 3600 * 24), "Asia/Ho_Chi_Minh").format()
         }
+        setCheckIn(new Date())
+        setCheckOut(new Date((new Date()).valueOf() + 1000 * 3600 * 24))
         setTextTitle("Phòng đang trống")
         dispatch(actions.get_empty_room(room_find))
     }
@@ -95,6 +99,8 @@ export default function BrandManager() {
             ngayVao: moment.tz(new Date(), "Asia/Ho_Chi_Minh").format(),
             ngayRa: moment.tz(new Date((new Date()).valueOf() + 1000 * 3600 * 24), "Asia/Ho_Chi_Minh").format()
         }
+        setCheckIn(new Date())
+        setCheckOut(new Date((new Date()).valueOf() + 1000 * 3600 * 24))
         setTextTitle("Tất cả các phòng")
         dispatch(actions.get_empty_room(room_find))
     }
@@ -108,7 +114,7 @@ export default function BrandManager() {
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DateTimePicker
                             inputFormat="dd/MM/yyyy hh:mm a"
-                            renderInput={(props) => <TextField {...props} fullWidth />}
+                            renderInput={(props) => <TextField {...props} fullWidth size='small' />}
                             label="Ngày Vào"
                             value={checkin}
                             onChange={(newValue) => setCheckIn(newValue)}
@@ -119,18 +125,21 @@ export default function BrandManager() {
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DateTimePicker
                             inputFormat="dd/MM/yyyy hh:mm a"
-                            renderInput={(props) => <TextField {...props} fullWidth />}
+                            renderInput={(props) => <TextField {...props} fullWidth size='small' />}
                             label="Ngày Ra"
                             value={checkout}
                             onChange={(newValue) => setCheckOut(newValue)}
                         />
                     </LocalizationProvider>
                 </Grid>
-                <Grid item xs={6} style={{ padding: 10, textAlign: "right" }}>
+                <Grid item xs={1}>
+                    <Button color="secondary" variant="contained" onClick={onsubmit} >Tìm kiếm</Button>
+                </Grid>
+                <Grid item xs={5} style={{ padding: 10, textAlign: "right" }}>
+
                     <Button style={{ marginRight: 10 }} color="success" variant="contained" onClick={onAllUse}>Phòng đang sử dụng</Button>
                     <Button style={{ marginRight: 10 }} color="warning" variant="contained" onClick={onAllEmpty}>Phòng đang trống</Button>
                     <Button style={{ marginRight: 10 }} color="primary" variant="contained" onClick={onAllRoom}>Tất cả phòng</Button>
-                    <Button color="secondary" variant="contained" onClick={onsubmit}>Tìm kiếm</Button>
                 </Grid>
             </Grid>
             <div style={{ paddingLeft: 10, display: 'flex' }}>

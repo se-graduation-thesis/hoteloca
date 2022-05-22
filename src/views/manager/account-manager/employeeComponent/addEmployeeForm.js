@@ -451,7 +451,7 @@ export default function AddEmployeeForm(props) {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} variant="outlined">Hủy</Button>
-                    <Button onClick={handleDiachi} variant="outlined">Thêm</Button>
+                    <Button onClick={handleDiachi} variant="contained" autoFocus>Thêm</Button>
                 </DialogActions>
             </Dialog >
 

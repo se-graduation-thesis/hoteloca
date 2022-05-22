@@ -20,6 +20,19 @@ import * as actions from "actions/bill.action"
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import CheckIn from './CheckIn';
+import SearchIcon from "@mui/icons-material/Search";
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import CancelBooking from './CancelBooking'
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
     { id: 'maHoaDon', label: 'Mã phiếu thuê', minWidth: 100 },
@@ -29,10 +42,10 @@ const columns = [
     { id: 'soluongphong', label: 'Số Lượng Phòng', minWidth: 100 },
     { id: 'tenPhong', label: 'Tên Phòng', minWidth: 100 },
     { id: 'checkIn', label: 'Check-In', minWidth: 100 },
-    { id: 'trangThai', label: 'trangThai', minWidth: 100 },
+    // { id: 'trangThai', label: 'trangThai', minWidth: 100 },
 ];
 
-export default function ListBooking({ daySelect, monthSelect, yearSelect }) {
+export default function ListBooking() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [page, setPage] = useState(0);
@@ -40,11 +53,32 @@ export default function ListBooking({ daySelect, monthSelect, yearSelect }) {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const listBillByStatus = useSelector((state) => state.bill.listBillByStatusAccept);
     const [listBillByStatusShow, setListBillByStatusShow] = useState([])
+    const [stateBill, setStateBill] = useState(0);
+    const handleChangeStateBill = (event) => {
+        setStateBill(event.target.value);
+    };
 
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
     const [checkInState, setCheckInState] = useState(false);
     const [checkInObject, setCheckInObject] = useState({})
     const handleCheckInState = (value) => setCheckInState(value);
+
+    const [cancelState, setCancelState] = useState(false);
+    const [cancelObject, setCancelObject] = useState({})
+    const handleCancelState = (value) => setCancelState(value);
+
+    const handleFilter = (value) => {
+        setListBillByStatusShow(listBillByStatusShow.filter(e => e.id !== value));
+    }
+
     const [openUpdate, setOpenUpdate] = useState(false);
 
     const [id_brand, setId] = useState(0);
@@ -108,12 +142,12 @@ export default function ListBooking({ daySelect, monthSelect, yearSelect }) {
                 e.khachhang = e.khachHangid.ho + " " + e.khachHangid.ten
                 e.ngayVao_old = e.ngayVao
                 e.count = countDate(e.ngayVao_old);
-                if (!e.checkIn) {
+                if (!e.checkIn && e.trangThai === 1 || e.trangThai === 3) {
                     if (e.count.days >= 0) {
                         if (e.count.hours >= 2)
-                            e.trangThai = 4
+                            dispatch(actions.updateStateOfBill(e.id, 4))
                         else if (e.count.hours > 0 || (e.count.hours === 0 && e.count.minutes > 0))
-                            e.trangThai = 3
+                            dispatch(actions.updateStateOfBill(e.id, 3))
                     }
                 } else {
                     e.checkIn = moment(e.checkIn).format('DD-MM-YYYY HH:mm:ss')
@@ -147,46 +181,58 @@ export default function ListBooking({ daySelect, monthSelect, yearSelect }) {
 
     useEffect(() => {
         listBillByStatusShow.forEach((e) => {
-            if (!e.checkIn) {
+            if (!e.checkIn && e.trangThai === 1 || e.trangThai === 3) {
                 e.count = countDate(e.ngayVao_old);
                 if (e.count.days >= 0) {
-                    if (e.count.hours >= 2)
+                    if (e.count.hours >= 2) {
+                        setListBillByStatusShow(listBillByStatusShow.filter(x => x.id !== e.id))
                         dispatch(actions.updateStateOfBill(e.id, 4))
-                    else if (e.count.hours > 0 || (e.count.hours === 0 && e.count.minutes > 0))
+                    }
+                    else if (e.count.hours > 0 || (e.count.hours === 0 && e.count.minutes > 0)) {
                         dispatch(actions.updateStateOfBill(e.id, 3))
+                    }
                 }
             }
         })
         // setListBillByStatusShow(listBillByStatusShow);
     }, [autoTime])
-
-
+    const onCheckIn = (row) => {
+        let checkInKt = new Date()
+        let checkKt = new Date(row.ngayVao_old)
+        if (checkKt > checkInKt) {
+            handleClickOpen(true)
+            return
+        } else {
+            handleCheckInState(true);
+            setCheckInObject(row);
+        }
+    }
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }}>
             <Grid container spacing={1} style={{ padding: 10 }}>
                 <Grid item xs={12}>
                     <h3 style={{ marginTop: 8 }}>DANH SÁCH THÔNG TIN CÁC ĐƠN ĐẶT HÀNG HIỆN CÓ</h3>
                 </Grid>
-                <Grid item xs={6}>
-                    {/* <Button onClick={handleClickOpen} variant="contained" color="secondary">Thêm chi nhánh</Button>
-                    <InsertBrandDialog open={open} isShowForm={handleClose} /> */}
+                <Grid item xs={10}>
+
                 </Grid>
 
-                {/* <Grid item xs={6} style={{ padding: 10, textAlign: "right" }}>
-                    <TextField
-                        label="Nhập nội dung tìm kiếm"
-                        size="small"
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="start">
-                                    <IconButton>
-                                        <SearchIcon />
-                                    </IconButton>
-                                </InputAdornment>
-                            )
-                        }}
-                    />
-                </Grid> */}
+                <Grid item xs={2}>
+                    <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">Trạng Thái</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={stateBill}
+                            label="Trạng Thái"
+                            onChange={handleChangeStateBill}
+                        >
+                            <MenuItem value={0}>Tất cả</MenuItem>
+                            <MenuItem value={1}>Chưa đến giờ</MenuItem>
+                            <MenuItem value={3}>Trễ Check - In</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Grid>
             </Grid>
             <TableContainer sx={{ height: '70%' }}>
                 <Table stickyHeader aria-label="sticky table">
@@ -203,13 +249,14 @@ export default function ListBooking({ daySelect, monthSelect, yearSelect }) {
                             ))}
                             <TableCell
                                 key={"action"}
-                            >
-                                {"Hành động"}
-                            </TableCell>
+                                align="center"
+                                style={{ minWidth: 150 }}
+                            >Hành động</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {listBillByStatusShow.filter(e => e.trangThai !== 4)
+                            .filter(item => stateBill === 0 ? item : item.trangThai === stateBill)
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, i) => {
                                 return (
@@ -223,27 +270,35 @@ export default function ListBooking({ daySelect, monthSelect, yearSelect }) {
                                                         column.id === 'checkIn' ?
                                                             value ?
                                                                 value :
-                                                                <Button variant="contained" color={row["trangThai"] === 3 ? "warning" : "primary"} onClick={() => { handleCheckInState(true); setCheckInObject(row); }} >{row["trangThai"] === 3 ? "Check - In trễ" : "Check - In"}</Button>
+                                                                <Button variant="contained" color={"primary"} onClick={() => { onCheckIn(row) }} >{"Check - In"}</Button>
                                                             : value}
                                                 </TableCell>
                                             );
                                         })}
                                         <TableCell key={row.stt}>
+                                            <Tooltip title="Thanh toán">
+                                                <IconButton key={row.stt} disabled={!row["checkIn"] ? true : false} onClick={() => navigate(`/admin/booking-payment/${row.id}`)} aria-label="delete" color="primary">
+                                                    <Payment />
+                                                </IconButton>
+                                            </Tooltip>
                                             <Tooltip title="Thêm dịch vụ">
                                                 <IconButton key={row.stt} onClick={() => navigate(`/admin/update-booking/${row.id}`)} aria-label="add-service" color="secondary">
                                                     <RoomServiceIcon />
                                                 </IconButton>
                                             </Tooltip>
-                                            <Tooltip title="Thanh toán">
-                                                <IconButton key={row.stt} onClick={() => navigate(`/admin/booking-payment/${row.id}`)} aria-label="delete" color="primary">
-                                                    <Payment />
-                                                </IconButton>
-                                            </Tooltip>
-                                            <Tooltip title="Trả Phòng">
-                                                <IconButton key={row.stt} onClick={() => navigate(`/admin/booking-checkout/${row.id}`)} aria-label="delete" color="primary">
-                                                    <AddTaskIcon />
-                                                </IconButton>
-                                            </Tooltip>
+                                            {
+                                                !row["checkIn"] ?
+                                                    <Tooltip title="Hủy phòng">
+                                                        <IconButton key={row.stt} onClick={() => { handleCancelState(true); setCancelObject(row); }} aria-label="delete" color="error">
+                                                            <HighlightOffIcon />
+                                                        </IconButton>
+                                                    </Tooltip> :
+                                                    <Tooltip title="Trả Phòng">
+                                                        <IconButton key={row.stt} onClick={() => navigate(`/admin/booking-checkout/${row.id}`)} style={{ color: 'green' }}>
+                                                            <AddTaskIcon />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                            }
                                         </TableCell>
                                     </TableRow>
                                 );
@@ -272,6 +327,24 @@ export default function ListBooking({ daySelect, monthSelect, yearSelect }) {
             />
             <UpdateBrand open={openUpdate} id={id_brand} isShowForm={handleCloseUpdate} />
             <CheckIn open={checkInState} handleCheckInState={handleCheckInState} checkInObject={checkInObject} />
+            <CancelBooking open={cancelState} handleCancelState={handleCancelState} cancelObject={cancelObject} handleFilter={handleFilter} />
+            <Dialog
+                open={open}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={handleClose}
+                aria-describedby="alert-dialog-slide-description"
+            >
+                <DialogTitle>{"Thao tác này không thể thực hiện"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-slide-description">
+                        Chưa tới giờ Check In vui lòng thử lại sau
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Đã hiểu</Button>
+                </DialogActions>
+            </Dialog>
         </Paper >
     );
 }

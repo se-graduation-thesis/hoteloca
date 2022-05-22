@@ -58,13 +58,14 @@ export default function CheckIn(props) {
     }, [giveMoney])
 
     useEffect(() => {
-        let advanceFeeTemp = 0;
+        let tong = 0
         props.checkInObject?.chiTietPhieuThueList?.map((e) => {
             let donGia = e.phongId.loaiPhongid.donGia;
-            setAdvanceFee(advanceFeeTemp + donGia);
-            advanceFeeTemp = advanceFee;
+            tong += donGia
         })
+        setAdvanceFee(tong);
     }, [props.checkInObject])
+
 
     const handleClose = () => {
         props.handleCheckInState(false)
