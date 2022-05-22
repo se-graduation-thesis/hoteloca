@@ -2,6 +2,9 @@ import apiService from "../service/api.service";
 
 export const ACTION_TYPES = {
     FETCH_ALL_MANAGER: "FETCH_ALL_MANAGER",
+    FETCH_ALL_MANAGER_NONE_ACCOUNT: "FETCH_ALL_MANAGER_NONE_ACCOUNT",
+    ADD_EMPLOYEE: "ADD_EMPLOYEE",
+    FIND_BY_ID: "FIND_BY_ID",
 };
 
 export const fetchAllManager = () => (dispatch) => {
@@ -16,4 +19,41 @@ export const fetchAllManager = () => (dispatch) => {
         })
         .catch((err) => console.log(err));
 };
+export const fetchAllManagernoneAccount = () => (dispatch) => {
+    apiService
+        .manager()
+        .getNvNoneAccount()
+        .then((response) => {
+            dispatch({
+                type: ACTION_TYPES.FETCH_ALL_MANAGER_NONE_ACCOUNT,
+                payload: response.data,
+            });
+        })
+        .catch((err) => console.log(err));
+};
 
+export const add_Employee = (employee) => (dispatch) => {
+    apiService
+        .manager()
+        .add_Employee(employee)
+        .then((response) => {
+            dispatch({
+                type: ACTION_TYPES.ADD_EMPLOYEE,
+                payload: response.data,
+            });
+        })
+        .catch((err) => console.log(err));
+};
+
+export const findById = (id) => (dispatch) => {
+    apiService
+        .manager()
+        .findById(id)
+        .then((response) => {
+            dispatch({
+                type: ACTION_TYPES.FIND_BY_ID,
+                payload: response.data,
+            });
+        })
+        .catch((err) => console.log(err));
+};

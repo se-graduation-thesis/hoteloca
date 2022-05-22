@@ -10,7 +10,7 @@ import AuthCardWrapper from '../AuthCardWrapper';
 import Logo from 'ui-component/Logo';
 import AuthRegister from '../auth-forms/AuthRegister';
 import AuthFooter from 'ui-component/cards/AuthFooter';
-
+import Hoteloka from 'assets/images/logo.png'
 // assets
 
 // ===============================|| AUTH3 - REGISTER ||=============================== //
@@ -29,7 +29,7 @@ const Register = () => {
                                 <Grid container spacing={2} alignItems="center" justifyContent="center">
                                     <Grid item sx={{ mb: 3 }}>
                                         <Link to="#">
-                                            <Logo />
+                                            <img src={Hoteloka} style={{ width: 100 }} />
                                         </Link>
                                     </Grid>
                                     <Grid item xs={12}>
@@ -69,7 +69,7 @@ const Register = () => {
                                         <Grid item container direction="column" alignItems="center" xs={12}>
                                             <Typography
                                                 component={Link}
-                                                to="/pages/login/login3"
+                                                to="/login"
                                                 variant="subtitle1"
                                                 sx={{ textDecoration: 'none' }}
                                             >

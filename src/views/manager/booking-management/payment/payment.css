@@ -1,0 +1,38 @@
+.numberTitle {
+    background: #317be2;
+    width: 40px;
+    height: 40px;
+    border-radius: 35px;
+    float: left;
+    padding: 12px 0px 0px 0px;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 100%;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.lableTitle {
+    border-radius: 35px;
+    float: left;
+    padding: 12px 0px 0px 10px;
+    color: black;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 100%;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.chipDisplay {
+    padding: 10px;
+}
+
+.componentPaper {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 60px;
+}

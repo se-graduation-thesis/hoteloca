@@ -1,0 +1,19 @@
+.deposit_po {
+    position: fixed;
+    bottom: 10px;
+    left: 73%;
+
+}
+
+.deposit {
+    bottom: 10px;
+    right: 15%;
+}
+
+.item {
+    height: 100%;
+    width: 180px;
+    background-color: rgb(241, 167, 115);
+    border: 2px solid rgb(171, 97, 7);
+    align-items: center;
+}

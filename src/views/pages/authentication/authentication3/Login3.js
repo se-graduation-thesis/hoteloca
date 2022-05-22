@@ -10,7 +10,7 @@ import AuthCardWrapper from '../AuthCardWrapper';
 import AuthLogin from '../auth-forms/AuthLogin';
 import Logo from 'ui-component/Logo';
 import AuthFooter from 'ui-component/cards/AuthFooter';
-
+import Hoteloka from 'assets/images/logo.png'
 // assets
 
 // ================================|| AUTH3 - LOGIN ||================================ //
@@ -29,7 +29,7 @@ const Login = () => {
                                 <Grid container spacing={2} alignItems="center" justifyContent="center">
                                     <Grid item sx={{ mb: 3 }}>
                                         <Link to="#">
-                                            <Logo />
+                                            <img src={Hoteloka} style={{ width: 100 }} />
                                         </Link>
                                     </Grid>
                                     <Grid item xs={12}>
@@ -46,14 +46,14 @@ const Login = () => {
                                                         gutterBottom
                                                         variant={matchDownSM ? 'h3' : 'h2'}
                                                     >
-                                                        Hi, Welcome Back
+                                                        Chào mừng đến với Hoteloca
                                                     </Typography>
                                                     <Typography
                                                         variant="caption"
                                                         fontSize="16px"
                                                         textAlign={matchDownSM ? 'center' : 'inherit'}
                                                     >
-                                                        Enter your credentials to continue
+                                                        Nhập thông tin tài khoản của bạn để tiếp tục
                                                     </Typography>
                                                 </Stack>
                                             </Grid>
@@ -69,11 +69,11 @@ const Login = () => {
                                         <Grid item container direction="column" alignItems="center" xs={12}>
                                             <Typography
                                                 component={Link}
-                                                to="/pages/register/register3"
+                                                to="/register"
                                                 variant="subtitle1"
                                                 sx={{ textDecoration: 'none' }}
                                             >
-                                                Don&apos;t have an account?
+                                                Tôi không có tài khoản
                                             </Typography>
                                         </Grid>
                                     </Grid>
