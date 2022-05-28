@@ -464,7 +464,6 @@ export default function Payment() {
         setDeposit(depo * count + dv)
 
     }, [roomSelect][serviceSelect])
-    console.log(serviceSelect)
     const onChangeCheckIn = (e) => {
         setCheckIn(e)
         setRoomSelect([])

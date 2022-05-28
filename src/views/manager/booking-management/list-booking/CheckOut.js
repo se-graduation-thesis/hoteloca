@@ -21,8 +21,9 @@ export default function Checkout() {
     }, [])
 
     const handleCheckOut = (id) => {
-        let list = billDetails.filter(e => e.trangThai === 1);
-        list.length === billDetails.length - 1 ?
+        let list = billDetails.filter(e => (e.trangThai === 1 || e.trangThai === 3));
+        console.log(list.length, ' - ', billDetails.length - 1)
+        list.length === 1 ?
             navigate(`/admin/booking-payment/${bill}`) :
             dispatch(actions.updateBillDetail(id));
     }
@@ -56,9 +57,9 @@ export default function Checkout() {
                                     </Typography>
                                     <br></br>
                                     <Chip
-                                        icon={e.trangThai === 1 ? < CheckCircleOutlinedIcon /> : <CancelOutlinedIcon />}
-                                        label={e.trangThai === 1 ? "Có người" : "Đã trả phòng"}
-                                        color={e.trangThai === 1 ? "error" : "primary"}
+                                        icon={(e.trangThai === 1 || e.trangThai === 3) ? < CheckCircleOutlinedIcon /> : <CancelOutlinedIcon />}
+                                        label={(e.trangThai === 1 || e.trangThai === 3) ? "Có người" : "Đã trả phòng"}
+                                        color={(e.trangThai === 1 || e.trangThai === 3) ? "error" : "primary"}
                                     />
                                     <br></br>
                                     <div style={{ marginTop: 20 }}>
@@ -83,7 +84,7 @@ export default function Checkout() {
                                             color: "black",
                                         }} />
                                     </IconButton>
-                                    <Button onClick={() => handleCheckOut(e.id)} variant="contained" style={{ marginLeft: 120 }} color="success" size="large" disabled={e.trangThai === 1 ? false : true}>Trả Phòng</Button>
+                                    <Button onClick={() => handleCheckOut(e.id)} variant="contained" style={{ marginLeft: 120 }} color="success" size="large" disabled={(e.trangThai === 1 || e.trangThai === 3) ? false : true}>Trả Phòng</Button>
 
                                 </CardActions>
                             </Card>

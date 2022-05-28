@@ -181,7 +181,7 @@ export default function ListBooking() {
 
     useEffect(() => {
         listBillByStatusShow.forEach((e) => {
-            if (!e.checkIn && e.trangThai === 1 || e.trangThai === 3) {
+            if (!e.checkIn && (e.trangThai === 1 || e.trangThai === 3)) {
                 e.count = countDate(e.ngayVao_old);
                 if (e.count.days >= 0) {
                     if (e.count.hours >= 2) {

@@ -170,6 +170,7 @@ export default function InsertBrandDialog(props) {
                 resetForm()
                 setAlertOpen(true)
             }
+            props.isShowForm();
         };
     }
 
@@ -177,7 +178,7 @@ export default function InsertBrandDialog(props) {
     return (
         <>
             <Dialog keepMounted open={props.open} fullWidth={true} maxWidth={'sm'}>
-                <DialogTitle>Thêm chi nhánh</DialogTitle>
+                <DialogTitle>Thêm Loại Phòng</DialogTitle>
                 <DialogContent style={{ padding: 30 }}>
                     <Formsy onSubmit={handleSubmit} >
                         <Grid container spacing={1}>
@@ -215,7 +216,7 @@ export default function InsertBrandDialog(props) {
                             <Grid item xs={6}>
                                 <TextField
                                     id="soGiuong"
-                                    label="Số Phòng *"
+                                    label="Số Giường *"
                                     variant="outlined"
                                     autoComplete='off'
                                     helperText=" "

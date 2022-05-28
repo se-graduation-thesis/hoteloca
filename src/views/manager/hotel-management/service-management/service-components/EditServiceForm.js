@@ -193,7 +193,7 @@ export default function EditServiceForm(props) {
                     <Button onClick={handleClose} variant="outlined">Hủy</Button>
                     {
                         !props.isView ?
-                            <Button onClick={validation} variant="outlined">Cập Nhật</Button> : <></>
+                            <Button onClick={validation} variant="contained">Cập Nhật</Button> : <></>
                     }
                 </DialogActions>
             </Dialog>
@@ -215,8 +215,8 @@ export default function EditServiceForm(props) {
                             </DialogContentText>
                         </DialogContent>
                         <DialogActions>
-                            <Button onClick={() => setConfirm(false)}>Hủy</Button>
-                            <Button onClick={submit} autoFocus>
+                            <Button onClick={() => setConfirm(false)} variant="outlined">Hủy</Button>
+                            <Button onClick={submit} variant="contained">
                                 Đồng ý
                             </Button>
                         </DialogActions>
@@ -224,7 +224,7 @@ export default function EditServiceForm(props) {
                 </div>
             </div>
             <div>
-                <PositionedSnackbar open={snackbarState} message={"Thêm Thành Công."} />
+                <PositionedSnackbar open={snackbarState} message={"Cập nhật Thành Công."} />
             </div>
         </>
     )
