@@ -6,6 +6,7 @@ const initialState = {
     pay_day: [],
     pay_month: [],
     pay_year: [],
+    paymentByCus: [],
 };
 
 export const paymentReducer = (state = initialState, action) => {
@@ -35,7 +36,11 @@ export const paymentReducer = (state = initialState, action) => {
                 ...state,
                 pay_year: [...action.payload],
             }
-
+        case ACTION_TYPES_PAY.GET_ALL_BY_CUS:
+            return {
+                ...state,
+                paymentByCus: [...action.payload],
+            }
         default:
             return state;
     }

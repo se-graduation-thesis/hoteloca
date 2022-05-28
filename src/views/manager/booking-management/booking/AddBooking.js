@@ -30,6 +30,7 @@ import Slide from '@mui/material/Slide';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import da from 'date-fns/locale/da/index';
 import { CheckBox } from '@mui/icons-material';
+import { vi } from "date-fns/locale";
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -613,17 +614,19 @@ export default function Payment() {
                                     <span className="numberTitle">2</span><span className='lableTitle'>THÔNG TIN ĐẶT PHÒNG</span>
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <LocalizationProvider dateAdapter={AdapterDateFns} >
+                                    <LocalizationProvider locale={vi} dateAdapter={AdapterDateFns} >
                                         <DateTimePicker
                                             helperText=" "
                                             inputFormat="dd/MM/yyyy hh:mm a"
-                                            renderInput={(props) => <TextField {...props} fullWidth helperText=" " disabled={true} />}
+                                            disableOpenPicker={true}
+                                            readOnly={true}
+                                            renderInput={(props) => <TextField {...props} fullWidth helperText=" " />}
                                             label="Ngày lập"
                                         />
                                     </LocalizationProvider>
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <LocalizationProvider locale={vi} dateAdapter={AdapterDateFns}>
                                         <DateTimePicker
                                             helperText=" "
                                             inputFormat="dd/MM/yyyy hh:mm a"
@@ -635,7 +638,7 @@ export default function Payment() {
                                     </LocalizationProvider>
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <LocalizationProvider locale={vi} dateAdapter={AdapterDateFns}>
                                         <DateTimePicker
                                             inputFormat="dd/MM/yyyy hh:mm a"
                                             renderInput={(props) => <TextField {...props} fullWidth helperText=" " />}

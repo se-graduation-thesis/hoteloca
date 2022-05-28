@@ -10,6 +10,8 @@ import PositionedSnackbar from "../components/PositionedSnackbar";
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import NumberFormat from "react-number-format";
 import PropTypes from 'prop-types';
+import { vi } from "date-fns/locale";
+
 
 const width = 800;
 
@@ -311,7 +313,7 @@ export default function EditEmployeeForm(props) {
 
                         {/* Ngày Sinh - Ngày Vào Làm */}
                         <Grid item xs={6} sx={{ marginTop: 2 }}>
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <LocalizationProvider locale={vi} dateAdapter={AdapterDateFns}>
                                 <DesktopDatePicker
                                     renderInput={(props) => <TextField {...props} fullWidth />}
                                     inputFormat="dd/MM/yyyy"
@@ -326,7 +328,7 @@ export default function EditEmployeeForm(props) {
                         </Grid>
 
                         <Grid item xs={6} sx={{ marginTop: 2 }}>
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <LocalizationProvider locale={vi} dateAdapter={AdapterDateFns}>
                                 <DesktopDatePicker
                                     renderInput={(props) => <TextField {...props} fullWidth />}
                                     inputFormat="dd/MM/yyyy"

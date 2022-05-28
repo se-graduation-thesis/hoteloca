@@ -48,6 +48,7 @@ const MainBillStatistics = Loadable(lazy(() => import('views/manager/statistical
 
 // sample page routing
 const CustomerManagement = Loadable(lazy(() => import('views/manager/account-manager/customer-management/Customer')));
+const PaymentListByCus = Loadable(lazy(() => import('views/manager/account-manager/customer-management/PaymentListByCus')));
 const SamplePage = Loadable(lazy(() => import('views/sample-page')));
 
 // ==============================|| MAIN ROUTING ||============================== //
@@ -158,7 +159,11 @@ const MainRoutes = {
         },
         {
             path: '/admin/customer-management',
-            element: <CustomerManagement />
+            element: <CustomerManagement />,
+        },
+        {
+            path: '/admin/payment-list-by-cus/:cusId',
+            element: <PaymentListByCus />
         },
         {
             path: '/admin/bill-statistics',

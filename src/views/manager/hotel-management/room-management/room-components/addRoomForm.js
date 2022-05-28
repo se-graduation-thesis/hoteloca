@@ -9,6 +9,7 @@ import PositionedSnackbar from "../../components/PositionedSnackbar";
 import CardContent from "views/manager/statistical/customer-statistics/CardContent";
 import { set } from "date-fns";
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
+import InsertBrandDialog from "views/manager/hotel-manager/brand-manager/InsertBrandDialog";
 
 
 
@@ -103,7 +104,6 @@ export default function AddRoomForm(props) {
         }
     }
 
-
     // ------------------------------
     console.log(Object.keys(file).length)
     // --------------------------------
@@ -173,43 +173,6 @@ export default function AddRoomForm(props) {
         }
 
     }
-
-    // const submit = () => {
-    //     if (handleCheckValidation()) {
-    //         if (file) {
-    //             const formData = new FormData();
-    //             formData.append("file", file);
-    //             actionsUploadFile.upload(formData)
-    //                 .then((response) => {
-    //                     phong.hinhAnh = response.data;
-    //                     dispatch(actions.addRoom(phong));
-
-    //                     props.isShowAddForm(false);
-    //                     reset();
-
-    //                     setSnackbarState(true);
-    //                     setTimeout(function () {
-    //                         setSnackbarState(false);
-    //                     }, 3000);
-    //                 })
-    //                 .catch((error) => {
-    //                     console.log(error);
-    //                 });
-    //         } else {
-    //             dispatch(actions.addRoom(phong));
-
-    //             props.isShowAddForm(false);
-    //             reset();
-
-    //             setSnackbarState(true);
-    //             setTimeout(function () {
-    //                 setSnackbarState(false);
-    //             }, 3000);
-    //         }
-    //     }
-
-    // }
-
     const width = image.length ? 1000 : 500;
 
 

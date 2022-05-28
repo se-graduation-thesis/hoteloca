@@ -7,6 +7,7 @@ import moment from "moment";
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import moment_t from "moment-timezone";
 import { DateTimePicker, LocalizationProvider } from "@mui/lab";
+import { vi } from "date-fns/locale";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 
 export default function ReservationInfo({ reservation, handleReservation, completed, token, complete, handleCompleteButton, handleComplete }) {
@@ -178,7 +179,7 @@ export default function ReservationInfo({ reservation, handleReservation, comple
 
                 {/* Checkin - checkOut */}
                 <Grid item xs={6} sx={{ marginTop: 2 }}>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <LocalizationProvider locale={vi} dateAdapter={AdapterDateFns}>
                         <DateTimePicker
                             renderInput={(props) => <TextField {...props} fullWidth />}
                             inputFormat="dd/MM/yyyy hh:mm a"
@@ -194,7 +195,7 @@ export default function ReservationInfo({ reservation, handleReservation, comple
                     </LocalizationProvider>
                 </Grid>
                 <Grid item xs={6} sx={{ marginTop: 2 }}>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <LocalizationProvider locale={vi} dateAdapter={AdapterDateFns}>
                         <DateTimePicker
                             renderInput={(props) => <TextField {...props} fullWidth />}
                             inputFormat="dd/MM/yyyy hh:mm a"

@@ -122,6 +122,7 @@ export default {
             get_all_day: (day, month, year) => axios.get(url + "get-all-day/" + day + "&&" + month + "&&" + year),
             get_all_month: (month, year) => axios.get(url + "get-all-month/" + month + "&&" + year),
             get_all_year: (year) => axios.get(url + "get-all-year/" + year),
+            get_all_by_cus: (id) => axios.get(url + "get-all-by-customer/" + id),
         }
     },
     bo_phan(url = baseApi + 'bophan/') {

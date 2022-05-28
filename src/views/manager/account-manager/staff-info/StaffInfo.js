@@ -315,7 +315,7 @@ export default function StaffInfo() {
                                                 <p style={{ fontSize: 16 }}>Ngày Sinh</p>
                                             </Grid>
                                             <Grid item xs={3}>
-                                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                <LocalizationProvider locale={vi} dateAdapter={AdapterDateFns}>
                                                     <DatePicker
                                                         views={['day']}
                                                         label="Ngày"
@@ -344,7 +344,7 @@ export default function StaffInfo() {
                                                 </LocalizationProvider>
                                             </Grid>
                                             <Grid item xs={3}>
-                                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                <LocalizationProvider locale={vi} dateAdapter={AdapterDateFns}>
                                                     <DatePicker
                                                         views={['year']}
                                                         label="Năm"
