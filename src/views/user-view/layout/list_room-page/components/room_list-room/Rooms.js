@@ -13,6 +13,14 @@ import Select from '@mui/material/Select';
 import moment from "moment-timezone";
 import * as actionsCategory from "actions/category.action"
 import SearchOffIcon from '@mui/icons-material/SearchOff';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import Slide from '@mui/material/Slide';
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 export default function Rooms({ checkTime }) {
     const dispatch = useDispatch();
     const rooms = useSelector((state) => state.room.empty_room);
@@ -22,7 +30,17 @@ export default function Rooms({ checkTime }) {
     const [checkOut, setCheckOut] = useState(new Date((new Date()).valueOf() + 1000 * 3600 * 24));
     const [lp, setCategory] = useState(0);
     const [list_room_hotel, setListRoomHotel] = useState([]);
-    console.log(checkTime)
+    const [open1, setOpen1] = React.useState(false);
+    const [textAlert, setTextAlert] = useState("");
+    const navigate = useNavigate()
+    const handleClickOpen1 = () => {
+        setOpen1(true);
+    };
+
+    const handleClose1 = () => {
+        setOpen1(false);
+    };
+
     useEffect(() => {
         if (checkTime) {
             let room_find = {
@@ -67,6 +85,16 @@ export default function Rooms({ checkTime }) {
     };
 
     const onFind = () => {
+        if (checkIn < new Date(new Date().getTime() - 10 * 60000)) {
+            handleClickOpen1()
+            setTextAlert("Ngày vào phải lớn hơn hoặc bằng ngày hiện tại")
+            return
+        }
+        if (checkOut < checkIn) {
+            handleClickOpen1()
+            setTextAlert("Ngày ra phải lớn hơn ngày vào")
+            return
+        }
         let room_find = {
             trangThai: 0,
             ngayVao: moment.tz(checkIn, "Asia/Ho_Chi_Minh").format(),
@@ -139,6 +167,23 @@ export default function Rooms({ checkTime }) {
                         <p><b>KHÔNG TÌM THẤY PHÒNG NÀO NHƯ TIÊU CHÍ CỦA BẠN</b></p>
                     </div>
             }
+
+            <Dialog
+                open={open1}
+                maxWidth={'xs'}
+                fullWidth={true}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={handleClose1}
+                aria-describedby="alert-dialog-slide-description"
+            >
+                <DialogContent style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <CancelOutlinedIcon color='error' sx={{ fontSize: 70 }} />
+                    <span style={{ fontSize: 15, fontWeight: 'bold' }}>{textAlert}</span>
+                </DialogContent>
+                <DialogActions>
+                </DialogActions>
+            </Dialog>
         </div >
 
 

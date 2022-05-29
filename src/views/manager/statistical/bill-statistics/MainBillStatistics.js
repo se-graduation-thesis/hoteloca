@@ -63,6 +63,7 @@ export default function MainBillStatistics() {
     console.log(listPayment)
     const downloadExcel = () => {
         if (listPayment) {
+            const headerTitle = [['Danh sách hóa đơn đến ngày ' + moment(new Date).format('DD-MM-YYYY-HH-mm-ss')]];
             let list_exp = []
             listPayment?.forEach((e) => {
                 let exp = {
@@ -74,7 +75,10 @@ export default function MainBillStatistics() {
                 }
                 list_exp.push(exp)
             })
-            const worksheet = XLSX.utils.json_to_sheet(list_exp);
+            const worksheet = XLSX.utils.json_to_sheet(list_exp, {
+                origin: 'A2'
+            });
+            XLSX.utils.sheet_add_aoa(worksheet, headerTitle, { origin: 'A1' });
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
             XLSX.writeFile(workbook, "export-data" + moment(new Date).format('DD-MM-YYYY-HH-mm-ss') + ".xlsx");

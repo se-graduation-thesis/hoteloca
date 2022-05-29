@@ -311,7 +311,7 @@ const AuthForgetPassword = () => {
             >
                 <DialogContent style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <CheckCircleTwoToneIcon color='success' sx={{ fontSize: 70 }} />
-                    <span style={{ fontSize: 18, fontWeight: 'bold' }}>Tạo tài khoản thành công</span>
+                    <span style={{ fontSize: 18, fontWeight: 'bold' }}>Đổi mật khẩu thành công</span>
                 </DialogContent>
                 <DialogActions>
                 </DialogActions>
