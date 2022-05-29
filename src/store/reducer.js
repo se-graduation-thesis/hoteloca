@@ -20,6 +20,7 @@ import { billReducer } from 'reducers/bill.reducer';
 import { paymentReducer } from 'reducers/payment.reducer';
 import { billServiceDetailReducer } from 'reducers/bill-service-detail.reducer';
 import { billServiceReducer } from 'reducers/bill-service.reducer';
+import { meetReducer } from 'reducers/meet_reducer'
 // ==============================|| COMBINE REDUCER ||============================== //
 
 const reducer = combineReducers({
@@ -38,7 +39,8 @@ const reducer = combineReducers({
     bill: billReducer,
     payment: paymentReducer,
     bill_service_detail: billServiceDetailReducer,
-    bill_service: billServiceReducer
+    bill_service: billServiceReducer,
+    meet: meetReducer
 });
 
 export default reducer;

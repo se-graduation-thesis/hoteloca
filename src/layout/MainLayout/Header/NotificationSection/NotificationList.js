@@ -18,9 +18,10 @@ import {
 } from '@mui/material';
 
 // assets
-import { IconBrandTelegram, IconBuildingStore, IconMailbox, IconPhoto } from '@tabler/icons';
 import User1 from 'assets/images/users/user-round.svg';
-
+import { useEffect, useState } from 'react';
+// import firepadRef from './firebase';
+import firebase from 'views/pages/authentication/auth-forms/firebase'
 // styles
 const ListItemWrapper = styled('div')(({ theme }) => ({
     cursor: 'pointer',
@@ -37,7 +38,7 @@ const ListItemWrapper = styled('div')(({ theme }) => ({
 
 const NotificationList = () => {
     const theme = useTheme();
-
+    const [listRoomOnline, setListRoomOnline] = useState([])
     const chipSX = {
         height: 24,
         padding: '0 6px'
@@ -54,14 +55,22 @@ const NotificationList = () => {
         color: theme.palette.warning.dark,
         backgroundColor: theme.palette.warning.light
     };
-
-    const chipSuccessSX = {
-        ...chipSX,
-        color: theme.palette.success.dark,
-        backgroundColor: theme.palette.success.light,
-        height: 28
-    };
-
+    useEffect(() => {
+        firebase.database().ref().on('value', (snapshot) => {
+            let newUserState = [];
+            snapshot.forEach(data => {
+                console.log("hahah", data.val())
+                newUserState.push({
+                    id: data.key,
+                })
+            })
+            setListRoomOnline(newUserState.filter(({ id }) => id !== 'participants'))
+        })
+    }, [])
+    const joinMeeting = (id) => {
+        let link = window.location.protocol + "//" + window.location.host + "/admin/meeting?id=" + id
+        window.location.href = link
+    }
     return (
         <List
             sx={{
@@ -83,198 +92,41 @@ const NotificationList = () => {
                 }
             }}
         >
-            <ListItemWrapper>
-                <ListItem alignItems="center">
-                    <ListItemAvatar>
-                        <Avatar alt="John Doe" src={User1} />
-                    </ListItemAvatar>
-                    <ListItemText primary="John Doe" />
-                    <ListItemSecondaryAction>
-                        <Grid container justifyContent="flex-end">
-                            <Grid item xs={12}>
-                                <Typography variant="caption" display="block" gutterBottom>
-                                    2 min ago
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                    </ListItemSecondaryAction>
-                </ListItem>
-                <Grid container direction="column" className="list-container">
-                    <Grid item xs={12} sx={{ pb: 2 }}>
-                        <Typography variant="subtitle2">It is a long established fact that a reader will be distracted</Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Grid container>
-                            <Grid item>
-                                <Chip label="Unread" sx={chipErrorSX} />
-                            </Grid>
-                            <Grid item>
-                                <Chip label="New" sx={chipWarningSX} />
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </ListItemWrapper>
-            <Divider />
-            <ListItemWrapper>
-                <ListItem alignItems="center">
-                    <ListItemAvatar>
-                        <Avatar
-                            sx={{
-                                color: theme.palette.success.dark,
-                                backgroundColor: theme.palette.success.light,
-                                border: 'none',
-                                borderColor: theme.palette.success.main
-                            }}
-                        >
-                            <IconBuildingStore stroke={1.5} size="1.3rem" />
-                        </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText primary={<Typography variant="subtitle1">Store Verification Done</Typography>} />
-                    <ListItemSecondaryAction>
-                        <Grid container justifyContent="flex-end">
-                            <Grid item xs={12}>
-                                <Typography variant="caption" display="block" gutterBottom>
-                                    2 min ago
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                    </ListItemSecondaryAction>
-                </ListItem>
-                <Grid container direction="column" className="list-container">
-                    <Grid item xs={12} sx={{ pb: 2 }}>
-                        <Typography variant="subtitle2">We have successfully received your request.</Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Grid container>
-                            <Grid item>
-                                <Chip label="Unread" sx={chipErrorSX} />
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </ListItemWrapper>
-            <Divider />
-            <ListItemWrapper>
-                <ListItem alignItems="center">
-                    <ListItemAvatar>
-                        <Avatar
-                            sx={{
-                                color: theme.palette.primary.dark,
-                                backgroundColor: theme.palette.primary.light,
-                                border: 'none',
-                                borderColor: theme.palette.primary.main
-                            }}
-                        >
-                            <IconMailbox stroke={1.5} size="1.3rem" />
-                        </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText primary={<Typography variant="subtitle1">Check Your Mail.</Typography>} />
-                    <ListItemSecondaryAction>
-                        <Grid container justifyContent="flex-end">
-                            <Grid item>
-                                <Typography variant="caption" display="block" gutterBottom>
-                                    2 min ago
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                    </ListItemSecondaryAction>
-                </ListItem>
-                <Grid container direction="column" className="list-container">
-                    <Grid item xs={12} sx={{ pb: 2 }}>
-                        <Typography variant="subtitle2">All done! Now check your inbox as you&apos;re in for a sweet treat!</Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Grid container>
-                            <Grid item>
-                                <Button variant="contained" disableElevation endIcon={<IconBrandTelegram stroke={1.5} size="1.3rem" />}>
-                                    Mail
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </ListItemWrapper>
-            <Divider />
-            <ListItemWrapper>
-                <ListItem alignItems="center">
-                    <ListItemAvatar>
-                        <Avatar alt="John Doe" src={User1} />
-                    </ListItemAvatar>
-                    <ListItemText primary={<Typography variant="subtitle1">John Doe</Typography>} />
-                    <ListItemSecondaryAction>
-                        <Grid container justifyContent="flex-end">
-                            <Grid item xs={12}>
-                                <Typography variant="caption" display="block" gutterBottom>
-                                    2 min ago
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                    </ListItemSecondaryAction>
-                </ListItem>
-                <Grid container direction="column" className="list-container">
-                    <Grid item xs={12} sx={{ pb: 2 }}>
-                        <Typography component="span" variant="subtitle2">
-                            Uploaded two file on &nbsp;
-                            <Typography component="span" variant="h6">
-                                21 Jan 2020
-                            </Typography>
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Grid container>
-                            <Grid item xs={12}>
-                                <Card
-                                    sx={{
-                                        backgroundColor: theme.palette.secondary.light
-                                    }}
-                                >
-                                    <CardContent>
-                                        <Grid container direction="column">
-                                            <Grid item xs={12}>
-                                                <Stack direction="row" spacing={2}>
-                                                    <IconPhoto stroke={1.5} size="1.3rem" />
-                                                    <Typography variant="subtitle1">demo.jpg</Typography>
-                                                </Stack>
-                                            </Grid>
+            {
+                listRoomOnline.length > 0 ?
+                    listRoomOnline.map((e, i) => (
+                        <ListItemWrapper key={i}>
+                            <ListItem alignItems="center">
+                                <ListItemAvatar>
+                                    <Avatar alt="John Doe" />
+                                </ListItemAvatar>
+                                <ListItemText primary="Hệ thống" />
+                                <ListItemSecondaryAction>
+                                    <Grid container justifyContent="flex-end">
+                                        <Grid item xs={12}>
+                                            <Typography variant="caption" display="block" gutterBottom>
+                                                Tạo phòng
+                                            </Typography>
                                         </Grid>
-                                    </CardContent>
-                                </Card>
+                                    </Grid>
+                                </ListItemSecondaryAction>
+                            </ListItem>
+                            <Grid container direction="column" className="list-container">
+                                <Grid item xs={12} sx={{ pb: 2 }}>
+                                    <Typography variant="subtitle2">Mời bạn tham gia vào cuộc họp cùng chúng tôi</Typography>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Grid container>
+                                        <Button size='small' color='secondary' variant='contained' onClick={() => joinMeeting(e.id)}>Tham gia</Button>
+                                    </Grid>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </ListItemWrapper>
-            <Divider />
-            <ListItemWrapper>
-                <ListItem alignItems="center">
-                    <ListItemAvatar>
-                        <Avatar alt="John Doe" src={User1} />
-                    </ListItemAvatar>
-                    <ListItemText primary={<Typography variant="subtitle1">John Doe</Typography>} />
-                    <ListItemSecondaryAction>
-                        <Grid container justifyContent="flex-end">
-                            <Grid item xs={12}>
-                                <Typography variant="caption" display="block" gutterBottom>
-                                    2 min ago
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                    </ListItemSecondaryAction>
-                </ListItem>
-                <Grid container direction="column" className="list-container">
-                    <Grid item xs={12} sx={{ pb: 2 }}>
-                        <Typography variant="subtitle2">It is a long established fact that a reader will be distracted</Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Grid container>
-                            <Grid item>
-                                <Chip label="Confirmation of Account." sx={chipSuccessSX} />
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </ListItemWrapper>
+                        </ListItemWrapper>
+                    ))
+
+                    : <ListItemWrapper> Không có thông báo nào trong thời điểm hiện tại</ListItemWrapper>
+            }
+
         </List>
     );
 };

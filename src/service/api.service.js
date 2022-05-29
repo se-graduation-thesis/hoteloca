@@ -14,7 +14,8 @@ export default {
             resetPass: (acc) => axios.put(url + "reset-password", acc),
             updateStatus: (acc) => axios.put(url + "update", acc),
             getById: (id) => axios.get(url + id),
-            hashPass: (taikhoan, pass) => axios.post(url + 'hashPass/' + pass, taikhoan)
+            hashPass: (taikhoan, pass) => axios.post(url + 'hashPass/' + pass, taikhoan),
+            forget: (tk) => axios.put(url + "forget", tk)
         };
     },
     manager(url = baseApi + 'manager/') {

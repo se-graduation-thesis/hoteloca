@@ -135,7 +135,6 @@ export default function ListBooking() {
     }, [])
 
     useEffect(() => {
-
         if (listBillByStatus.length > 0 && listBillByStatus !== undefined) {
             listBillByStatus.forEach((e, i) => {
                 e.stt = i + 1;
@@ -145,9 +144,9 @@ export default function ListBooking() {
                 if (!e.checkIn && e.trangThai === 1 || e.trangThai === 3) {
                     if (e.count.days >= 0) {
                         if (e.count.hours >= 2)
-                            dispatch(actions.updateStateOfBill(e.id, 4))
+                            e.trangThai = 4
                         else if (e.count.hours > 0 || (e.count.hours === 0 && e.count.minutes > 0))
-                            dispatch(actions.updateStateOfBill(e.id, 3))
+                            e.trangThai = 3
                     }
                 } else {
                     e.checkIn = moment(e.checkIn).format('DD-MM-YYYY HH:mm:ss')
@@ -175,7 +174,7 @@ export default function ListBooking() {
     useEffect(() => {
         setInterval(() => {
             setAutoTime(new Date().getMinutes())
-        }, 1000)
+        }, 5000)
     })
 
 

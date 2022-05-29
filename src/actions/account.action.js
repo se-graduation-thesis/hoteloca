@@ -27,6 +27,11 @@ export const login = (username, password) => {
         .account()
         .login(username, password)
 }
+export const forget = (tk) => {
+    return apiService
+        .account()
+        .forget(tk)
+}
 export const fetchAllAccount = () => (dispatch) => {
     apiService
         .account()

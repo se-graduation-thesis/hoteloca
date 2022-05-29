@@ -81,9 +81,9 @@ export default function Customer() {
                 try {
                     let object = JSON.parse(e.diaChi);
                     if (object)
-                        e.diaChi = object.diaChi ? object.diaChi + ', ' : "" + object.ward + ', ' ? object.ward : "" + object.district ? object.district + ', ' : "" + object.city ? object.city : ""
+                        e.diaChi = object.diaChi + ", " + object.ward + ", " + object.district + ", " + object.city
                 } catch {
-                    console.log("error")
+                    e.diaChi = "Khách hàng này chưa cung cấp địa chỉ"
                 }
             })
             setListCustomer(listCustomer)

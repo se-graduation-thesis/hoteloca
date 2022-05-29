@@ -2,7 +2,7 @@
 import {
     IconTypography, IconPalette,
     IconShadow, IconWindmill, IconUser, IconBuildingSkyscraper, IconChartInfographic, IconReceipt, IconBuildingWarehouse, IconBrandSlack
-    , IconReceipt2, IconUsers, IconUserCheck
+    , IconReceipt2, IconUsers, IconUserCheck, IconVideo
 } from '@tabler/icons';
 
 // constant
@@ -19,7 +19,8 @@ const icons = {
     IconBrandSlack,
     IconReceipt2,
     IconUsers,
-    IconUserCheck
+    IconUserCheck,
+    IconVideo
 };
 
 // ==============================|| UTILITIES MENU ITEMS ||============================== //
@@ -158,7 +159,15 @@ const utilities = {
                     breadcrumbs: false
                 }
             ]
-        }
+        },
+        {
+            id: 'meet',
+            title: 'Cuộc họp',
+            type: 'item',
+            url: '/admin/list-room-meeting',
+            breadcrumbs: false,
+            icon: icons.IconVideo,
+        },
     ]
 };
 

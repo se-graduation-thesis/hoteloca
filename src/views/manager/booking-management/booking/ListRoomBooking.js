@@ -219,7 +219,7 @@ export default function BrandManager() {
                         )) :
                         <div style={{ textAlign: "center", width: "100%" }}>
                             <MapsHomeWorkOutlinedIcon sx={{ fontSize: 200 }} />
-                            <h2>Thời gian này hiện tại không có phòng trống</h2>
+                            <h2>Thời gian này hiện tại không có phòng</h2>
                         </div>
                     }
 

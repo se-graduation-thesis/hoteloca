@@ -40,7 +40,7 @@ const initialFieldValues = {
     ho: "",
     ten: "",
     cmnd: "",
-    diaChi: '{"diaChi":"Ấp khương bình","city":"Kiên Giang","district":"Gò Quao","ward":"Thới Quản"}',
+    diaChi: '',
     dienThoai: "",
     email: "",
     quocTich: "Viet Nam",
@@ -129,6 +129,9 @@ export default function Payment() {
     const validate = (fieldValues = values) => {
         let temp = { ...errors };
         if ("cmnd" in fieldValues) {
+            temp.cmnd = /^((\d{9})|(\d{12}))$/.test(fieldValues.cmnd)
+                ? ""
+                : "Số chứng minh nhân dân là 9 hoặc 12 chữ số";
             // values.ho = "nânn"
             if (fieldValues.cmnd.length === 9 || fieldValues.cmnd.length === 12) {
                 listCusCompare.forEach((e) => {
@@ -297,6 +300,7 @@ export default function Payment() {
                     booking_info.khachHangid = res.data.id
                 })
             }
+            console.log(booking_info)
             setTimeout(() => {
                 navigate("/admin/booking-infomation", { state: booking_info });
             }, 2000)
