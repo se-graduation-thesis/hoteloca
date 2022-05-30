@@ -111,6 +111,7 @@ export default function Rooms({ checkTime }) {
                             <DateTimePicker
                                 label="Check - In"
                                 value={checkIn}
+                                inputFormat="dd/MM/yyyy hh:mm a"
                                 minDate={new Date()}
                                 onChange={(newValue) => {
                                     setCheckIn(newValue);
@@ -126,6 +127,7 @@ export default function Rooms({ checkTime }) {
                                 label="Check - Out"
                                 value={checkOut}
                                 minDate={checkIn}
+                                inputFormat="dd/MM/yyyy hh:mm a"
                                 onChange={(newValue) => {
                                     setCheckOut(newValue);
                                 }}
