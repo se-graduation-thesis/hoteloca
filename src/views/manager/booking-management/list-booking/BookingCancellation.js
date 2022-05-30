@@ -25,6 +25,7 @@ import moment from 'moment';
 import PositionedSnackbar from 'views/manager/hotel-management/components/PositionedSnackbar';
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
+    { id: 'maHoaDon', label: 'Mã Phiếu Thuê', minWidth: 100 },
     { id: 'khachhang', label: 'Thông tin khách hàng', minWidth: 100 },
     { id: 'ngayVao', label: 'Ngày đến', minWidth: 100 },
     { id: 'ngayRa', label: 'Ngày đi', minWidth: 100 },

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as actions from "actions/room.action";
 import RoomItem from "./RoomItem";
@@ -30,9 +31,8 @@ export default function Rooms({ checkTime }) {
     const [checkOut, setCheckOut] = useState(new Date((new Date()).valueOf() + 1000 * 3600 * 24));
     const [lp, setCategory] = useState(0);
     const [list_room_hotel, setListRoomHotel] = useState([]);
-    const [open1, setOpen1] = React.useState(false);
+    const [open1, setOpen1] = useState(false);
     const [textAlert, setTextAlert] = useState("");
-    const navigate = useNavigate()
     const handleClickOpen1 = () => {
         setOpen1(true);
     };
@@ -111,6 +111,7 @@ export default function Rooms({ checkTime }) {
                             <DateTimePicker
                                 label="Check - In"
                                 value={checkIn}
+                                inputFormat="dd/MM/yyyy hh:mm a"
                                 minDate={new Date()}
                                 onChange={(newValue) => {
                                     setCheckIn(newValue);
@@ -126,6 +127,7 @@ export default function Rooms({ checkTime }) {
                                 label="Check - Out"
                                 value={checkOut}
                                 minDate={checkIn}
+                                inputFormat="dd/MM/yyyy hh:mm a"
                                 onChange={(newValue) => {
                                     setCheckOut(newValue);
                                 }}

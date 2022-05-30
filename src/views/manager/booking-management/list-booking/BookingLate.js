@@ -20,8 +20,10 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import * as actions from "actions/bill.action"
 import moment from 'moment';
+import CheckIn from './CheckIn';
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
+    { id: 'maHoaDon', label: 'Mã Phiếu Thuê', minWidth: 100 },
     { id: 'khachhang', label: 'Thông tin khách hàng', minWidth: 100 },
     { id: 'ngayVao', label: 'Ngày đến', minWidth: 100 },
     { id: 'ngayRa', label: 'Ngày đi', minWidth: 100 },
@@ -29,6 +31,8 @@ const columns = [
     { id: 'soluongphong', label: 'Số Lượng Phòng', minWidth: 100 },
     { id: 'tenPhong', label: 'Tên Phòng', minWidth: 100 },
     // { id: 'trangThai', label: 'Ghi chú', minWidth: 100 },
+    { id: 'checkIn', label: 'Check-In', minWidth: 100 },
+
 ];
 
 export default function BookingLate() {
@@ -97,6 +101,14 @@ export default function BookingLate() {
         }
     }, [listBillByStatus])
 
+    const [checkInState, setCheckInState] = useState(false);
+    const [checkInObject, setCheckInObject] = useState({})
+    const handleCheckInState = (value) => setCheckInState(value);
+    const onCheckIn = (row) => {
+        handleCheckInState(true);
+        setCheckInObject(row);
+    }
+
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }}>
             <Grid container spacing={1} style={{ padding: 10 }}>
@@ -149,8 +161,12 @@ export default function BookingLate() {
                                             return (
                                                 <TableCell key={column.id} align={column.align}>
                                                     {column.format && typeof value === 'number'
-                                                        ? column.format(value)
-                                                        : value}
+                                                        ? column.format(value) :
+                                                        column.id === 'checkIn' ?
+                                                            value ?
+                                                                value :
+                                                                <Button variant="contained" color={"primary"} onClick={() => { onCheckIn(row) }} >{"Check - In"}</Button>
+                                                            : value}
                                                 </TableCell>
                                             );
                                         })}
@@ -187,6 +203,7 @@ export default function BookingLate() {
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
             <UpdateBrand open={openUpdate} id={id_brand} isShowForm={handleCloseUpdate} />
+            <CheckIn open={checkInState} handleCheckInState={handleCheckInState} checkInObject={checkInObject} />
             <CancelBooking open={cancelState} handleCancelState={handleCancelState} cancelObject={cancelObject} handleFilter={handleFilter} />
         </Paper >
     );
