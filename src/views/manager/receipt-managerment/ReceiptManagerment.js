@@ -159,7 +159,7 @@ export default function PaymentManager() {
             }
         }
     }, [listPayment, monthSelect, yearSelect, daySelect, checkRadio])
-    console.log(listPaymentShow)
+    console.log(listPayment)
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }} style={{ padding: 20 }}>
             <Grid container spacing={1} style={{ marginTop: 10, padding: 10 }}>
@@ -354,7 +354,7 @@ export default function PaymentManager() {
                 labelRowsPerPage='Số hàng'
                 rowsPerPageOptions={[10, 25, 100]}
                 component="div"
-                count={rows.length}
+                count={listPaymentShow.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
