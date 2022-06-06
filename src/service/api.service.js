@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseApi = 'http://localhost:5000/api/';
+const baseApi = 'https://spring-api-hoteloca.herokuapp.com/api/';
 // const SOCKET_URL = "ws://localhost:3030/";
 
 export default {
@@ -14,7 +14,8 @@ export default {
             resetPass: (acc) => axios.put(url + "reset-password", acc),
             updateStatus: (acc) => axios.put(url + "update", acc),
             getById: (id) => axios.get(url + id),
-            hashPass: (taikhoan, pass) => axios.post(url + 'hashPass/' + pass, taikhoan)
+            hashPass: (taikhoan, pass) => axios.post(url + 'hashPass/' + pass, taikhoan),
+            forget: (tk) => axios.put(url + "forget", tk)
         };
     },
     manager(url = baseApi + 'manager/') {
@@ -122,6 +123,7 @@ export default {
             get_all_day: (day, month, year) => axios.get(url + "get-all-day/" + day + "&&" + month + "&&" + year),
             get_all_month: (month, year) => axios.get(url + "get-all-month/" + month + "&&" + year),
             get_all_year: (year) => axios.get(url + "get-all-year/" + year),
+            get_all_by_cus: (id) => axios.get(url + "get-all-by-customer/" + id),
         }
     },
     bo_phan(url = baseApi + 'bophan/') {

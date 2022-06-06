@@ -32,6 +32,7 @@ const columns = [
     { id: 'ngayThue', label: 'Ngày Thuê', minWidth: 100 },
     { id: 'ngayThanhToan', label: 'Ngày Thanh Toán', minWidth: 100 },
     { id: 'tienThu', label: 'Tiền thu', minWidth: 100 },
+    { id: 'ghiChu', label: 'Ghi chú', minWidth: 100 },
 ];
 
 export default function PaymentManager() {
@@ -102,6 +103,7 @@ export default function PaymentManager() {
                             id: e.id,
                             phieuThueid: e.phieuThueid,
                             maThanhToan: e.maThanhToan,
+                            ghiChu: e.ghiChu,
                             ten: e.phieuThueid.khachHangid.ho + " " + e.phieuThueid.khachHangid.ten,
                             ngayThanhToan: moment(e.ngayThanhToan).format('DD-MM-YYYY HH:mm:ss'),
                             ngayThue: moment(e.phieuThueid.ngayVao).format('DD-MM-YYYY HH:mm:ss'),
@@ -121,6 +123,7 @@ export default function PaymentManager() {
                     if (month === monthSelect && year === yearSelect) {
                         let pay = {
                             id: e.id,
+                            ghiChu: e.ghiChu,
                             phieuThueid: e.phieuThueid,
                             maThanhToan: e.maThanhToan,
                             ten: e.phieuThueid.khachHangid.ho + " " + e.phieuThueid.khachHangid.ten,
@@ -141,6 +144,7 @@ export default function PaymentManager() {
                     if (year === yearSelect) {
                         let pay = {
                             id: e.id,
+                            ghiChu: e.ghiChu,
                             phieuThueid: e.phieuThueid,
                             maThanhToan: e.maThanhToan,
                             ten: e.phieuThueid.khachHangid.ho + " " + e.phieuThueid.khachHangid.ten,
@@ -155,7 +159,7 @@ export default function PaymentManager() {
             }
         }
     }, [listPayment, monthSelect, yearSelect, daySelect, checkRadio])
-    console.log(listPaymentShow)
+    console.log(listPayment)
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }} style={{ padding: 20 }}>
             <Grid container spacing={1} style={{ marginTop: 10, padding: 10 }}>
@@ -350,7 +354,7 @@ export default function PaymentManager() {
                 labelRowsPerPage='Số hàng'
                 rowsPerPageOptions={[10, 25, 100]}
                 component="div"
-                count={rows.length}
+                count={listPaymentShow.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

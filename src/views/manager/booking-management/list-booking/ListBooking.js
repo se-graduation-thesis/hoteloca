@@ -135,7 +135,6 @@ export default function ListBooking() {
     }, [])
 
     useEffect(() => {
-
         if (listBillByStatus.length > 0 && listBillByStatus !== undefined) {
             listBillByStatus.forEach((e, i) => {
                 e.stt = i + 1;
@@ -145,9 +144,9 @@ export default function ListBooking() {
                 if (!e.checkIn && e.trangThai === 1 || e.trangThai === 3) {
                     if (e.count.days >= 0) {
                         if (e.count.hours >= 2)
-                            dispatch(actions.updateStateOfBill(e.id, 4))
+                            e.state = 4
                         else if (e.count.hours > 0 || (e.count.hours === 0 && e.count.minutes > 0))
-                            dispatch(actions.updateStateOfBill(e.id, 3))
+                            e.state = 3
                     }
                 } else {
                     e.checkIn = moment(e.checkIn).format('DD-MM-YYYY HH:mm:ss')
@@ -174,14 +173,14 @@ export default function ListBooking() {
     const [autoTime, setAutoTime] = useState(new Date())
     useEffect(() => {
         setInterval(() => {
-            setAutoTime(new Date().getMinutes())
-        }, 1000)
+            setAutoTime(new Date())
+        }, 5000)
     })
 
 
     useEffect(() => {
         listBillByStatusShow.forEach((e) => {
-            if (!e.checkIn && e.trangThai === 1 || e.trangThai === 3) {
+            if (!e.checkIn && (e.trangThai === 1 || e.trangThai === 3)) {
                 e.count = countDate(e.ngayVao_old);
                 if (e.count.days >= 0) {
                     if (e.count.hours >= 2) {
@@ -196,6 +195,7 @@ export default function ListBooking() {
         })
         // setListBillByStatusShow(listBillByStatusShow);
     }, [autoTime])
+
     const onCheckIn = (row) => {
         let checkInKt = new Date()
         let checkKt = new Date(row.ngayVao_old)
@@ -255,7 +255,7 @@ export default function ListBooking() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {listBillByStatusShow.filter(e => e.trangThai !== 4)
+                        {listBillByStatusShow.filter(e => e.state !== 4)
                             .filter(item => stateBill === 0 ? item : item.trangThai === stateBill)
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, i) => {
@@ -267,11 +267,12 @@ export default function ListBooking() {
                                                 <TableCell key={column.id} align={column.align}>
                                                     {column.format && typeof value === 'number'
                                                         ? column.format(value) :
-                                                        column.id === 'checkIn' ?
-                                                            value ?
-                                                                value :
-                                                                <Button variant="contained" color={"primary"} onClick={() => { onCheckIn(row) }} >{"Check - In"}</Button>
-                                                            : value}
+                                                        column.id === 'stt' ? i + 1 :
+                                                            column.id === 'checkIn' ?
+                                                                value ?
+                                                                    value :
+                                                                    <Button variant="contained" color={"primary"} onClick={() => { onCheckIn(row) }} >{"Check - In"}</Button>
+                                                                : value}
                                                 </TableCell>
                                             );
                                         })}

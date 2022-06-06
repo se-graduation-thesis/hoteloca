@@ -76,6 +76,7 @@ const FirebaseLogin = ({ ...others }) => {
                 const permission = {
                     account_id: res.data.taiKhoanid.id,
                     user_id: res.data.id,
+                    user_name: res.data.ho + " " + res.data.ten,
                     role: res.data.taiKhoanid.quyen,
                 }
 
@@ -182,7 +183,7 @@ const FirebaseLogin = ({ ...others }) => {
                 {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
                     <form noValidate onSubmit={handleSubmit} {...others}>
                         <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
-                            <InputLabel htmlFor="outlined-adornment-email-login">Số điện thoại hoặc tài khoản</InputLabel>
+                            <InputLabel htmlFor="outlined-adornment-email-login">Số điện thoại / Tài khoản</InputLabel>
                             <OutlinedInput
                                 id="outlined-adornment-email-login"
                                 type="email"
@@ -242,7 +243,7 @@ const FirebaseLogin = ({ ...others }) => {
                                 }
                                 label=""
                             />
-                            <Typography variant="subtitle1" color="secondary" sx={{ textDecoration: 'none', cursor: 'pointer' }}>
+                            <Typography variant="subtitle1" onClick={() => navigate("/forget-password")} color="secondary" sx={{ textDecoration: 'none', cursor: 'pointer' }}>
                                 Quên mật khẩu
                             </Typography>
                         </Stack>

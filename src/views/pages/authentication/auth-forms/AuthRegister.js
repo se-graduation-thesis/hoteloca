@@ -288,10 +288,10 @@ const FirebaseRegister = () => {
                 console.log(error)
             });
     };
+    console.log(listCusCompare)
     const onSubmitOTP = (e) => {
         e.preventDefault();
         const code = otp;
-        console.log(code)
         window.confirmationResult
             .confirm(code)
             .then((result) => {
@@ -302,13 +302,18 @@ const FirebaseRegister = () => {
                     quyen: 1,
                     trangThai: 1
                 }
-                console.log(user)
+                let add = {
+                    diaChi: values.diaChi,
+                    ward: values.ward,
+                    district: values.district,
+                    city: values.city
+                }
+                values.diaChi = JSON.stringify(add)
                 actions.register(accountRegister).then((res) => {
                     let customer = listCusCompare.find(({ cmnd }) => cmnd === values.cmnd)
                     if (customer !== undefined) {
                         if (customer.taiKhoanid === null) {
                             values.id = customer.id
-                            values.diaChi = '{"diaChi":"Ấp khương bình","city":"Kiên Giang","district":"Gò Quao","ward":"Thới Quản"}'
                             values.taiKhoanid = {
                                 id: res.data.id
                             }
@@ -473,7 +478,7 @@ const FirebaseRegister = () => {
                                     >
                                         {
                                             wards.map((a) => (
-                                                <MenuItem key={a.id} value={a.prefix + " " + a.name} > {a.prefix + " " + a.name} </MenuItem>
+                                                <MenuItem key={a.id} value={a.name} > {a.prefix + " " + a.name} </MenuItem>
                                             ))
                                         }
                                     </Select>

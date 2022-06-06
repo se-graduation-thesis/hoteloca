@@ -48,7 +48,10 @@ const MainBillStatistics = Loadable(lazy(() => import('views/manager/statistical
 
 // sample page routing
 const CustomerManagement = Loadable(lazy(() => import('views/manager/account-manager/customer-management/Customer')));
+const PaymentListByCus = Loadable(lazy(() => import('views/manager/account-manager/customer-management/PaymentListByCus')));
 const SamplePage = Loadable(lazy(() => import('views/sample-page')));
+const ListRoomMeeting = Loadable(lazy(() => import('views/manager/meeting/ListRoomMeeting')));
+const Meeting = Loadable(lazy(() => import('views/manager/meeting/Meeting')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -158,7 +161,11 @@ const MainRoutes = {
         },
         {
             path: '/admin/customer-management',
-            element: <CustomerManagement />
+            element: <CustomerManagement />,
+        },
+        {
+            path: '/admin/payment-list-by-cus/:cusId',
+            element: <PaymentListByCus />
         },
         {
             path: '/admin/bill-statistics',
@@ -167,6 +174,14 @@ const MainRoutes = {
         {
             path: '/admin/customer-statistics',
             element: <MainCustomerStatistics />
+        },
+        {
+            path: '/admin/list-room-meeting',
+            element: <ListRoomMeeting />
+        },
+        {
+            path: '/admin/meeting',
+            element: <Meeting />
         },
         {
             path: '/sample-page',

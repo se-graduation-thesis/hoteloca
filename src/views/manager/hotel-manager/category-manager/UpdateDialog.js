@@ -157,6 +157,8 @@ export default function UpdateBrand(props) {
         }
     }
 
+    console.log(values)
+
     const handleSubmit = (e) => {
         if (validate()) {
             if (file) {
@@ -184,8 +186,6 @@ export default function UpdateBrand(props) {
                         console.log(error);
                     });
             } else {
-                values.hinhAnh = response.data;
-
                 let dientich = {
                     chieudai: values.chieuDai,
                     chieurong: values.chieuRong
@@ -202,6 +202,7 @@ export default function UpdateBrand(props) {
             }
 
         };
+        props.isShowForm();
 
     }
     useEffect(() => {
@@ -235,7 +236,7 @@ export default function UpdateBrand(props) {
                 <DialogTitle>
                     <Grid container spacing={1}>
                         <Grid item xs={6}>
-                            <p>Thêm chi nhánh</p>
+                            <p>Sửa Loại Phòng</p>
                         </Grid>
                         <Grid item xs={6} style={{ textAlign: 'right' }}>
                             <IconButton onClick={onEdit} aria-label="delete" color="primary">
@@ -282,7 +283,7 @@ export default function UpdateBrand(props) {
                             <Grid item xs={6}>
                                 <TextField
                                     id="soGiuong"
-                                    label="Số Phòng *"
+                                    label="Số Giường *"
                                     variant="outlined"
                                     autoComplete='off'
                                     helperText=" "
@@ -362,7 +363,7 @@ export default function UpdateBrand(props) {
                             <Grid item xs={12} style={{ display: displayButton }}>
                                 <input ref={imgRef} hidden accept="image/*" id="contained-button-file" onChange={handleImage} type="file" />
                                 <Button variant="contained" component="span" onClick={() => imgRef.current.click()}>
-                                    Thêm Ảnh
+                                    Thay Ảnh
                                 </Button>
 
                                 {image &&

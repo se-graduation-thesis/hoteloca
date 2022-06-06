@@ -21,6 +21,8 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import * as actions from "actions/customer.action"
 import { address } from 'assets/address';
+import { Payment, ReceiptLong } from '@mui/icons-material';
+import { useNavigate } from 'react-router';
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 1 },
     { id: 'ho', label: 'Họ', minWidth: 100 },
@@ -30,6 +32,7 @@ const columns = [
 ];
 
 export default function Customer() {
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const [page, setPage] = useState(0);
     const rows = []
@@ -78,9 +81,9 @@ export default function Customer() {
                 try {
                     let object = JSON.parse(e.diaChi);
                     if (object)
-                        e.diaChi = object.diaChi ? object.diaChi + ', ' : "" + object.ward + ', ' ? object.ward : "" + object.district ? object.district + ', ' : "" + object.city ? object.city : ""
+                        e.diaChi = object.diaChi + ", " + object.ward + ", " + object.district + ", " + object.city
                 } catch {
-                    console.log("error")
+                    e.diaChi = "Khách hàng này chưa cung cấp địa chỉ"
                 }
             })
             setListCustomer(listCustomer)
@@ -145,12 +148,12 @@ export default function Customer() {
                                     {column.label}
                                 </TableCell>
                             ))}
-                            {/* <TableCell
+                            <TableCell
                                 style={{ width: "10%" }}
                                 key={"action"}
                             >
                                 {"Hành động"}
-                            </TableCell> */}
+                            </TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -169,13 +172,13 @@ export default function Customer() {
                                                 </TableCell>
                                             );
                                         })}
-                                        {/* <TableCell key={row.stt}>
-                                            <Tooltip title="Sửa loại phòng">
-                                                <IconButton key={row.stt} onClick={() => handleClickOpenUpdate(row.id)} aria-label="delete" color="primary">
-                                                    <Edit />
+                                        <TableCell key={row.stt}>
+                                            <Tooltip title="Xem chi tiết hóa đơn">
+                                                <IconButton key={row.stt} onClick={() => navigate(`/admin/payment-list-by-cus/${row.id}`)} aria-label="delete" color="primary">
+                                                    <Payment />
                                                 </IconButton>
                                             </Tooltip>
-                                        </TableCell> */}
+                                        </TableCell>
                                     </TableRow>
                                 );
                             })}
