@@ -1,7 +1,7 @@
 {
     "name": "hotel-loca",
     "version": "3.0.1",
-    "private": true,
+    "private": false,
     "dependencies": {
         "@devexpress/dx-react-core": "^3.0.2",
         "@devexpress/dx-react-scheduler": "^3.0.2",
