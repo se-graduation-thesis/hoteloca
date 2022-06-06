@@ -1,6 +1,8 @@
 {
     "name": "hotel-loca",
-    "version": "3.0.1",
+    "version": "1.0.0",
+    "author": "tuankhang_thanhhoai",
+    "licence": "MIT",
     "private": false,
     "dependencies": {
         "@devexpress/dx-react-core": "^3.0.2",
@@ -68,7 +70,6 @@
     },
     "scripts": {
         "start": "react-scripts start",
-        "build": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject"
     },
